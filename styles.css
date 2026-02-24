@@ -1,18 +1,19 @@
-/* MagicPulse Landing — warm, park-inspired palette */
+/* MagicPulse Landing — theme aligned with MagicPulse app (AppBackground, AccentChoice, HUDTokens) */
 :root {
-  --bg-deep: #0f1419;
-  --bg-card: #1a222d;
-  --bg-elevated: #232d3a;
+  --bg-deep: #050508;
+  --bg-card: rgba(255, 255, 255, 0.06);
+  --bg-elevated: rgba(255, 255, 255, 0.08);
   --text: #e8ecf0;
-  --text-muted: #8b9aaa;
-  --accent: #e8a838;
-  --accent-dim: #c4922e;
-  --accent-glow: rgba(232, 168, 56, 0.25);
-  --border: rgba(255, 255, 255, 0.08);
-  --font-head: 'Outfit', system-ui, sans-serif;
-  --font-body: 'Source Sans 3', system-ui, sans-serif;
-  --radius: 14px;
-  --radius-lg: 20px;
+  --text-muted: rgba(255, 255, 255, 0.6);
+  --accent: #8c59f2;
+  --accent-dim: #7b4ae0;
+  --accent-glow: rgba(140, 89, 242, 0.4);
+  --accent-glow-soft: rgba(140, 89, 242, 0.08);
+  --border: rgba(255, 255, 255, 0.12);
+  --font-head: 'Outfit', system-ui, -apple-system, sans-serif;
+  --font-body: 'Source Sans 3', system-ui, -apple-system, sans-serif;
+  --radius: 12px;
+  --radius-lg: 22px;
   --space: 1.25rem;
   --container: min(90vw, 720px);
 }
@@ -33,7 +34,11 @@ body {
   font-size: 1.0625rem;
   line-height: 1.6;
   color: var(--text);
-  background: var(--bg-deep);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.04) 0%, transparent 50%),
+    radial-gradient(ellipse 120% 80% at 0% 0%, var(--accent-glow) 0%, var(--accent-glow-soft) 35%, transparent 55%),
+    var(--bg-deep);
+  min-height: 100vh;
   -webkit-font-smoothing: antialiased;
 }
 
@@ -58,7 +63,7 @@ a:hover {
   position: sticky;
   top: 0;
   z-index: 100;
-  background: rgba(15, 20, 25, 0.9);
+  background: rgba(5, 5, 8, 0.9);
   backdrop-filter: blur(12px);
   border-bottom: 1px solid var(--border);
 }
@@ -136,7 +141,8 @@ a:hover {
     flex-direction: column;
     align-items: stretch;
     padding: 4rem 1.5rem 1.5rem;
-    background: var(--bg-card);
+    background: rgba(10, 10, 14, 0.98);
+    backdrop-filter: blur(12px);
     border-left: 1px solid var(--border);
     transform: translateX(100%);
     transition: transform 0.2s ease;
@@ -170,8 +176,8 @@ a:hover {
   position: absolute;
   inset: 0;
   background:
-    radial-gradient(ellipse 80% 50% at 50% 0%, var(--accent-glow) 0%, transparent 55%),
-    radial-gradient(ellipse 60% 40% at 80% 60%, rgba(80, 120, 160, 0.12) 0%, transparent 50%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.04) 0%, transparent 45%),
+    radial-gradient(ellipse 100% 70% at 0% 0%, var(--accent-glow) 0%, var(--accent-glow-soft) 40%, transparent 55%),
     var(--bg-deep);
 }
 
@@ -189,9 +195,9 @@ a:hover {
   font-size: 0.8rem;
   font-weight: 600;
   color: var(--accent);
-  background: rgba(232, 168, 56, 0.12);
+  background: rgba(140, 89, 242, 0.12);
   border-radius: 999px;
-  border: 1px solid rgba(232, 168, 56, 0.25);
+  border: 1px solid rgba(140, 89, 242, 0.25);
 }
 
 .hero-title {
@@ -230,7 +236,7 @@ a:hover {
   font-family: var(--font-body);
   font-weight: 700;
   font-size: 1rem;
-  color: var(--bg-deep);
+  color: #fff;
   background: var(--accent);
   border: none;
   border-radius: var(--radius);
@@ -242,7 +248,7 @@ a:hover {
 .btn:hover {
   background: var(--accent-dim);
   text-decoration: none;
-  color: var(--bg-deep);
+  color: #fff;
   transform: translateY(-1px);
 }
 
@@ -277,7 +283,7 @@ a:hover {
 
 /* Features grid */
 .features {
-  background: var(--bg-card);
+  background: var(--bg-deep);
 }
 
 .feature-grid {
@@ -298,7 +304,7 @@ a:hover {
 }
 
 .feature-card:hover {
-  border-color: rgba(232, 168, 56, 0.3);
+  border-color: rgba(140, 89, 242, 0.35);
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
 }
 
@@ -345,7 +351,7 @@ a:hover {
 /* CTA section */
 .cta {
   text-align: center;
-  background: linear-gradient(180deg, var(--bg-card) 0%, var(--bg-deep) 100%);
+  background: var(--bg-deep);
 }
 
 .cta .section-lead {
