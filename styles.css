@@ -579,3 +579,38 @@ a:hover {
   color: var(--text-muted);
   margin: 0;
 }
+
+/* Support bubble (index page) */
+.support-bubble {
+  position: fixed;
+  bottom: 1.5rem;
+  right: 1.5rem;
+  z-index: 90;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 3.25rem;
+  height: 3.25rem;
+  font-family: var(--font-head);
+  font-weight: 700;
+  font-size: 1.35rem;
+  color: #fff;
+  background: var(--accent);
+  border: none;
+  border-radius: 50%;
+  box-shadow: 0 4px 20px var(--accent-glow);
+  text-decoration: none;
+  transition: transform 0.2s, box-shadow 0.2s, background 0.2s;
+}
+
+.support-bubble:hover {
+  background: var(--accent-dim);
+  box-shadow: 0 6px 24px var(--accent-glow);
+  transform: scale(1.05);
+  text-decoration: none;
+  color: #fff;
+}
+
+.support-bubble-icon {
+  line-height: 1;
+}
