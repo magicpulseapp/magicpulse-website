@@ -24,4 +24,4 @@ A standalone marketing landing page for the MagicPulse iOS app. Lives in the `la
 
 ## Legal
 
-The footer includes a short disclaimer that MagicPulse is not affiliated with The Walt Disney Company. Keep this (or your own disclaimer) when you publish.
+The footer includes a short disclaimer that MagicPulse is not affiliated with any park operator. Keep this (or your own disclaimer) when you publish.
