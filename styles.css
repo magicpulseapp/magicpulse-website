@@ -440,6 +440,15 @@ a:hover {
   margin: 1.25rem 0 0;
 }
 
+.cta-support {
+  font-size: 0.9rem;
+  margin: 0.75rem 0 0;
+}
+
+.cta-support a {
+  font-weight: 600;
+}
+
 /* Footer */
 .site-footer {
   padding: 2.5rem 0;
