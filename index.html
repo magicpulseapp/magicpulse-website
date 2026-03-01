@@ -16,6 +16,7 @@
       <a href="#" class="logo">Magic Pulse</a>
       <nav class="nav">
         <a href="#features">Features</a>
+        <a href="#in-the-app">In the app</a>
         <a href="#parks">Parks</a>
         <a href="#pro">Pro</a>
         <a href="#faq">FAQ</a>
@@ -50,32 +51,70 @@
         <h2 class="section-title">Everything you need at the parks</h2>
         <p class="section-lead">Built for guests who want live data without the guesswork.</p>
         <ul class="feature-grid">
-          <li class="feature-card">
+          <li class="feature-card feature-card--app">
             <span class="feature-icon" aria-hidden="true">⏱</span>
             <h3>Live wait times</h3>
             <p>Real-time wait times with filters, watchlists, and trend history so you know when to go.</p>
+            <div id="live-waits" class="app-card-preview" aria-live="polite">
+              <p class="live-waits-loading">Loading live rides…</p>
+              <div class="live-waits-rows" hidden></div>
+              <p class="live-waits-error" hidden></p>
+            </div>
           </li>
-          <li class="feature-card">
+          <li class="feature-card feature-card--app">
             <span class="feature-icon" aria-hidden="true">🕐</span>
             <h3>Hours & crowds</h3>
             <p>Park hours, crowd insights, and simple forecasting to plan your day.</p>
           </li>
-          <li class="feature-card">
+          <li class="feature-card feature-card--app">
             <span class="feature-icon" aria-hidden="true">🌤</span>
             <h3>Weather alerts</h3>
             <p>Weather and section-level update timestamps so you’re never caught off guard.</p>
           </li>
-          <li class="feature-card">
+          <li class="feature-card feature-card--app">
             <span class="feature-icon" aria-hidden="true">🔔</span>
             <h3>Low-wait alerts</h3>
             <p>Get notified when wait times drop below your chosen threshold (Pro).</p>
           </li>
-          <li class="feature-card">
+          <li class="feature-card feature-card--app">
             <span class="feature-icon" aria-hidden="true">📱</span>
             <h3>Widgets & offline</h3>
             <p>Home screen widgets and cached data so you can check waits even without signal.</p>
           </li>
         </ul>
+      </div>
+    </section>
+
+    <section id="in-the-app" class="section glossary">
+      <div class="container">
+        <h2 class="section-title">Terms you’ll see in the app</h2>
+        <p class="section-lead">The same language Magic Pulse uses inside the app — so you know what to expect.</p>
+        <dl class="glossary-list">
+          <div class="glossary-item">
+            <dt class="glossary-term">Watchlist</dt>
+            <dd class="glossary-def">Your saved rides. Tap to add or remove; see wait times at a glance and get Low-wait alerts (Pro).</dd>
+          </div>
+          <div class="glossary-item">
+            <dt class="glossary-term">Low-wait alert</dt>
+            <dd class="glossary-def">A push notification when a ride on your watchlist drops below the wait time you set. Pro feature.</dd>
+          </div>
+          <div class="glossary-item">
+            <dt class="glossary-term">Live Activity</dt>
+            <dd class="glossary-def">Real-time wait times on your Lock Screen and in the Dynamic Island — no need to open the app. Pro.</dd>
+          </div>
+          <div class="glossary-item">
+            <dt class="glossary-term">Wait history</dt>
+            <dd class="glossary-def">Past wait times and trends for each attraction so you can spot patterns and plan better. Pro.</dd>
+          </div>
+          <div class="glossary-item">
+            <dt class="glossary-term">Likely-to-drop alert</dt>
+            <dd class="glossary-def">Notifies you when a ride’s wait is likely to decrease soon, based on history. Pro.</dd>
+          </div>
+          <div class="glossary-item">
+            <dt class="glossary-term">Siri & Shortcuts</dt>
+            <dd class="glossary-def">Ask Siri for wait times or add Magic Pulse actions to the Shortcuts app. Pro.</dd>
+          </div>
+        </dl>
       </div>
     </section>
 
