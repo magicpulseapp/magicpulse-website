@@ -3,16 +3,35 @@
   var nav = document.querySelector('.nav');
 
   if (menuToggle && nav) {
+    var overlay = document.createElement('div');
+    overlay.className = 'nav-overlay';
+    overlay.setAttribute('aria-hidden', 'true');
+    document.body.appendChild(overlay);
+
+    function closeNav() {
+      nav.classList.remove('is-open');
+      document.body.classList.remove('nav-open');
+      menuToggle.setAttribute('aria-label', 'Open menu');
+    }
+
+    function openNav() {
+      nav.classList.add('is-open');
+      document.body.classList.add('nav-open');
+      menuToggle.setAttribute('aria-label', 'Close menu');
+    }
+
     menuToggle.addEventListener('click', function () {
-      nav.classList.toggle('is-open');
-      menuToggle.setAttribute('aria-label', nav.classList.contains('is-open') ? 'Close menu' : 'Open menu');
+      if (nav.classList.contains('is-open')) {
+        closeNav();
+      } else {
+        openNav();
+      }
     });
 
-    // Close menu when clicking a nav link (mobile)
+    overlay.addEventListener('click', closeNav);
+
     nav.querySelectorAll('a').forEach(function (link) {
-      link.addEventListener('click', function () {
-        nav.classList.remove('is-open');
-      });
+      link.addEventListener('click', closeNav);
     });
   }
 
