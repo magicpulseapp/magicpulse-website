@@ -63,8 +63,9 @@ a:hover {
   position: sticky;
   top: 0;
   z-index: 100;
-  background: rgba(5, 5, 8, 0.9);
+  background: rgba(5, 5, 8, 0.95);
   backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   border-bottom: 1px solid var(--border);
 }
 
@@ -132,6 +133,10 @@ a:hover {
 }
 
 @media (max-width: 640px) {
+  .site-header {
+    background: var(--bg-deep);
+  }
+
   .nav {
     position: fixed;
     top: 0;
@@ -142,8 +147,9 @@ a:hover {
     flex-direction: column;
     align-items: stretch;
     padding: 4rem 1.5rem 1.5rem;
-    background: rgba(10, 10, 14, 0.98);
+    background: #0a0a0e;
     backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
     border-left: 1px solid var(--border);
     transform: translateX(100%);
     transition: transform 0.2s ease;
