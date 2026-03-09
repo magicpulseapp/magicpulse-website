@@ -135,20 +135,44 @@ a:hover {
 .menu-toggle {
   display: none;
   flex-direction: column;
-  gap: 5px;
-  padding: 8px;
-  background: none;
-  border: none;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--border);
+  border-radius: 50%;
   color: var(--text);
   cursor: pointer;
+  transition: background 0.2s, border-color 0.2s;
 }
 
 .menu-toggle span {
   display: block;
-  width: 22px;
+  width: 18px;
   height: 2px;
   background: currentColor;
   border-radius: 1px;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+body.nav-open .menu-toggle {
+  background: rgba(158, 89, 255, 0.2);
+  border-color: rgba(158, 89, 255, 0.45);
+}
+
+body.nav-open .menu-toggle span:nth-child(1) {
+  transform: translateY(6px) rotate(45deg);
+}
+
+body.nav-open .menu-toggle span:nth-child(2) {
+  opacity: 0;
+}
+
+body.nav-open .menu-toggle span:nth-child(3) {
+  transform: translateY(-6px) rotate(-45deg);
 }
 
 @media (max-width: 640px) {
@@ -158,30 +182,51 @@ a:hover {
 
   .nav {
     position: fixed;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    width: 260px;
-    max-width: 85vw;
+    left: 50%;
+    right: auto;
+    top: auto;
+    bottom: max(14px, env(safe-area-inset-bottom));
+    width: min(92vw, 360px);
+    max-width: 92vw;
+    max-height: 70vh;
+    overflow-y: auto;
     flex-direction: column;
     align-items: stretch;
-    padding: 4rem 1.5rem 1.5rem;
-    background: var(--bg-deep);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border-left: 1px solid var(--border);
-    transform: translateX(100%);
-    transition: transform 0.2s ease;
+    gap: 0.5rem;
+    padding: 1rem;
+    background: rgba(15, 10, 36, 0.92);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid var(--border);
+    border-radius: 24px;
+    box-shadow: 0 18px 50px rgba(0, 0, 0, 0.45);
+    transform: translate(-50%, 120%);
+    opacity: 0;
+    transition: transform 0.25s ease, opacity 0.2s ease;
     z-index: 200;
   }
 
   .nav.is-open {
-    transform: translateX(0);
+    transform: translate(-50%, 0);
+    opacity: 1;
   }
 
   .nav a {
-    padding: 0.75rem 0;
-    border-bottom: 1px solid var(--border);
+    display: block;
+    padding: 0.65rem 0.9rem;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: var(--radius-pill);
+    background: rgba(255, 255, 255, 0.04);
+    color: var(--text);
+  }
+
+  .nav a:active {
+    background: rgba(255, 255, 255, 0.08);
+  }
+
+  .nav .nav-cta {
+    text-align: center;
+    margin-top: 0.25rem;
   }
 
   .menu-toggle {
@@ -198,7 +243,9 @@ a:hover {
     display: none;
     position: fixed;
     inset: 0;
-    background: rgba(0, 0, 0, 0.4);
+    background: rgba(0, 0, 0, 0.55);
+    backdrop-filter: blur(2px);
+    -webkit-backdrop-filter: blur(2px);
     z-index: 199;
   }
 
