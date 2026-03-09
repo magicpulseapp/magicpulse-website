@@ -3,27 +3,26 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Magic Pulse — Live wait times at a glance. Park hours and weather for supported theme park resorts (Orlando, California, Tokyo, Paris)." />
-  <title>Magic Pulse — Live Wait Times at a Glance</title>
+  <meta name="description" content="Magic Pulse is a real-time theme park planning app with live wait times, weather, operating hours, and alerts." />
+  <title>Magic Pulse | Real-Time Theme Park Planning</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Source+Sans+3:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
   <header class="site-header">
-    <div class="header-inner">
-      <a href="index.html" class="logo">Magic Pulse</a>
-      <nav class="nav" aria-label="Main">
-        <a href="index.html#features">Features</a>
-        <a href="index.html#in-the-app">In the app</a>
-        <a href="index.html#parks">Parks</a>
-        <a href="index.html#pro">Pro</a>
-        <a href="index.html#faq">FAQ</a>
+    <div class="container nav-row">
+      <a href="index.html" class="brand">Magic Pulse</a>
+      <nav class="site-nav" aria-label="Primary">
+        <a href="#product">Product</a>
+        <a href="#how">How it works</a>
+        <a href="#pricing">Pricing</a>
+        <a href="#faq">FAQ</a>
         <a href="support.html">Support</a>
-        <a href="index.html#download" class="nav-cta">Get the app</a>
+        <a href="#download" class="btn btn-nav">Get App</a>
       </nav>
-      <button type="button" class="menu-toggle" aria-label="Open menu">
+      <button class="menu-btn" type="button" aria-label="Open menu">
         <span></span><span></span><span></span>
       </button>
     </div>
@@ -31,188 +30,191 @@
 
   <main>
     <section class="hero">
-      <div class="hero-bg" aria-hidden="true"></div>
-      <div class="hero-inner">
-        <p class="hero-badge">Live data • No server required</p>
-        <h1 class="hero-title">Your park,<br />in real time.</h1>
-        <p class="hero-lead">Live wait times at a glance. Park hours and weather for supported parks — all in one app. Plan smarter and ride more.</p>
-        <div class="hero-cta">
-          <a href="https://apps.apple.com/us/app/magic-pulse/id6759612612" class="btn btn-primary" target="_blank" rel="noopener noreferrer">
-            <span class="btn-icon" aria-hidden="true">↓</span>
-            App Store
-          </a>
-          <span class="btn btn-primary btn-coming-soon" aria-disabled="true">Google Play — Coming soon</span>
+      <div class="container hero-grid">
+        <div>
+          <p class="eyebrow">Independent planning app for major resorts</p>
+          <h1>Make faster decisions with live park data.</h1>
+          <p class="hero-copy">
+            Magic Pulse combines wait times, operating hours, weather, and alerts into one reliable
+            planning workflow for Orlando, California, Tokyo, and Paris.
+          </p>
+          <div class="hero-actions">
+            <a class="btn btn-primary" href="https://apps.apple.com/us/app/magic-pulse/id6759612612" target="_blank" rel="noopener noreferrer">Download on App Store</a>
+            <a class="btn btn-ghost" href="#product">See features</a>
+          </div>
+          <p class="micro">iOS available now. Android release in progress.</p>
         </div>
-        <p class="hero-note">Free to use. Pro unlocks alerts, widgets, Live Activity &amp; more — one-time or weekly.</p>
+        <aside class="hero-panel" aria-label="Live example panel">
+          <h2>Live wait snapshot</h2>
+          <p class="panel-sub">Sample attractions from Magic Kingdom</p>
+          <div id="live-waits" class="live-waits" aria-live="polite">
+            <p class="waits-loading">Loading live rides...</p>
+            <div class="waits-rows" hidden></div>
+            <p class="waits-error" hidden></p>
+          </div>
+        </aside>
       </div>
     </section>
 
-    <section id="features" class="section features">
-      <div class="container">
-        <p class="section-label">Features</p>
-        <h2 class="section-title">Everything you need at the parks</h2>
-        <p class="section-lead">Built for guests who want live data without the guesswork.</p>
-        <ul class="feature-grid">
-          <li class="feature-card feature-card--app">
-            <span class="feature-icon" aria-hidden="true">⏱</span>
-            <h3>Live wait times</h3>
-            <p>Real-time wait times with filters, watchlists, and trend history so you know when to go.</p>
-            <div id="live-waits" class="app-card-preview" aria-live="polite">
-              <p class="live-waits-loading">Loading live rides…</p>
-              <div class="live-waits-rows" hidden></div>
-              <p class="live-waits-error" hidden></p>
-            </div>
-          </li>
-          <li class="feature-card feature-card--app">
-            <span class="feature-icon" aria-hidden="true">🕐</span>
-            <h3>Hours & crowds</h3>
-            <p>Park hours, crowd insights, and simple forecasting to plan your day.</p>
-          </li>
-          <li class="feature-card feature-card--app">
-            <span class="feature-icon" aria-hidden="true">🌤</span>
-            <h3>Weather alerts</h3>
-            <p>Weather and section-level update timestamps so you’re never caught off guard.</p>
-          </li>
-          <li class="feature-card feature-card--app">
-            <span class="feature-icon" aria-hidden="true">🔔</span>
-            <h3>Low-wait alerts</h3>
-            <p>Get notified when wait times drop below your chosen threshold (Pro).</p>
-          </li>
-          <li class="feature-card feature-card--app">
-            <span class="feature-icon" aria-hidden="true">📱</span>
-            <h3>Widgets & offline</h3>
-            <p>Home screen widgets and cached data so you can check waits even without signal.</p>
-          </li>
-        </ul>
+    <section class="trust">
+      <div class="container trust-grid">
+        <article>
+          <h3>Data sources</h3>
+          <p>ThemeParks Wiki and Apple Weather (WeatherKit).</p>
+        </article>
+        <article>
+          <h3>Privacy approach</h3>
+          <p>Core preferences and watchlist data are stored on device.</p>
+        </article>
+        <article>
+          <h3>Coverage</h3>
+          <p>Four resort regions supported in one app.</p>
+        </article>
+        <article>
+          <h3>Support target</h3>
+          <p>Responses within 1-2 business days.</p>
+        </article>
       </div>
     </section>
 
-    <section id="in-the-app" class="section glossary">
+    <section id="product" class="section">
       <div class="container">
-        <p class="section-label">In the app</p>
-        <h2 class="section-title">Terms you’ll see in the app</h2>
-        <p class="section-lead">The same language Magic Pulse uses inside the app — so you know what to expect.</p>
-        <dl class="glossary-list">
-          <div class="glossary-item">
-            <dt class="glossary-term">Watchlist</dt>
-            <dd class="glossary-def">Your saved rides. Tap to add or remove; see wait times at a glance and get Low-wait alerts (Pro).</dd>
-          </div>
-          <div class="glossary-item">
-            <dt class="glossary-term">Low-wait alert</dt>
-            <dd class="glossary-def">A push notification when a ride on your watchlist drops below the wait time you set. Pro feature.</dd>
-          </div>
-          <div class="glossary-item">
-            <dt class="glossary-term">Live Activity</dt>
-            <dd class="glossary-def">Real-time wait times on your Lock Screen and in the Dynamic Island — no need to open the app. Pro.</dd>
-          </div>
-          <div class="glossary-item">
-            <dt class="glossary-term">Wait history</dt>
-            <dd class="glossary-def">Past wait times and trends for each attraction so you can spot patterns and plan better. Pro.</dd>
-          </div>
-          <div class="glossary-item">
-            <dt class="glossary-term">Likely-to-drop alert</dt>
-            <dd class="glossary-def">Notifies you when a ride’s wait is likely to decrease soon, based on history. Pro.</dd>
-          </div>
-          <div class="glossary-item">
-            <dt class="glossary-term">Siri & Shortcuts</dt>
-            <dd class="glossary-def">Ask Siri for wait times or add Magic Pulse actions to the Shortcuts app. Pro.</dd>
-          </div>
-        </dl>
-      </div>
-    </section>
-
-    <section id="parks" class="section parks">
-      <div class="container">
-        <p class="section-label">Resorts</p>
-        <h2 class="section-title">Four resorts, one app</h2>
-        <p class="section-lead">Orlando, California, Tokyo, and Paris.</p>
-        <ul class="parks-list">
-          <li>Orlando</li>
-          <li>California</li>
-          <li>Tokyo</li>
-          <li>Paris</li>
-        </ul>
-      </div>
-    </section>
-
-    <section id="pro" class="section pro">
-      <div class="container">
-        <p class="section-label">Pro</p>
-        <h2 class="section-title">What’s in Pro?</h2>
-        <p class="section-lead">Unlock more with a one-time lifetime purchase or a weekly subscription. Lifetime includes all future Pro features at no extra cost.</p>
-        <div class="pro-hero" aria-hidden="true">
-          <div class="pro-hero-icon">★</div>
-          <div class="pro-hero-text">
-            <h3>Pro features</h3>
-            <p>Watchlist, alerts, widgets & Live Activity</p>
-          </div>
+        <p class="eyebrow">Product</p>
+        <h2>Purpose-built for in-park planning</h2>
+        <p class="section-copy">Every feature is designed to reduce uncertainty and help you act faster.</p>
+        <div class="cards">
+          <article class="card">
+            <h3>Live waits</h3>
+            <p>Current standby waits with practical sorting and filtering controls.</p>
+          </article>
+          <article class="card">
+            <h3>Hours and status</h3>
+            <p>Open/close windows and operating context in one place.</p>
+          </article>
+          <article class="card">
+            <h3>Weather context</h3>
+            <p>Weather plus update timing for better short-term planning.</p>
+          </article>
+          <article class="card">
+            <h3>Smart alerts (Pro)</h3>
+            <p>Low-wait and likely-to-drop notifications for watchlist rides.</p>
+          </article>
+          <article class="card">
+            <h3>Live Activity (Pro)</h3>
+            <p>Glanceable ride updates on Lock Screen and Dynamic Island.</p>
+          </article>
+          <article class="card">
+            <h3>Siri + Shortcuts (Pro)</h3>
+            <p>Quick automations for common checks while moving through the park.</p>
+          </article>
         </div>
-        <ul class="pro-grid">
-          <li><span class="pro-check" aria-hidden="true">✓</span> Watchlist &amp; ride list summary</li>
-          <li><span class="pro-check" aria-hidden="true">✓</span> Low-wait &amp; likely-to-drop alerts</li>
-          <li><span class="pro-check" aria-hidden="true">✓</span> Home screen widgets</li>
-          <li><span class="pro-check" aria-hidden="true">✓</span> Live Activity (Lock Screen &amp; Dynamic Island)</li>
-          <li><span class="pro-check" aria-hidden="true">✓</span> Siri &amp; Shortcuts</li>
-          <li><span class="pro-check" aria-hidden="true">✓</span> Wait history &amp; predictions</li>
-          <li><span class="pro-check" aria-hidden="true">✓</span> High refresh rate (120&nbsp;Hz)</li>
-          <li><span class="pro-check" aria-hidden="true">✓</span> No ads &amp; accent color</li>
-          <li><span class="pro-check" aria-hidden="true">✓</span> All future Pro features (lifetime)</li>
-        </ul>
       </div>
     </section>
 
-    <section id="faq" class="section faq">
+    <section id="how" class="section section-alt">
       <div class="container">
-        <p class="section-label">FAQ</p>
-        <h2 class="section-title">FAQ</h2>
-        <p class="section-lead">Quick answers to common questions.</p>
-        <dl class="faq-list">
-          <div class="faq-item">
-            <dt class="faq-q">Which parks are supported?</dt>
-            <dd class="faq-a">Four theme park resorts in Orlando, California, Tokyo, and Paris. Wait times, hours, and park info for all four in one app.</dd>
-          </div>
-          <div class="faq-item">
-            <dt class="faq-q">Is Magic Pulse free?</dt>
-            <dd class="faq-a">Yes. The app is free to download and use. You get live wait times, park hours, weather, and basic features. Pro adds alerts, widgets, Live Activity, Siri, wait history, no ads, and more.</dd>
-          </div>
-          <div class="faq-item">
-            <dt class="faq-q">What’s the difference between free and Pro?</dt>
-            <dd class="faq-a">Free includes live wait times, park hours, weather, and core planning. Pro adds watchlist summaries, push alerts (low wait, ride closure, park opening, etc.), home screen widgets, Live Activity on Lock Screen, Siri &amp; Shortcuts, wait history and predictions, high refresh rate, no ads, and accent color. You can choose a one-time lifetime purchase or a weekly subscription; lifetime includes all future Pro features.</dd>
-          </div>
-          <div class="faq-item">
-            <dt class="faq-q">Where does wait time data come from?</dt>
-            <dd class="faq-a">Wait times and park hours are sourced from ThemeParks Wiki. Weather is provided by Apple Weather (WeatherKit). We don’t operate the parks; we surface live data so you can plan better.</dd>
-          </div>
-          <div class="faq-item">
-            <dt class="faq-q">Is Magic Pulse affiliated with the parks?</dt>
-            <dd class="faq-a">No. Magic Pulse is not affiliated with, endorsed by, or sponsored by any park operator. It’s an independent app that uses publicly available park data.</dd>
-          </div>
-        </dl>
+        <p class="eyebrow">How it works</p>
+        <h2>Three-step workflow</h2>
+        <ol class="steps">
+          <li>
+            <span>01</span>
+            <h3>Collect</h3>
+            <p>Fetches live waits, park hours, and weather from trusted providers.</p>
+          </li>
+          <li>
+            <span>02</span>
+            <h3>Prioritize</h3>
+            <p>Sorts decision-critical information into one concise mobile interface.</p>
+          </li>
+          <li>
+            <span>03</span>
+            <h3>Act</h3>
+            <p>Use watchlists and alerts to time rides and reduce downtime.</p>
+          </li>
+        </ol>
+      </div>
+    </section>
+
+    <section id="pricing" class="section">
+      <div class="container">
+        <p class="eyebrow">Pricing</p>
+        <h2>Start free, upgrade when needed</h2>
+        <div class="pricing">
+          <article class="price">
+            <h3>Free</h3>
+            <p class="price-value">$0</p>
+            <ul>
+              <li>Live waits and park hours</li>
+              <li>Weather context</li>
+              <li>Core planning tools</li>
+            </ul>
+          </article>
+          <article class="price featured">
+            <h3>Pro Weekly</h3>
+            <p class="price-value">$0.99</p>
+            <ul>
+              <li>Alerts and watchlist automation</li>
+              <li>Live Activity and widgets</li>
+              <li>Siri and Shortcuts</li>
+            </ul>
+          </article>
+          <article class="price">
+            <h3>Pro Lifetime</h3>
+            <p class="price-value">$2.99</p>
+            <ul>
+              <li>All Pro capabilities</li>
+              <li>All future Pro updates</li>
+              <li>No recurring fee</li>
+            </ul>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="faq" class="section section-alt">
+      <div class="container">
+        <p class="eyebrow">FAQ</p>
+        <h2>Common questions</h2>
+        <div class="faq">
+          <article>
+            <h3>Is Magic Pulse affiliated with park operators?</h3>
+            <p>No. Magic Pulse is an independent app and is not endorsed by park operators.</p>
+          </article>
+          <article>
+            <h3>Where does wait data come from?</h3>
+            <p>Wait times and park hours are sourced from ThemeParks Wiki.</p>
+          </article>
+          <article>
+            <h3>Is the app free?</h3>
+            <p>Yes. Free includes core planning; Pro adds alerts, widgets, and automation.</p>
+          </article>
+        </div>
       </div>
     </section>
 
     <section id="download" class="section cta">
       <div class="container">
-        <p class="section-label">Download</p>
-        <h2 class="section-title">Ready to plan better?</h2>
-        <p class="section-lead">Download Magic Pulse on the App Store. Android coming soon. Free to start. Pro (lifetime or weekly) adds alerts, widgets, Live Activity, and more — lifetime includes all future Pro features.</p>
-        <div class="cta-buttons">
-          <a href="https://apps.apple.com/us/app/magic-pulse/id6759612612" class="btn btn-primary btn-large" target="_blank" rel="noopener noreferrer">
-            <span class="btn-icon" aria-hidden="true">↓</span>
-            App Store
-          </a>
-          <span class="btn btn-primary btn-large btn-coming-soon" aria-disabled="true">Google Play — Coming soon</span>
+        <p class="eyebrow">Get started</p>
+        <h2>Plan with confidence using live park intelligence.</h2>
+        <p class="section-copy">Download Magic Pulse on iOS and start with the free tier today.</p>
+        <div class="hero-actions">
+          <a class="btn btn-primary" href="https://apps.apple.com/us/app/magic-pulse/id6759612612" target="_blank" rel="noopener noreferrer">Download on App Store</a>
+          <a class="btn btn-ghost" href="support.html">Contact support</a>
         </div>
-        <p class="cta-note">Available on iOS. Android coming soon. Not affiliated with any park operator.</p>
-        <p class="cta-support"><a href="support.html">Need help? Contact support</a></p>
       </div>
     </section>
   </main>
 
   <footer class="site-footer">
-    <div class="container">
-      <p class="footer-brand">Magic Pulse</p>
-      <p class="footer-legal">Magic Pulse is not affiliated with any park operator. Wait times and park hours from <a href="https://themeparks.wiki" target="_blank" rel="noopener noreferrer">ThemeParks Wiki</a>. Weather data by <a href="https://weather.apple.com" target="_blank" rel="noopener noreferrer">Apple Weather</a>; <a href="https://developer.apple.com/weatherkit/data-source-attribution/" target="_blank" rel="noopener noreferrer">data sources</a>. <a href="privacy.html">Privacy Policy</a> · <a href="https://www.apple.com/legal/internet-services/itunes/dev/stdeula/" target="_blank" rel="noopener noreferrer">Terms of Use (EULA)</a> · <a href="support.html">Support</a></p>
+    <div class="container footer-grid">
+      <p class="brand">Magic Pulse</p>
+      <p>
+        Wait and park data from <a href="https://themeparks.wiki" target="_blank" rel="noopener noreferrer">ThemeParks Wiki</a>.
+        Weather by <a href="https://weather.apple.com" target="_blank" rel="noopener noreferrer">Apple Weather</a>.
+        <a href="privacy.html">Privacy Policy</a> ·
+        <a href="https://www.apple.com/legal/internet-services/itunes/dev/stdeula/" target="_blank" rel="noopener noreferrer">Terms</a> ·
+        <a href="support.html">Support</a>
+      </p>
     </div>
   </footer>
 

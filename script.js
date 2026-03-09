@@ -1,95 +1,108 @@
 (function () {
-  var menuToggle = document.querySelector('.menu-toggle');
-  var nav = document.querySelector('.nav');
+  var menuBtn = document.querySelector('.menu-btn');
+  var nav = document.querySelector('.site-nav');
 
-  if (menuToggle && nav) {
+  if (menuBtn && nav) {
     var overlay = document.createElement('div');
     overlay.className = 'nav-overlay';
     overlay.setAttribute('aria-hidden', 'true');
     document.body.appendChild(overlay);
 
-    function closeNav() {
+    function closeMenu() {
       nav.classList.remove('is-open');
       document.body.classList.remove('nav-open');
-      menuToggle.setAttribute('aria-label', 'Open menu');
+      menuBtn.setAttribute('aria-label', 'Open menu');
     }
 
-    function openNav() {
+    function openMenu() {
       nav.classList.add('is-open');
       document.body.classList.add('nav-open');
-      menuToggle.setAttribute('aria-label', 'Close menu');
+      menuBtn.setAttribute('aria-label', 'Close menu');
     }
 
-    menuToggle.addEventListener('click', function () {
-      if (nav.classList.contains('is-open')) {
-        closeNav();
-      } else {
-        openNav();
-      }
+    menuBtn.addEventListener('click', function () {
+      if (nav.classList.contains('is-open')) closeMenu();
+      else openMenu();
     });
 
-    overlay.addEventListener('click', closeNav);
+    overlay.addEventListener('click', closeMenu);
 
     nav.querySelectorAll('a').forEach(function (link) {
-      link.addEventListener('click', closeNav);
+      link.addEventListener('click', closeMenu);
     });
   }
 
-  // Live wait times from ThemeParks Wiki API (Magic Kingdom, Orlando)
-  var liveWaitsEl = document.getElementById('live-waits');
-  if (liveWaitsEl) {
-    var loadingEl = liveWaitsEl.querySelector('.live-waits-loading');
-    var rowsEl = liveWaitsEl.querySelector('.live-waits-rows');
-    var errorEl = liveWaitsEl.querySelector('.live-waits-error');
-    var apiUrl = 'https://api.themeparks.wiki/v1/entity/75ea578a-adc8-4116-a54d-dccb60765ef9/live';
+  var waitsRoot = document.getElementById('live-waits');
+  if (!waitsRoot) return;
 
-    function escapeHtml(s) {
-      var div = document.createElement('div');
-      div.textContent = s;
-      return div.innerHTML;
+  var loading = waitsRoot.querySelector('.waits-loading');
+  var rows = waitsRoot.querySelector('.waits-rows');
+  var error = waitsRoot.querySelector('.waits-error');
+  var apiUrl = 'https://api.themeparks.wiki/v1/entity/75ea578a-adc8-4116-a54d-dccb60765ef9/live';
+
+  function escapeHtml(str) {
+    var div = document.createElement('div');
+    div.textContent = str;
+    return div.innerHTML;
+  }
+
+  function render(list) {
+    if (!rows) return;
+    rows.innerHTML = list
+      .map(function (item) {
+        var wait = item.waitTime != null ? item.waitTime + ' min' : '-';
+        return '<div class="waits-row"><span>' + escapeHtml(item.name) + '</span><span class="value">' + wait + '</span></div>';
+      })
+      .join('');
+    rows.hidden = false;
+  }
+
+  function showError(message) {
+    if (loading) loading.hidden = true;
+    if (rows) {
+      rows.hidden = true;
+      rows.innerHTML = '';
     }
+    if (error) {
+      error.textContent = message || 'Could not load live wait times.';
+      error.hidden = false;
+    }
+  }
 
-    function renderRows(attractions) {
-      if (!attractions.length) {
-        if (loadingEl) loadingEl.hidden = false;
-        if (rowsEl) { rowsEl.hidden = true; rowsEl.innerHTML = ''; }
-        if (errorEl) { errorEl.hidden = true; }
+  fetch(apiUrl)
+    .then(function (res) {
+      if (!res.ok) throw new Error('Request failed');
+      return res.json();
+    })
+    .then(function (payload) {
+      var items = (payload.liveData || [])
+        .filter(function (entry) {
+          return (
+            entry.entityType === 'ATTRACTION' &&
+            entry.status === 'OPERATING' &&
+            entry.queue &&
+            entry.queue.STANDBY &&
+            typeof entry.queue.STANDBY.waitTime === 'number'
+          );
+        })
+        .map(function (entry) {
+          return { name: entry.name, waitTime: entry.queue.STANDBY.waitTime };
+        })
+        .sort(function (a, b) {
+          return a.waitTime - b.waitTime;
+        })
+        .slice(0, 6);
+
+      if (!items.length) {
+        showError('Live data unavailable right now.');
         return;
       }
-      if (loadingEl) loadingEl.hidden = true;
-      if (errorEl) errorEl.hidden = true;
-      rowsEl.innerHTML = attractions.map(function (a) {
-        var wait = a.waitTime != null ? a.waitTime + ' min' : '—';
-        return '<span class="app-card-row"><span class="app-card-row-name">' + escapeHtml(a.name) + '</span><span class="app-card-row-value">' + wait + '</span></span>';
-      }).join('');
-      rowsEl.hidden = false;
-    }
 
-    function showError(msg) {
-      if (loadingEl) loadingEl.hidden = true;
-      if (rowsEl) { rowsEl.hidden = true; rowsEl.innerHTML = ''; }
-      if (errorEl) { errorEl.textContent = msg || 'Could not load live waits.'; errorEl.hidden = false; }
-    }
-
-    fetch(apiUrl)
-      .then(function (res) { if (!res.ok) throw new Error(); return res.json(); })
-      .then(function (data) {
-        var popularNames = ['Space Mountain', 'Big Thunder Mountain', 'Haunted Mansion', 'Splash Mountain', 'Seven Dwarfs', 'Peter Pan', 'Thunder Mountain'];
-        var operating = (data.liveData || [])
-          .filter(function (e) {
-            return e.entityType === 'ATTRACTION' && e.status === 'OPERATING' && e.queue && e.queue.STANDBY && typeof e.queue.STANDBY.waitTime === 'number';
-          })
-          .map(function (e) { return { name: e.name, waitTime: e.queue.STANDBY.waitTime }; });
-        var popular = operating.filter(function (a) {
-          return popularNames.some(function (p) { return a.name.indexOf(p) !== -1; });
-        }).sort(function (a, b) { return a.waitTime - b.waitTime; });
-        var rest = operating.filter(function (a) {
-          return !popularNames.some(function (p) { return a.name.indexOf(p) !== -1; });
-        }).sort(function (a, b) { return a.waitTime - b.waitTime; });
-        var list = popular.slice(0, 3);
-        while (list.length < 3 && rest.length) list.push(rest.shift());
-        renderRows(list);
-      })
-      .catch(function () { showError('Live data unavailable. Check back soon.'); });
-  }
+      if (loading) loading.hidden = true;
+      if (error) error.hidden = true;
+      render(items);
+    })
+    .catch(function () {
+      showError('Live data unavailable right now.');
+    });
 })();
