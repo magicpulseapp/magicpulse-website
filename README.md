@@ -18,7 +18,7 @@ A standalone marketing landing page for the MagicPulse iOS app. Lives in the `la
 
 ## Customize
 
-- **App Store link:** In `index.html`, set the `href` of the “Download on the App Store” buttons to your real App Store URL (e.g. `https://apps.apple.com/app/idXXXXXXXXX`).
+- **App Store link:** The App Store buttons in `index.html` point to `https://apps.apple.com/us/app/magic-pulse/id6759612612`.
 - **Copy/features:** Edit `index.html` to change headlines, feature text, or add screenshots.
 - **Colors/fonts:** Adjust `:root` in `styles.css` and swap Google Fonts in the `<link>` in `index.html` if desired.
 
