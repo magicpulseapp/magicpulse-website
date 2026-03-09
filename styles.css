@@ -1,19 +1,26 @@
-/* MagicPulse Landing — theme aligned with MagicPulse app (AppBackground, AccentChoice, HUDTokens) */
+/* MagicPulse Landing — matches iOS app (AppBackground, HUDTokens, ParkHeroCard) */
 :root {
-  --bg-deep: #050508;
-  --bg-card: rgba(255, 255, 255, 0.06);
+  /* iOS AppBackground gradient: deep purple base */
+  --bg-deep: #0f0a24;
+  --bg-deep-end: #140e2e;
+  /* Card fill like HUDCard: dark with subtle highlight */
+  --bg-card: linear-gradient(135deg, rgba(255,255,255,0.06) 0%, rgba(0,0,0,0.18) 100%);
+  --bg-card-solid: rgba(0, 0, 0, 0.18);
   --bg-elevated: rgba(255, 255, 255, 0.08);
-  --text: #e8ecf0;
+  --text: #f2f2f7;
   --text-muted: rgba(255, 255, 255, 0.6);
-  --accent: #8c59f2;
-  --accent-dim: #7b4ae0;
-  --accent-glow: rgba(140, 89, 242, 0.4);
-  --accent-glow-soft: rgba(140, 89, 242, 0.08);
+  /* iOS default accent: rgb(0.62, 0.35, 1.0) */
+  --accent: #9e59ff;
+  --accent-dim: #8b4aeb;
+  --accent-glow: rgba(158, 89, 255, 0.45);
+  --accent-glow-mid: rgba(158, 89, 255, 0.12);
+  --accent-glow-soft: rgba(158, 89, 255, 0.08);
   --border: rgba(255, 255, 255, 0.12);
-  --font-head: 'Outfit', system-ui, -apple-system, sans-serif;
-  --font-body: 'Source Sans 3', system-ui, -apple-system, sans-serif;
+  --font-head: 'Outfit', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  --font-body: 'Source Sans 3', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
   --radius: 12px;
   --radius-lg: 22px;
+  --radius-pill: 9999px;
   --space: 1.25rem;
   --container: min(90vw, 720px);
 }
@@ -34,10 +41,11 @@ body {
   font-size: 1.0625rem;
   line-height: 1.6;
   color: var(--text);
+  /* iOS AppBackground: linear base + radial accent from top-left + subtle top highlight */
   background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.04) 0%, transparent 50%),
-    radial-gradient(ellipse 120% 80% at 0% 0%, var(--accent-glow) 0%, var(--accent-glow-soft) 35%, transparent 55%),
-    var(--bg-deep);
+    linear-gradient(180deg, rgba(255, 255, 255, 0.05) 0%, transparent 40%),
+    radial-gradient(ellipse 120% 100% at 0% 0%, var(--accent-glow) 0%, var(--accent-glow-mid) 25%, transparent 55%),
+    linear-gradient(180deg, var(--bg-deep) 0%, var(--bg-deep-end) 100%);
   min-height: 100vh;
   -webkit-font-smoothing: antialiased;
 }
@@ -63,9 +71,9 @@ a:hover {
   position: sticky;
   top: 0;
   z-index: 100;
-  background: rgba(5, 5, 8, 0.95);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  background: rgba(15, 10, 36, 0.92);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
   border-bottom: 1px solid var(--border);
 }
 
@@ -110,7 +118,18 @@ a:hover {
 }
 
 .nav-cta {
-  color: var(--accent) !important;
+  color: #fff !important;
+  background: var(--accent);
+  padding: 0.45rem 1rem;
+  border-radius: var(--radius-pill);
+  font-weight: 700;
+  transition: background 0.2s, box-shadow 0.2s;
+}
+
+.nav-cta:hover {
+  background: var(--accent-dim);
+  text-decoration: none;
+  box-shadow: 0 2px 12px rgba(158, 89, 255, 0.35);
 }
 
 .menu-toggle {
@@ -134,7 +153,7 @@ a:hover {
 
 @media (max-width: 640px) {
   .site-header {
-    background: var(--bg-deep);
+    background: rgba(15, 10, 36, 0.98);
   }
 
   .nav {
@@ -147,7 +166,7 @@ a:hover {
     flex-direction: column;
     align-items: stretch;
     padding: 4rem 1.5rem 1.5rem;
-    background: #0a0a0e;
+    background: var(--bg-deep);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
     border-left: 1px solid var(--border);
@@ -202,9 +221,9 @@ a:hover {
   position: absolute;
   inset: 0;
   background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.04) 0%, transparent 45%),
-    radial-gradient(ellipse 100% 70% at 0% 0%, var(--accent-glow) 0%, var(--accent-glow-soft) 40%, transparent 55%),
-    var(--bg-deep);
+    linear-gradient(180deg, rgba(255, 255, 255, 0.05) 0%, transparent 45%),
+    radial-gradient(ellipse 100% 80% at 0% 0%, var(--accent-glow) 0%, var(--accent-glow-mid) 30%, transparent 55%),
+    linear-gradient(180deg, var(--bg-deep) 0%, var(--bg-deep-end) 100%);
 }
 
 .hero-inner {
@@ -217,13 +236,13 @@ a:hover {
 .hero-badge {
   display: inline-block;
   margin-bottom: 1rem;
-  padding: 0.35rem 0.85rem;
+  padding: 0.4rem 0.9rem;
   font-size: 0.8rem;
   font-weight: 600;
   color: var(--accent);
-  background: rgba(140, 89, 242, 0.12);
-  border-radius: 999px;
-  border: 1px solid rgba(140, 89, 242, 0.25);
+  background: rgba(158, 89, 255, 0.15);
+  border-radius: var(--radius-pill);
+  border: 1px solid rgba(158, 89, 255, 0.3);
 }
 
 .hero-title {
@@ -256,7 +275,7 @@ a:hover {
   margin: 0;
 }
 
-/* Buttons */
+/* Buttons — pill-shaped like iOS app */
 .btn {
   display: inline-flex;
   align-items: center;
@@ -268,10 +287,10 @@ a:hover {
   color: #fff;
   background: var(--accent);
   border: none;
-  border-radius: var(--radius);
+  border-radius: var(--radius-pill);
   cursor: pointer;
   text-decoration: none;
-  transition: background 0.2s, transform 0.15s;
+  transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
 }
 
 .btn:hover {
@@ -279,6 +298,7 @@ a:hover {
   text-decoration: none;
   color: #fff;
   transform: translateY(-1px);
+  box-shadow: 0 4px 16px rgba(158, 89, 255, 0.35);
 }
 
 .btn-icon {
@@ -314,6 +334,16 @@ a:hover {
   color: var(--text);
 }
 
+.section-label {
+  font-family: var(--font-head);
+  font-weight: 700;
+  font-size: 0.75rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin: 0 0 0.5rem;
+}
+
 .section-lead {
   color: var(--text-muted);
   margin: 0 0 2.5rem;
@@ -335,16 +365,17 @@ a:hover {
 }
 
 .feature-card {
-  padding: 1.5rem;
-  background: var(--bg-elevated);
+  padding: 1.25rem 1.35rem;
+  background: var(--bg-card);
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   transition: border-color 0.2s, box-shadow 0.2s;
 }
 
 .feature-card:hover {
-  border-color: rgba(140, 89, 242, 0.35);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+  border-color: rgba(158, 89, 255, 0.35);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(158, 89, 255, 0.1);
 }
 
 .feature-icon {
@@ -368,11 +399,13 @@ a:hover {
   line-height: 1.55;
 }
 
-/* App-style feature cards — match in-app HUD/card look */
+/* App-style feature cards — match HUDCard (22px radius, gradient fill) */
 .feature-card--app {
   padding: 1.25rem 1.35rem;
   background: var(--bg-card);
-  border-radius: var(--radius);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
 }
 
 .feature-card--app .feature-icon {
@@ -466,28 +499,75 @@ a:hover {
   line-height: 1.5;
 }
 
-/* Parks */
+/* Parks — pill chips like iOS app tab bar (MK, EP, HS, AK) */
 .parks-list {
   list-style: none;
   margin: 0;
   padding: 0;
   display: flex;
   flex-wrap: wrap;
-  gap: 0.75rem 1.5rem;
+  gap: 0.6rem 1rem;
 }
 
 .parks-list li {
-  padding: 0.6rem 1.1rem;
+  padding: 0.5rem 1rem;
+  font-size: 0.9rem;
   font-weight: 600;
-  color: var(--text);
-  background: var(--bg-elevated);
+  color: var(--text-muted);
+  background: rgba(255, 255, 255, 0.06);
   border: 1px solid var(--border);
-  border-radius: var(--radius);
+  border-radius: var(--radius-pill);
+  transition: color 0.2s, background 0.2s, border-color 0.2s, box-shadow 0.2s;
 }
 
-/* Pro */
+.parks-list li:hover {
+  color: var(--text);
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.18);
+}
+
+/* Pro — iOS Settings-style “Pro features” card + list */
 .pro {
-  background: var(--bg-deep);
+  background: transparent;
+}
+
+.pro-hero {
+  margin-bottom: 2rem;
+  padding: 1.25rem 1.5rem;
+  background: linear-gradient(180deg, rgba(158, 89, 255, 0.35) 0%, rgba(158, 89, 255, 0.15) 50%, rgba(100, 50, 180, 0.2) 100%);
+  border: 1px solid rgba(158, 89, 255, 0.3);
+  border-radius: var(--radius-lg);
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+}
+
+.pro-hero-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+  flex-shrink: 0;
+}
+
+.pro-hero-text h3 {
+  font-family: var(--font-head);
+  font-weight: 700;
+  font-size: 1.1rem;
+  margin: 0 0 0.2rem;
+  color: var(--text);
+}
+
+.pro-hero-text p {
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  line-height: 1.4;
 }
 
 .pro-grid {
@@ -517,7 +597,7 @@ a:hover {
   font-size: 0.85em;
   font-weight: 700;
   color: var(--accent);
-  background: rgba(140, 89, 242, 0.18);
+  background: rgba(158, 89, 255, 0.2);
   border-radius: 50%;
 }
 
@@ -677,9 +757,15 @@ a:hover {
   box-shadow: 0 0 0 3px var(--accent-glow-soft);
 }
 
+.form-input:focus-visible {
+  outline: none;
+}
+
 .form-input:hover {
   border-color: rgba(255, 255, 255, 0.2);
 }
+
+/* Remove duplicate focus-visible if any */
 
 .form-select {
   cursor: pointer;
