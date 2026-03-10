@@ -504,7 +504,7 @@ h3 {
   }
 }
 
-@media (max-width: 760px) {
+@media (max-width: 900px) {
   .menu-btn {
     display: inline-flex;
   }

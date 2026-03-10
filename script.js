@@ -1,6 +1,6 @@
 (function () {
-  var menuBtn = document.querySelector('.menu-btn');
-  var nav = document.querySelector('.site-nav');
+  var menuBtn = document.querySelector('.menu-btn') || document.querySelector('.menu-toggle');
+  var nav = document.querySelector('.site-nav') || document.querySelector('.nav');
 
   if (menuBtn && nav) {
     var overlay = document.createElement('div');
@@ -27,8 +27,12 @@
 
     overlay.addEventListener('click', closeMenu);
 
-    nav.querySelectorAll('a').forEach(function (link) {
+    Array.prototype.forEach.call(nav.querySelectorAll('a'), function (link) {
       link.addEventListener('click', closeMenu);
+    });
+
+    document.addEventListener('keydown', function (event) {
+      if (event.key === 'Escape') closeMenu();
     });
   }
 
