@@ -54,10 +54,15 @@
   var waitsRoot = document.getElementById('live-waits');
   if (!waitsRoot) return;
 
+  // MagicPulseAPI: set your hosted API base URL (and optional token if required)
+  var MAGICPULSE_API_BASE = window.MAGICPULSE_API_BASE || 'https://your-magicpulse-api.com';
+  var MAGICPULSE_API_TOKEN = window.MAGICPULSE_API_TOKEN || '';
+  var MAGICPULSE_PARK_ID = 6; // 6 = Magic Kingdom (MK)
+
   var loading = waitsRoot.querySelector('.waits-loading');
   var rows = waitsRoot.querySelector('.waits-rows');
   var error = waitsRoot.querySelector('.waits-error');
-  var apiUrl = 'https://api.themeparks.wiki/v1/entity/75ea578a-adc8-4116-a54d-dccb60765ef9/live';
+  var apiUrl = MAGICPULSE_API_BASE.replace(/\/$/, '') + '/api/parks/' + MAGICPULSE_PARK_ID + '/snapshot';
 
   function escapeHtml(str) {
     var div = document.createElement('div');
@@ -94,29 +99,33 @@
     }
   }
 
-  fetch(apiUrl)
+  var fetchOpts = { method: 'GET' };
+  if (MAGICPULSE_API_TOKEN) {
+    fetchOpts.headers = { Authorization: 'Bearer ' + MAGICPULSE_API_TOKEN };
+  }
+
+  fetch(apiUrl, fetchOpts)
     .then(function (res) {
-      if (!res.ok) throw new Error('Request failed');
+      if (!res.ok) throw new Error(res.status === 401 ? 'API token required' : 'Request failed');
       return res.json();
     })
     .then(function (payload) {
-      var items = (payload.liveData || [])
-        .filter(function (entry) {
-          return (
-            entry.entityType === 'ATTRACTION' &&
-            entry.status === 'OPERATING' &&
-            entry.queue &&
-            entry.queue.STANDBY &&
-            typeof entry.queue.STANDBY.waitTime === 'number'
-          );
-        })
-        .map(function (entry) {
-          return { name: entry.name, waitTime: entry.queue.STANDBY.waitTime };
+      var snapshot = payload.snapshot;
+      if (!snapshot || !Array.isArray(snapshot.rides)) {
+        showError('Live data unavailable right now.');
+        return;
+      }
+      var items = snapshot.rides
+        .filter(function (ride) {
+          return ride.is_open && ride.wait != null;
         })
         .sort(function (a, b) {
-          return a.waitTime - b.waitTime;
+          return (a.wait || 0) - (b.wait || 0);
         })
-        .slice(0, 6);
+        .slice(0, 6)
+        .map(function (ride) {
+          return { name: ride.name, waitTime: ride.wait };
+        });
 
       if (!items.length) {
         showError('Live data unavailable right now.');
@@ -127,7 +136,7 @@
       if (error) error.hidden = true;
       render(items);
     })
-    .catch(function () {
-      showError('Live data unavailable right now.');
+    .catch(function (err) {
+      showError(err && err.message ? err.message : 'Live data unavailable right now.');
     });
 })();
