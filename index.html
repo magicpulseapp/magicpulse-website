@@ -220,10 +220,9 @@
     </div>
   </footer>
 
-  <!-- Set your MagicPulseAPI base URL (and optional token) before loading the main script -->
+  <!-- When the site is served from the same server as the API, use '' (same-origin). For a separate HTTPS host, set the full API URL (must be HTTPS). -->
   <script>
-    window.MAGICPULSE_API_BASE = 'http://67.82.24.117:4100';
-    // window.MAGICPULSE_API_TOKEN = ''; // required if your API uses Bearer auth for /api/parks/:parkId/snapshot
+    window.MAGICPULSE_API_BASE = ''; // same-origin when served from API server
   </script>
   <script src="script.js"></script>
 </body>
