@@ -1,4 +1,19 @@
 (function () {
+  // Scroll reveal: add .revealed when elements enter viewport
+  var revealObserver = new IntersectionObserver(
+    function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('revealed');
+        }
+      });
+    },
+    { rootMargin: '0px 0px -8% 0px', threshold: 0 }
+  );
+  document.querySelectorAll('.reveal, .section, .section-alt').forEach(function (el) {
+    revealObserver.observe(el);
+  });
+
   var menuBtn = document.querySelector('.menu-btn') || document.querySelector('.menu-toggle');
   var nav = document.querySelector('.site-nav') || document.querySelector('.nav');
 
@@ -50,6 +65,11 @@
     return div.innerHTML;
   }
 
+  function setUpdatedLabel() {
+    var el = document.getElementById('live-updated');
+    if (el) el.textContent = 'Updated just now';
+  }
+
   function render(list) {
     if (!rows) return;
     rows.innerHTML = list
@@ -59,6 +79,7 @@
       })
       .join('');
     rows.hidden = false;
+    setUpdatedLabel();
   }
 
   function showError(message) {

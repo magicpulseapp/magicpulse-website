@@ -13,7 +13,7 @@
 <body>
   <header class="site-header">
     <div class="container nav-row">
-      <a href="index.html" class="brand">Magic Pulse</a>
+      <a href="index.html" class="brand"><span class="brand-pulse" aria-hidden="true"></span>Magic Pulse</a>
       <nav class="site-nav" aria-label="Primary">
         <a href="#product">Product</a>
         <a href="#how">How it works</a>
@@ -32,21 +32,23 @@
     <section class="hero">
       <div class="container hero-grid">
         <div>
-          <p class="eyebrow">Independent planning app for major resorts</p>
-          <h1>Make faster decisions with live park data.</h1>
-          <p class="hero-copy">
-            Magic Pulse combines wait times, operating hours, weather, and alerts into one reliable
-            planning workflow for Orlando, California, Tokyo, and Paris.
+          <p class="eyebrow reveal reveal-1">Live data. No guesswork.</p>
+          <h1 class="reveal reveal-2">Your next move, in real time.</h1>
+          <p class="hero-copy reveal reveal-3">
+            Wait times, hours, and weather for Orlando, California, Tokyo, and Paris—one app, one tap.
           </p>
-          <div class="hero-actions">
+          <div class="hero-actions reveal reveal-4">
             <a class="btn btn-primary" href="https://apps.apple.com/us/app/magic-pulse/id6759612612" target="_blank" rel="noopener noreferrer">Download on App Store</a>
             <a class="btn btn-ghost" href="#product">See features</a>
           </div>
           <p class="micro">iOS available now. Android release in progress.</p>
         </div>
-        <aside class="hero-panel" aria-label="Live example panel">
-          <h2>Live wait snapshot</h2>
-          <p class="panel-sub">Sample attractions from Magic Kingdom</p>
+        <aside class="hero-panel reveal reveal-5" aria-label="Live example panel">
+          <div class="panel-head">
+            <h2>Live wait snapshot</h2>
+            <span class="live-badge"><span class="live-dot"></span>Live</span>
+          </div>
+          <p class="panel-sub">Magic Kingdom · <span id="live-updated">—</span></p>
           <div id="live-waits" class="live-waits" aria-live="polite">
             <p class="waits-loading">Loading live rides...</p>
             <div class="waits-rows" hidden></div>
@@ -58,19 +60,19 @@
 
     <section class="trust">
       <div class="container trust-grid">
-        <article>
+        <article class="reveal reveal-1">
           <h3>Data sources</h3>
           <p>ThemeParks Wiki and Apple Weather (WeatherKit).</p>
         </article>
-        <article>
+        <article class="reveal reveal-2">
           <h3>Privacy approach</h3>
           <p>Core preferences and watchlist data are stored on device.</p>
         </article>
-        <article>
+        <article class="reveal reveal-3">
           <h3>Coverage</h3>
           <p>Four resort regions supported in one app.</p>
         </article>
-        <article>
+        <article class="reveal reveal-4">
           <h3>Support target</h3>
           <p>Responses within 1-2 business days.</p>
         </article>
