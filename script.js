@@ -62,7 +62,20 @@
   var loading = waitsRoot.querySelector('.waits-loading');
   var rows = waitsRoot.querySelector('.waits-rows');
   var error = waitsRoot.querySelector('.waits-error');
-  var apiUrl = MAGICPULSE_API_BASE.replace(/\/$/, '') + '/api/parks/' + MAGICPULSE_PARK_ID + '/snapshot';
+  var apiUrl = MAGICPULSE_API_BASE.replace(/\/$/, '') + '/api/parks/public/' + MAGICPULSE_PARK_ID + '/snapshot';
+
+  function getFetchErrorMessage(err) {
+    var msg = err && err.message ? err.message : '';
+    if (msg.indexOf('fetch') !== -1 || msg === 'Failed to fetch') {
+      var apiIsHttp = apiUrl.indexOf('http://') === 0;
+      var pageIsHttps = typeof location !== 'undefined' && location.protocol === 'https:';
+      if (pageIsHttps && apiIsHttp) {
+        return 'API unreachable (HTTPS page cannot call HTTP API). Use HTTPS for the API or a same-origin proxy.';
+      }
+      return 'Could not reach the API. Check that it’s running and reachable, and that CORS is enabled.';
+    }
+    return msg || 'Could not load live wait times.';
+  }
 
   function escapeHtml(str) {
     var div = document.createElement('div');
@@ -137,6 +150,6 @@
       render(items);
     })
     .catch(function (err) {
-      showError(err && err.message ? err.message : 'Live data unavailable right now.');
+      showError(getFetchErrorMessage(err));
     });
 })();
