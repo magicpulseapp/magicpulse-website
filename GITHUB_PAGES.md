@@ -64,7 +64,50 @@ Good if you want the site at `https://YOUR_USERNAME.github.io/MagicPulse/` and k
 
 ---
 
+## Custom domain
+
+You can serve the site from your own domain (e.g. `https://magicpulse.app`) instead of `*.github.io`.
+
+1. **Add the domain in GitHub**
+   - Repo → **Settings** → **Pages**
+   - Under **Custom domain**, enter your domain (e.g. `magicpulse.app` or `www.magicpulse.app`)
+   - Click **Save**. GitHub may show a DNS checklist.
+
+2. **Configure DNS at your domain registrar**
+
+   **GoDaddy**
+   - Sign in at [godaddy.com](https://www.godaddy.com) → **My Products** → click your domain → **DNS** (or **Manage DNS**).
+   - **Option A — Use `www` (e.g. www.yourdomain.com)** — recommended on GoDaddy:
+     - Click **Add** (or **Add Record**).
+     - **Type:** CNAME | **Name:** `www` | **Value:** `YOUR_USERNAME.github.io` (replace with your GitHub username).
+     - **TTL:** 600 or 1 Hour → **Save**.
+     - In GitHub Pages custom domain, enter `www.yourdomain.com`.
+   - **Option B — Use apex/root (e.g. yourdomain.com with no www):**
+     - Remove any existing **A** or **CNAME** records for the root (`@`) if they conflict.
+     - Add **four A records**: for **Name** use `@` (or leave blank for root). For **Value** use each GitHub IP, one record per IP:
+       - `185.199.108.153`
+       - `185.199.109.153`
+       - `185.199.110.153`
+       - `185.199.111.153`
+     - TTL: 600 or 1 Hour → **Save** each.
+     - In GitHub Pages custom domain, enter `yourdomain.com`.
+   - DNS can take from a few minutes up to 24–48 hours to propagate. You can check status in GitHub under **Settings** → **Pages** → Custom domain.
+
+   **Other registrars**
+   - **Apex domain** (e.g. `magicpulse.app`): Add **A records** to `185.199.108.153`, `185.199.109.153`, `185.199.110.153`, `185.199.111.153`. Or use **ALIAS** / **ANAME** to `YOUR_USERNAME.github.io` if supported.
+   - **Subdomain** (e.g. `www.magicpulse.app`): Add **CNAME** name `www`, value `YOUR_USERNAME.github.io`.
+
+3. **Enforce HTTPS**
+   - Back in **Settings** → **Pages**, enable **Enforce HTTPS** once DNS has propagated and GitHub has verified the domain (can take a few minutes to 24 hours).
+
+4. **Optional: CNAME file (for custom domain on a project site)**
+   - If you use a project site (e.g. `YOUR_USERNAME.github.io/magicpulse-website`) and add a custom domain, GitHub may ask you to add a file named `CNAME` in the repo root containing only your domain (e.g. `magicpulse.app`). Create the file, commit, and push.
+
+After DNS propagates, your site will be available at your custom domain over HTTPS. Use that URL (e.g. `https://magicpulse.app/privacy.html`) for App Store Connect and elsewhere.
+
+---
+
 ## After it’s live
 
-- Use the **exact** privacy URL in **App Store Connect** → App → App Information → **Privacy Policy URL** (e.g. `https://YOUR_USERNAME.github.io/magicpulse-website/privacy.html`). It must be **HTTPS**.
+- Use the **exact** privacy URL in **App Store Connect** → App → App Information → **Privacy Policy URL** (e.g. `https://YOUR_USERNAME.github.io/magicpulse-website/privacy.html` or `https://magicpulse.app/privacy.html`). It must be **HTTPS**.
 - To update the site later: edit the files, commit, and push to the same branch. Pages will redeploy in a couple of minutes.
