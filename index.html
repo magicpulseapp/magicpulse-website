@@ -55,7 +55,7 @@
             <h2>Live wait snapshot</h2>
             <span class="live-badge"><span class="live-dot"></span>Live</span>
           </div>
-          <p class="panel-sub">Magic Kingdom · <span id="live-updated">—</span></p>
+          <p class="panel-sub"><span id="live-park-name">Loading…</span> · <span id="live-updated">—</span></p>
           <div id="live-waits" class="live-waits" aria-live="polite">
             <p class="waits-loading">Loading live rides...</p>
             <div class="waits-rows" hidden></div>
@@ -227,9 +227,10 @@
     </div>
   </footer>
 
-  <!-- When the site is served from the same server as the API, use '' (same-origin). For a separate HTTPS host, set the full API URL (must be HTTPS). -->
+  <!-- MagicPulseAPI: ride data from GET /api/parks/public/:parkId/snapshot. '' = same origin when site is served from API (public/). For GitHub Pages use full HTTPS API URL. -->
   <script>
-    window.MAGICPULSE_API_BASE = ''; // same-origin when served from API server
+    window.MAGICPULSE_API_BASE = '';
+    // window.MAGICPULSE_PARK_ID = 6; // optional — see MagicPulseAPI src/constants/parks.ts
   </script>
   <script src="script.js"></script>
 </body>

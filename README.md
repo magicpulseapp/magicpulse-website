@@ -6,7 +6,7 @@ A standalone marketing landing page for the MagicPulse iOS app. Lives in the `la
 
 - **index.html** — Single-page layout: hero, features, parks, download CTA, footer
 - **styles.css** — Dark theme, responsive layout, Outfit + Source Sans 3
-- **script.js** — Mobile menu toggle
+- **script.js** — Mobile menu, scroll reveal, **live waits from MagicPulseAPI**
 
 ## How to view
 
@@ -15,6 +15,26 @@ A standalone marketing landing page for the MagicPulse iOS app. Lives in the `la
    - Or use any static host (e.g. VS Code Live Server)
 
 2. **Production:** Upload the contents of `landing/` to any static host (Netlify, Vercel, GitHub Pages, S3, etc.). No build step required.
+
+## Live ride data (MagicPulseAPI)
+
+The hero “Live wait snapshot” loads from your backend:
+
+- **Endpoint:** `GET {API_BASE}/api/parks/public/{parkId}/snapshot`
+- **Response:** JSON with `snapshot.rides` (name, `wait`, `is_open`), `snapshot.park`, `snapshot.updated`, etc.
+- **Public route:** Defined in `MagicPulseAPI` at `src/routes/parks.ts` (`/public/:parkId/snapshot`, no auth).
+
+**Configure before `script.js` runs** (in `index.html`):
+
+```html
+<script>
+  window.MAGICPULSE_API_BASE = ''; // Same origin when the site is served from the API (see MagicPulseAPI `public/` folder)
+  // GitHub Pages (HTTPS): set your API’s HTTPS URL, e.g. window.MAGICPULSE_API_BASE = 'https://api.magicpulse.app';
+  // window.MAGICPULSE_PARK_ID = 6; // optional; default 6 = MK (see MagicPulseAPI `src/constants/parks.ts`)
+</script>
+```
+
+After changing the site, copy the static files into `MagicPulseAPI/public/` if you serve the landing page from the API.
 
 ## Customize
 

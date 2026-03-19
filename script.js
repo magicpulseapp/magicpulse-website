@@ -54,15 +54,27 @@
   var waitsRoot = document.getElementById('live-waits');
   if (!waitsRoot) return;
 
-  // MagicPulseAPI: set your hosted API base URL (and optional token if required)
-  var MAGICPULSE_API_BASE = window.MAGICPULSE_API_BASE || 'https://your-magicpulse-api.com';
+  // MagicPulseAPI — ride data from GET /api/parks/public/:parkId/snapshot (see MagicPulseAPI/src/routes/parks.ts)
+  // Set window.MAGICPULSE_API_BASE before this script: '' = same origin (site served from API), or full HTTPS URL for GitHub Pages.
+  var MAGICPULSE_API_BASE =
+    typeof window.MAGICPULSE_API_BASE === 'string' ? window.MAGICPULSE_API_BASE : '';
   var MAGICPULSE_API_TOKEN = window.MAGICPULSE_API_TOKEN || '';
-  var MAGICPULSE_PARK_ID = 6; // 6 = Magic Kingdom (MK)
+  var MAGICPULSE_PARK_ID = 6;
+  if (typeof window.MAGICPULSE_PARK_ID === 'number' && !Number.isNaN(window.MAGICPULSE_PARK_ID)) {
+    MAGICPULSE_PARK_ID = window.MAGICPULSE_PARK_ID;
+  } else if (window.MAGICPULSE_PARK_ID != null && String(window.MAGICPULSE_PARK_ID).trim() !== '') {
+    var parsed = parseInt(String(window.MAGICPULSE_PARK_ID), 10);
+    if (!Number.isNaN(parsed)) MAGICPULSE_PARK_ID = parsed;
+  }
 
   var loading = waitsRoot.querySelector('.waits-loading');
   var rows = waitsRoot.querySelector('.waits-rows');
   var error = waitsRoot.querySelector('.waits-error');
-  var apiUrl = MAGICPULSE_API_BASE.replace(/\/$/, '') + '/api/parks/public/' + MAGICPULSE_PARK_ID + '/snapshot';
+  var apiUrl =
+    (MAGICPULSE_API_BASE ? MAGICPULSE_API_BASE.replace(/\/$/, '') : '') +
+    '/api/parks/public/' +
+    MAGICPULSE_PARK_ID +
+    '/snapshot';
 
   function getFetchErrorMessage(err) {
     var msg = err && err.message ? err.message : '';
@@ -83,9 +95,18 @@
     return div.innerHTML;
   }
 
-  function setUpdatedLabel() {
-    var el = document.getElementById('live-updated');
-    if (el) el.textContent = 'Updated just now';
+  function setPanelMeta(snapshot) {
+    var parkEl = document.getElementById('live-park-name');
+    var updatedEl = document.getElementById('live-updated');
+    if (parkEl && snapshot && snapshot.park && snapshot.park.name) {
+      var icon = snapshot.park.icon ? snapshot.park.icon + ' ' : '';
+      parkEl.textContent = icon + snapshot.park.name;
+    }
+    if (updatedEl && snapshot && snapshot.updated) {
+      updatedEl.textContent = 'Updated ' + snapshot.updated;
+    } else if (updatedEl) {
+      updatedEl.textContent = 'Updated just now';
+    }
   }
 
   function render(list) {
@@ -97,7 +118,6 @@
       })
       .join('');
     rows.hidden = false;
-    setUpdatedLabel();
   }
 
   function showError(message) {
@@ -106,6 +126,10 @@
       rows.hidden = true;
       rows.innerHTML = '';
     }
+    var parkEl = document.getElementById('live-park-name');
+    var updatedEl = document.getElementById('live-updated');
+    if (parkEl) parkEl.textContent = '—';
+    if (updatedEl) updatedEl.textContent = '—';
     if (error) {
       error.textContent = message || 'Could not load live wait times.';
       error.hidden = false;
@@ -148,6 +172,7 @@
       if (loading) loading.hidden = true;
       if (error) error.hidden = true;
       render(items);
+      setPanelMeta(snapshot);
     })
     .catch(function (err) {
       showError(getFetchErrorMessage(err));
