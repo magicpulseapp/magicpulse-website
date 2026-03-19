@@ -28,8 +28,8 @@ The hero “Live wait snapshot” loads from your backend:
 
 ```html
 <script>
-  window.MAGICPULSE_API_BASE = ''; // Same origin when the site is served from the API (see MagicPulseAPI `public/` folder)
-  // GitHub Pages (HTTPS): set your API’s HTTPS URL, e.g. window.MAGICPULSE_API_BASE = 'https://api.magicpulse.app';
+  window.MAGICPULSE_API_BASE = 'https://api.magicpulse.app'; // production API (also works when the site is served from the API host)
+  // Same-origin only: window.MAGICPULSE_API_BASE = '';
   // window.MAGICPULSE_PARK_ID = 6; // optional; default 6 = MK (see MagicPulseAPI `src/constants/parks.ts`)
 </script>
 ```
