@@ -31,6 +31,7 @@ The hero “Live wait snapshot” loads from your backend:
   window.MAGICPULSE_API_BASE = 'https://api.magicpulse.app'; // production API (also works when the site is served from the API host)
   // Same-origin only: window.MAGICPULSE_API_BASE = '';
   // window.MAGICPULSE_PARK_ID = 6; // optional; default 6 = MK (see MagicPulseAPI `src/constants/parks.ts`)
+  // window.MAGICPULSE_SNAPSHOT_RIDE_COUNT = 4; // optional; default 4 rides shown (max 20)
 </script>
 ```
 

@@ -67,6 +67,11 @@
     if (!Number.isNaN(parsed)) MAGICPULSE_PARK_ID = parsed;
   }
 
+  var SNAPSHOT_RIDE_COUNT = 4;
+  if (typeof window.MAGICPULSE_SNAPSHOT_RIDE_COUNT === 'number' && !Number.isNaN(window.MAGICPULSE_SNAPSHOT_RIDE_COUNT)) {
+    SNAPSHOT_RIDE_COUNT = Math.max(1, Math.min(20, window.MAGICPULSE_SNAPSHOT_RIDE_COUNT));
+  }
+
   var loading = waitsRoot.querySelector('.waits-loading');
   var rows = waitsRoot.querySelector('.waits-rows');
   var error = waitsRoot.querySelector('.waits-error');
@@ -159,7 +164,7 @@
         .sort(function (a, b) {
           return (a.wait || 0) - (b.wait || 0);
         })
-        .slice(0, 6)
+        .slice(0, SNAPSHOT_RIDE_COUNT)
         .map(function (ride) {
           return { name: ride.name, waitTime: ride.wait };
         });
