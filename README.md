@@ -21,8 +21,10 @@ A standalone marketing landing page for the MagicPulse iOS app. Lives in the `la
 The hero “Live wait snapshot” loads from your backend:
 
 - **Endpoint:** `GET {API_BASE}/api/parks/public/{parkId}/snapshot`
-- **Response:** JSON with `snapshot.rides` (name, `wait`, `is_open`), `snapshot.park`, `snapshot.updated`, etc.
+- **Response:** JSON with `snapshot.rides` (`id`, `name`, `wait`, `is_open`), `snapshot.park`, `snapshot.updated`, etc.
 - **Public route:** Defined in `MagicPulseAPI` at `src/routes/parks.ts` (`/public/:parkId/snapshot`, no auth).
+
+The site now preserves the backend ride `id` on rendered wait rows via `data-ride-id`, so it stays aligned with the stable ride identity system used by `MagicPulseAPI` and the iOS app.
 
 **Configure before `script.js` runs** (in `index.html`):
 

@@ -119,7 +119,8 @@
     rows.innerHTML = list
       .map(function (item) {
         var wait = item.waitTime != null ? item.waitTime + ' min' : '-';
-        return '<div class="waits-row"><span>' + escapeHtml(item.name) + '</span><span class="value">' + wait + '</span></div>';
+        var rideAttrs = item.rideId ? ' data-ride-id="' + escapeHtml(item.rideId) + '"' : '';
+        return '<div class="waits-row"' + rideAttrs + '><span>' + escapeHtml(item.name) + '</span><span class="value">' + wait + '</span></div>';
       })
       .join('');
     rows.hidden = false;
@@ -166,7 +167,11 @@
         })
         .slice(0, SNAPSHOT_RIDE_COUNT)
         .map(function (ride) {
-          return { name: ride.name, waitTime: ride.wait };
+          return {
+            rideId: typeof ride.id === 'string' && ride.id ? ride.id : null,
+            name: ride.name,
+            waitTime: ride.wait
+          };
         });
 
       if (!items.length) {
