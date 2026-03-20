@@ -37,6 +37,13 @@ The live snapshot now prefers a curated set of popular rides for supported parks
 </script>
 ```
 
+If the configured website park is closed, the site now automatically falls back to:
+
+- another currently open park in the same resort first
+- then an open park in another supported resort if the original resort is fully closed
+
+The hero panel still starts from `window.MAGICPULSE_PARK_ID` when that park is open, but it will no longer stay stuck on a closed park overnight.
+
 **Configure before `script.js` runs** (in `index.html`):
 
 ```html

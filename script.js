@@ -67,6 +67,19 @@
     if (!Number.isNaN(parsed)) MAGICPULSE_PARK_ID = parsed;
   }
 
+  var PARKS = [
+    { id: 6, name: 'MK', theme: 'mk', resort: 'WDW' },
+    { id: 5, name: 'EP', theme: 'epcot', resort: 'WDW' },
+    { id: 7, name: 'HS', theme: 'hs', resort: 'WDW' },
+    { id: 8, name: 'AK', theme: 'ak', resort: 'WDW' },
+    { id: 16, name: 'DL', theme: 'dl', resort: 'DLR' },
+    { id: 17, name: 'DCA', theme: 'dca', resort: 'DLR' },
+    { id: 274, name: 'TDL', theme: 'tdl', resort: 'TDR' },
+    { id: 275, name: 'TDS', theme: 'tds', resort: 'TDR' },
+    { id: 4, name: 'DLP', theme: 'dlp', resort: 'DLP' },
+    { id: 28, name: 'WDSP', theme: 'wdsp', resort: 'DLP' }
+  ];
+
   var SNAPSHOT_RIDE_COUNT = 4;
   if (typeof window.MAGICPULSE_SNAPSHOT_RIDE_COUNT === 'number' && !Number.isNaN(window.MAGICPULSE_SNAPSHOT_RIDE_COUNT)) {
     SNAPSHOT_RIDE_COUNT = Math.max(1, Math.min(20, window.MAGICPULSE_SNAPSHOT_RIDE_COUNT));
@@ -126,6 +139,15 @@
     MAGICPULSE_PARK_ID +
     '/snapshot';
 
+  function apiSnapshotUrl(parkId) {
+    return (
+      (MAGICPULSE_API_BASE ? MAGICPULSE_API_BASE.replace(/\/$/, '') : '') +
+      '/api/parks/public/' +
+      parkId +
+      '/snapshot'
+    );
+  }
+
   function getFetchErrorMessage(err) {
     var msg = err && err.message ? err.message : '';
     if (msg.indexOf('fetch') !== -1 || msg === 'Failed to fetch') {
@@ -161,14 +183,21 @@
     return DEFAULT_POPULAR_RIDES_BY_PARK[MAGICPULSE_PARK_ID] || [];
   }
 
-  function selectSnapshotRides(snapshotRides) {
+  function configuredPopularRidesForPark(parkId) {
+    if (Array.isArray(window.MAGICPULSE_POPULAR_RIDES) && window.MAGICPULSE_POPULAR_RIDES.length) {
+      return configuredPopularRides();
+    }
+    return DEFAULT_POPULAR_RIDES_BY_PARK[parkId] || [];
+  }
+
+  function selectSnapshotRides(snapshotRides, parkId) {
     var openRides = snapshotRides.filter(function (ride) {
       return ride.is_open && ride.wait != null;
     });
 
     var selected = [];
     var selectedKeys = {};
-    configuredPopularRides().forEach(function (target) {
+    configuredPopularRidesForPark(parkId).forEach(function (target) {
       if (selected.length >= SNAPSHOT_RIDE_COUNT) return;
       var match = openRides.find(function (ride) {
         if (target.rideId && typeof ride.id === 'string' && ride.id === target.rideId) {
@@ -205,6 +234,137 @@
         name: ride.name,
         waitTime: ride.wait
       };
+    });
+  }
+
+  function parkMetaById(parkId) {
+    return PARKS.find(function (park) { return park.id === parkId; }) || null;
+  }
+
+  function parkMetaFromSnapshot(snapshot) {
+    if (!snapshot || !snapshot.park) return null;
+    var id = snapshot.park.id != null ? parseInt(String(snapshot.park.id), 10) : NaN;
+    if (!Number.isNaN(id)) {
+      var byId = parkMetaById(id);
+      if (byId) return byId;
+    }
+    return PARKS.find(function (park) {
+      return (snapshot.park.theme && park.theme === snapshot.park.theme) ||
+        (snapshot.park.name && park.name === snapshot.park.name);
+    }) || null;
+  }
+
+  function buildSameResortCandidateIds(snapshot, selectedParkId) {
+    var selectedMeta = parkMetaById(selectedParkId);
+    if (!selectedMeta || !snapshot || !Array.isArray(snapshot.parkStatuses)) return [];
+
+    var openStatuses = snapshot.parkStatuses.filter(function (status) {
+      return status && status.status === 'OPEN';
+    });
+
+    return openStatuses
+      .map(function (status) {
+        var match = PARKS.find(function (park) {
+          return park.resort === selectedMeta.resort &&
+            ((status.theme && park.theme === status.theme) || (status.name && park.name === status.name));
+        });
+        return match ? match.id : null;
+      })
+      .filter(function (id) {
+        return id != null && id !== selectedParkId;
+      });
+  }
+
+  function buildFallbackParkOrder(primaryParkId, primarySnapshot) {
+    var selectedMeta = parkMetaById(primaryParkId);
+    var ordered = [];
+    var seen = {};
+
+    function pushParkId(parkId) {
+      if (parkId == null || seen[parkId]) return;
+      seen[parkId] = true;
+      ordered.push(parkId);
+    }
+
+    pushParkId(primaryParkId);
+
+    buildSameResortCandidateIds(primarySnapshot, primaryParkId).forEach(pushParkId);
+
+    if (selectedMeta) {
+      PARKS.filter(function (park) {
+        return park.resort === selectedMeta.resort && park.id !== primaryParkId;
+      }).forEach(function (park) {
+        pushParkId(park.id);
+      });
+    }
+
+    var resortOrder = ['WDW', 'DLR', 'TDR', 'DLP'];
+    resortOrder.forEach(function (resort) {
+      if (selectedMeta && resort === selectedMeta.resort) return;
+      PARKS.filter(function (park) {
+        return park.resort === resort;
+      }).forEach(function (park) {
+        pushParkId(park.id);
+      });
+    });
+
+    return ordered;
+  }
+
+  function isSnapshotUsable(snapshot) {
+    return snapshot && Array.isArray(snapshot.rides) && snapshot.rides.length > 0;
+  }
+
+  function isSnapshotOpen(snapshot) {
+    return !!(snapshot && snapshot.parkHours && snapshot.parkHours.status === 'OPEN');
+  }
+
+  function fetchSnapshotForPark(parkId) {
+    var opts = { method: 'GET' };
+    if (MAGICPULSE_API_TOKEN) {
+      opts.headers = { Authorization: 'Bearer ' + MAGICPULSE_API_TOKEN };
+    }
+    return fetch(apiSnapshotUrl(parkId), opts)
+      .then(function (res) {
+        if (!res.ok) throw new Error(res.status === 401 ? 'API token required' : 'Request failed');
+        return res.json();
+      })
+      .then(function (payload) {
+        return payload && payload.snapshot ? payload.snapshot : null;
+      });
+  }
+
+  function resolveSnapshotWithFallback(primaryParkId) {
+    return fetchSnapshotForPark(primaryParkId).then(function (primarySnapshot) {
+      if (!isSnapshotUsable(primarySnapshot)) {
+        return { snapshot: primarySnapshot, selectedParkId: primaryParkId };
+      }
+      if (isSnapshotOpen(primarySnapshot)) {
+        return { snapshot: primarySnapshot, selectedParkId: primaryParkId };
+      }
+
+      var candidateIds = buildFallbackParkOrder(primaryParkId, primarySnapshot).slice(1);
+      var chain = Promise.resolve(null);
+
+      candidateIds.forEach(function (candidateParkId) {
+        chain = chain.then(function (resolved) {
+          if (resolved) return resolved;
+          return fetchSnapshotForPark(candidateParkId)
+            .then(function (candidateSnapshot) {
+              if (isSnapshotUsable(candidateSnapshot) && isSnapshotOpen(candidateSnapshot)) {
+                return { snapshot: candidateSnapshot, selectedParkId: candidateParkId };
+              }
+              return null;
+            })
+            .catch(function () {
+              return null;
+            });
+        });
+      });
+
+      return chain.then(function (resolved) {
+        return resolved || { snapshot: primarySnapshot, selectedParkId: primaryParkId };
+      });
     });
   }
 
@@ -250,23 +410,19 @@
     }
   }
 
-  var fetchOpts = { method: 'GET' };
-  if (MAGICPULSE_API_TOKEN) {
-    fetchOpts.headers = { Authorization: 'Bearer ' + MAGICPULSE_API_TOKEN };
-  }
-
-  fetch(apiUrl, fetchOpts)
-    .then(function (res) {
-      if (!res.ok) throw new Error(res.status === 401 ? 'API token required' : 'Request failed');
-      return res.json();
-    })
-    .then(function (payload) {
-      var snapshot = payload.snapshot;
+  resolveSnapshotWithFallback(MAGICPULSE_PARK_ID)
+    .then(function (result) {
+      var snapshot = result && result.snapshot;
       if (!snapshot || !Array.isArray(snapshot.rides)) {
         showError('Live data unavailable right now.');
         return;
       }
-      var items = selectSnapshotRides(snapshot.rides);
+      var selectedParkId = result && result.selectedParkId ? result.selectedParkId : MAGICPULSE_PARK_ID;
+      var selectedParkMeta = parkMetaFromSnapshot(snapshot);
+      if (selectedParkMeta) {
+        selectedParkId = selectedParkMeta.id;
+      }
+      var items = selectSnapshotRides(snapshot.rides, selectedParkId);
 
       if (!items.length) {
         showError('Live data unavailable right now.');
