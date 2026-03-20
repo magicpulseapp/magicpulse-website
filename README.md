@@ -26,6 +26,17 @@ The hero “Live wait snapshot” loads from your backend:
 
 The site now preserves the backend ride `id` on rendered wait rows via `data-ride-id`, so it stays aligned with the stable ride identity system used by `MagicPulseAPI` and the iOS app.
 
+The live snapshot now prefers a curated set of popular rides for supported parks, then fills any remaining slots with the lowest current waits. You can also override this in `index.html` before `script.js` runs:
+
+```html
+<script>
+  window.MAGICPULSE_POPULAR_RIDES = [
+    { rideId: 'stable-backend-ride-id' },
+    { rideName: 'Space Mountain' }
+  ];
+</script>
+```
+
 **Configure before `script.js` runs** (in `index.html`):
 
 ```html

@@ -72,6 +72,51 @@
     SNAPSHOT_RIDE_COUNT = Math.max(1, Math.min(20, window.MAGICPULSE_SNAPSHOT_RIDE_COUNT));
   }
 
+  var DEFAULT_POPULAR_RIDES_BY_PARK = {
+    6: [
+      { rideName: 'TRON Lightcycle / Run' },
+      { rideName: 'Seven Dwarfs Mine Train' },
+      { rideName: 'Space Mountain' },
+      { rideName: 'Peter Pan\'s Flight' },
+      { rideName: 'Tiana\'s Bayou Adventure' },
+      { rideName: 'Jungle Cruise' }
+    ],
+    5: [
+      { rideName: 'Guardians of the Galaxy: Cosmic Rewind' },
+      { rideName: 'Frozen Ever After' },
+      { rideName: 'Remy\'s Ratatouille Adventure' },
+      { rideName: 'Soarin\' Around the World' },
+      { rideName: 'Test Track' }
+    ],
+    7: [
+      { rideName: 'Star Wars: Rise of the Resistance' },
+      { rideName: 'Slinky Dog Dash' },
+      { rideName: 'The Twilight Zone Tower of Terror' },
+      { rideName: 'Rock \'n\' Roller Coaster Starring Aerosmith' },
+      { rideName: 'Mickey & Minnie\'s Runaway Railway' }
+    ],
+    8: [
+      { rideName: 'Avatar Flight of Passage' },
+      { rideName: 'Na\'vi River Journey' },
+      { rideName: 'Kilimanjaro Safaris' },
+      { rideName: 'Expedition Everest - Legend of the Forbidden Mountain' }
+    ],
+    16: [
+      { rideName: 'Star Wars: Rise of the Resistance' },
+      { rideName: 'Indiana Jones Adventure' },
+      { rideName: 'Space Mountain' },
+      { rideName: 'Big Thunder Mountain Railroad' },
+      { rideName: 'Matterhorn Bobsleds' }
+    ],
+    17: [
+      { rideName: 'Radiator Springs Racers' },
+      { rideName: 'Guardians of the Galaxy - Mission: BREAKOUT!' },
+      { rideName: 'WEB SLINGERS: A Spider-Man Adventure' },
+      { rideName: 'Incredicoaster' },
+      { rideName: 'Soarin\' Around the World' }
+    ]
+  };
+
   var loading = waitsRoot.querySelector('.waits-loading');
   var rows = waitsRoot.querySelector('.waits-rows');
   var error = waitsRoot.querySelector('.waits-error');
@@ -98,6 +143,69 @@
     var div = document.createElement('div');
     div.textContent = str;
     return div.innerHTML;
+  }
+
+  function normalizedRideName(name) {
+    return String(name || '').toLowerCase().trim();
+  }
+
+  function configuredPopularRides() {
+    if (Array.isArray(window.MAGICPULSE_POPULAR_RIDES) && window.MAGICPULSE_POPULAR_RIDES.length) {
+      return window.MAGICPULSE_POPULAR_RIDES.map(function (item) {
+        if (typeof item === 'string') {
+          return { rideId: item, rideName: item };
+        }
+        return item || {};
+      });
+    }
+    return DEFAULT_POPULAR_RIDES_BY_PARK[MAGICPULSE_PARK_ID] || [];
+  }
+
+  function selectSnapshotRides(snapshotRides) {
+    var openRides = snapshotRides.filter(function (ride) {
+      return ride.is_open && ride.wait != null;
+    });
+
+    var selected = [];
+    var selectedKeys = {};
+    configuredPopularRides().forEach(function (target) {
+      if (selected.length >= SNAPSHOT_RIDE_COUNT) return;
+      var match = openRides.find(function (ride) {
+        if (target.rideId && typeof ride.id === 'string' && ride.id === target.rideId) {
+          return true;
+        }
+        if (target.rideName && normalizedRideName(ride.name) === normalizedRideName(target.rideName)) {
+          return true;
+        }
+        return false;
+      });
+      if (!match) return;
+      var key = (typeof match.id === 'string' && match.id) ? match.id : match.name;
+      if (selectedKeys[key]) return;
+      selectedKeys[key] = true;
+      selected.push(match);
+    });
+
+    openRides
+      .slice()
+      .sort(function (a, b) {
+        return (a.wait || 0) - (b.wait || 0);
+      })
+      .forEach(function (ride) {
+        if (selected.length >= SNAPSHOT_RIDE_COUNT) return;
+        var key = (typeof ride.id === 'string' && ride.id) ? ride.id : ride.name;
+        if (selectedKeys[key]) return;
+        selectedKeys[key] = true;
+        selected.push(ride);
+      });
+
+    return selected.slice(0, SNAPSHOT_RIDE_COUNT).map(function (ride) {
+      return {
+        rideId: typeof ride.id === 'string' && ride.id ? ride.id : null,
+        name: ride.name,
+        waitTime: ride.wait
+      };
+    });
   }
 
   function setPanelMeta(snapshot) {
@@ -158,21 +266,7 @@
         showError('Live data unavailable right now.');
         return;
       }
-      var items = snapshot.rides
-        .filter(function (ride) {
-          return ride.is_open && ride.wait != null;
-        })
-        .sort(function (a, b) {
-          return (a.wait || 0) - (b.wait || 0);
-        })
-        .slice(0, SNAPSHOT_RIDE_COUNT)
-        .map(function (ride) {
-          return {
-            rideId: typeof ride.id === 'string' && ride.id ? ride.id : null,
-            name: ride.name,
-            waitTime: ride.wait
-          };
-        });
+      var items = selectSnapshotRides(snapshot.rides);
 
       if (!items.length) {
         showError('Live data unavailable right now.');
