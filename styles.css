@@ -27,6 +27,28 @@ html {
   scroll-behavior: smooth;
 }
 
+.skip-link {
+  position: absolute;
+  top: -120px;
+  left: 1rem;
+  z-index: 200;
+  padding: 0.65rem 1.1rem;
+  background: linear-gradient(135deg, var(--accent) 0%, #7f45e8 100%);
+  color: #fff;
+  border-radius: var(--radius-sm);
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-decoration: none;
+  box-shadow: var(--shadow-soft);
+  transition: top 0.2s ease;
+}
+
+.skip-link:focus {
+  top: 1rem;
+  outline: 2px solid #fff;
+  outline-offset: 2px;
+}
+
 body {
   margin: 0;
   color: var(--text);
@@ -164,6 +186,11 @@ a:hover {
   flex-direction: column;
   gap: 4px;
   cursor: pointer;
+}
+
+.menu-btn:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
 }
 
 .menu-btn span {
@@ -617,26 +644,107 @@ h3 {
 .faq {
   margin-top: 1.1rem;
   display: grid;
-  gap: 0.8rem;
+  gap: 0.65rem;
 }
 
-.faq article {
+.faq-details {
   background: linear-gradient(180deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0.03));
   border: 1px solid var(--card-border);
   border-radius: var(--radius-sm);
-  padding: 1rem;
+  padding: 0;
   transition: border-color 0.22s ease, background 0.22s ease;
 }
 
-.faq article:hover {
+.faq-details:hover {
   border-color: var(--card-border-strong);
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.04));
 }
 
-.faq p {
-  margin: 0.35rem 0 0;
+.faq-details[open] {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.04));
+  border-color: var(--card-border-strong);
+}
+
+.faq-details summary {
+  list-style: none;
+  cursor: pointer;
+  padding: 1rem 2.5rem 1rem 1rem;
+  font-family: Outfit, Inter, sans-serif;
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1.35;
+  color: var(--text);
+  position: relative;
+}
+
+.faq-details summary::-webkit-details-marker {
+  display: none;
+}
+
+.faq-details summary::after {
+  content: "";
+  position: absolute;
+  right: 1rem;
+  top: 50%;
+  width: 8px;
+  height: 8px;
+  border-right: 2px solid var(--accent);
+  border-bottom: 2px solid var(--accent);
+  transform: translateY(-60%) rotate(45deg);
+  transition: transform 0.2s ease;
+}
+
+.faq-details[open] summary::after {
+  transform: translateY(-20%) rotate(-135deg);
+}
+
+.faq-details summary:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: -2px;
+  border-radius: var(--radius-sm);
+}
+
+.faq-details .faq-answer {
+  padding: 0 1rem 1rem;
+  margin: 0;
   color: var(--muted);
   font-size: 0.9rem;
+  line-height: 1.65;
+}
+
+.footer-disclaimer {
+  margin-top: 0.75rem !important;
+  padding-top: 0.75rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  font-size: 0.78rem !important;
+  line-height: 1.55;
+}
+
+.legal-page {
+  max-width: 860px;
+  margin: 0 auto;
+}
+
+.legal-page h2 {
+  font-size: 1.05rem;
+  margin-top: 1.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.legal-list {
+  margin: 0.5rem 0 0;
+  padding-left: 1.2rem;
+  color: var(--muted);
+  font-size: 0.92rem;
+  line-height: 1.65;
+}
+
+.legal-list li + li {
+  margin-top: 0.45rem;
+}
+
+.live-waits.is-refreshing {
+  opacity: 0.72;
+  transition: opacity 0.25s ease;
 }
 
 .cta {
@@ -656,6 +764,14 @@ h3 {
   border-top: 1px solid var(--card-border);
   padding: 2.2rem 0;
   background: linear-gradient(180deg, rgba(13, 10, 30, 0.4), rgba(13, 10, 30, 0.7));
+}
+
+.site-footer .brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font: 700 1.05rem/1.2 Outfit, Inter, sans-serif;
+  color: var(--text);
 }
 
 .footer-grid p {
@@ -828,5 +944,27 @@ h3 {
     animation-iteration-count: 1 !important;
     transition-duration: 0.001ms !important;
     scroll-behavior: auto !important;
+  }
+
+  .reveal,
+  .reveal.revealed {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
+  .section .container > .eyebrow,
+  .section .container > h2,
+  .section .container > .section-copy,
+  .section .container > .cards,
+  .section .container > .pricing,
+  .section .container > .faq,
+  .section .container > .hero-actions,
+  .section-alt .steps {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
+  .faq-details summary::after {
+    transition: none;
   }
 }

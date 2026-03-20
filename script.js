@@ -1,5 +1,4 @@
 (function () {
-  // Scroll reveal: add .revealed when elements enter viewport
   var revealObserver = new IntersectionObserver(
     function (entries) {
       entries.forEach(function (entry) {
@@ -14,10 +13,22 @@
     revealObserver.observe(el);
   });
 
-  var menuBtn = document.querySelector('.menu-btn') || document.querySelector('.menu-toggle');
-  var nav = document.querySelector('.site-nav') || document.querySelector('.nav');
+  window.setTimeout(function () {
+    document.querySelectorAll('.reveal:not(.revealed)').forEach(function (el) {
+      el.classList.add('revealed');
+    });
+    document.querySelectorAll('.section:not(.revealed), .section-alt:not(.revealed)').forEach(function (el) {
+      el.classList.add('revealed');
+    });
+  }, 4000);
+
+  var menuBtn = document.querySelector('.menu-btn');
+  var nav = document.getElementById('site-navigation') || document.querySelector('.site-nav');
 
   if (menuBtn && nav) {
+    menuBtn.setAttribute('aria-controls', 'site-navigation');
+    menuBtn.setAttribute('aria-expanded', 'false');
+
     var overlay = document.createElement('div');
     overlay.className = 'nav-overlay';
     overlay.setAttribute('aria-hidden', 'true');
@@ -26,12 +37,14 @@
     function closeMenu() {
       nav.classList.remove('is-open');
       document.body.classList.remove('nav-open');
+      menuBtn.setAttribute('aria-expanded', 'false');
       menuBtn.setAttribute('aria-label', 'Open menu');
     }
 
     function openMenu() {
       nav.classList.add('is-open');
       document.body.classList.add('nav-open');
+      menuBtn.setAttribute('aria-expanded', 'true');
       menuBtn.setAttribute('aria-label', 'Close menu');
     }
 
@@ -54,8 +67,6 @@
   var waitsRoot = document.getElementById('live-waits');
   if (!waitsRoot) return;
 
-  // MagicPulseAPI — ride data from GET /api/parks/public/:parkId/snapshot (see MagicPulseAPI/src/routes/parks.ts)
-  // Set window.MAGICPULSE_API_BASE before this script: '' = same origin (site served from API), or full HTTPS URL for GitHub Pages.
   var MAGICPULSE_API_BASE =
     typeof window.MAGICPULSE_API_BASE === 'string' ? window.MAGICPULSE_API_BASE : '';
   var MAGICPULSE_API_TOKEN = window.MAGICPULSE_API_TOKEN || '';
@@ -63,9 +74,14 @@
   if (typeof window.MAGICPULSE_PARK_ID === 'number' && !Number.isNaN(window.MAGICPULSE_PARK_ID)) {
     MAGICPULSE_PARK_ID = window.MAGICPULSE_PARK_ID;
   } else if (window.MAGICPULSE_PARK_ID != null && String(window.MAGICPULSE_PARK_ID).trim() !== '') {
-    var parsed = parseInt(String(window.MAGICPULSE_PARK_ID), 10);
-    if (!Number.isNaN(parsed)) MAGICPULSE_PARK_ID = parsed;
+    var parsedId = parseInt(String(window.MAGICPULSE_PARK_ID), 10);
+    if (!Number.isNaN(parsedId)) MAGICPULSE_PARK_ID = parsedId;
   }
+
+  var LIVE_REFRESH_MS =
+    typeof window.MAGICPULSE_LIVE_REFRESH_MS === 'number' && !Number.isNaN(window.MAGICPULSE_LIVE_REFRESH_MS)
+      ? Math.max(60000, Math.min(600000, window.MAGICPULSE_LIVE_REFRESH_MS))
+      : 180000;
 
   var PARKS = [
     { id: 6, name: 'MK', theme: 'mk', resort: 'WDW' },
@@ -127,6 +143,34 @@
       { rideName: 'WEB SLINGERS: A Spider-Man Adventure' },
       { rideName: 'Incredicoaster' },
       { rideName: 'Soarin\' Around the World' }
+    ],
+    274: [
+      { rideName: 'Beauty and the Beast' },
+      { rideName: 'Pooh\'s Hunny Hunt' },
+      { rideName: 'Monsters, Inc. Ride & Go Seek' },
+      { rideName: 'Haunted Mansion' },
+      { rideName: 'Space Mountain' }
+    ],
+    275: [
+      { rideName: 'Soaring: Fantastic Flight' },
+      { rideName: 'Journey to the Center of the Earth' },
+      { rideName: 'Indiana Jones Adventure: Temple of the Crystal Skull' },
+      { rideName: 'Tower of Terror' },
+      { rideName: 'Toy Story Mania!' }
+    ],
+    4: [
+      { rideName: 'Star Wars Hyperspace Mountain' },
+      { rideName: 'Big Thunder Mountain' },
+      { rideName: 'Ratatouille: The Adventure' },
+      { rideName: 'Peter Pan\'s Flight' },
+      { rideName: 'Crush\'s Coaster' }
+    ],
+    28: [
+      { rideName: 'Spider-Man W.E.B. Adventure' },
+      { rideName: 'The Twilight Zone Tower of Terror' },
+      { rideName: 'Crush\'s Coaster' },
+      { rideName: 'RC Racer' },
+      { rideName: 'Ratatouille: The Adventure' }
     ]
   };
 
@@ -138,6 +182,8 @@
     '/api/parks/public/' +
     MAGICPULSE_PARK_ID +
     '/snapshot';
+
+  var liveFetchInFlight = false;
 
   function apiSnapshotUrl(parkId) {
     return (
@@ -209,7 +255,7 @@
         return false;
       });
       if (!match) return;
-      var key = (typeof match.id === 'string' && match.id) ? match.id : match.name;
+      var key = typeof match.id === 'string' && match.id ? match.id : match.name;
       if (selectedKeys[key]) return;
       selectedKeys[key] = true;
       selected.push(match);
@@ -222,7 +268,7 @@
       })
       .forEach(function (ride) {
         if (selected.length >= SNAPSHOT_RIDE_COUNT) return;
-        var key = (typeof ride.id === 'string' && ride.id) ? ride.id : ride.name;
+        var key = typeof ride.id === 'string' && ride.id ? ride.id : ride.name;
         if (selectedKeys[key]) return;
         selectedKeys[key] = true;
         selected.push(ride);
@@ -238,7 +284,9 @@
   }
 
   function parkMetaById(parkId) {
-    return PARKS.find(function (park) { return park.id === parkId; }) || null;
+    return PARKS.find(function (park) {
+      return park.id === parkId;
+    }) || null;
   }
 
   function parkMetaFromSnapshot(snapshot) {
@@ -248,10 +296,14 @@
       var byId = parkMetaById(id);
       if (byId) return byId;
     }
-    return PARKS.find(function (park) {
-      return (snapshot.park.theme && park.theme === snapshot.park.theme) ||
-        (snapshot.park.name && park.name === snapshot.park.name);
-    }) || null;
+    return (
+      PARKS.find(function (park) {
+        return (
+          (snapshot.park.theme && park.theme === snapshot.park.theme) ||
+          (snapshot.park.name && park.name === snapshot.park.name)
+        );
+      }) || null
+    );
   }
 
   function buildSameResortCandidateIds(snapshot, selectedParkId) {
@@ -265,8 +317,10 @@
     return openStatuses
       .map(function (status) {
         var match = PARKS.find(function (park) {
-          return park.resort === selectedMeta.resort &&
-            ((status.theme && park.theme === status.theme) || (status.name && park.name === status.name));
+          return (
+            park.resort === selectedMeta.resort &&
+            ((status.theme && park.theme === status.theme) || (status.name && park.name === status.name))
+          );
         });
         return match ? match.id : null;
       })
@@ -388,13 +442,22 @@
       .map(function (item) {
         var wait = item.waitTime != null ? item.waitTime + ' min' : '-';
         var rideAttrs = item.rideId ? ' data-ride-id="' + escapeHtml(item.rideId) + '"' : '';
-        return '<div class="waits-row"' + rideAttrs + '><span>' + escapeHtml(item.name) + '</span><span class="value">' + wait + '</span></div>';
+        return (
+          '<div class="waits-row"' +
+          rideAttrs +
+          '><span>' +
+          escapeHtml(item.name) +
+          '</span><span class="value">' +
+          wait +
+          '</span></div>'
+        );
       })
       .join('');
     rows.hidden = false;
   }
 
-  function showError(message) {
+  function showError(message, isRefresh) {
+    if (isRefresh) return;
     if (loading) loading.hidden = true;
     if (rows) {
       rows.hidden = true;
@@ -408,33 +471,68 @@
       error.textContent = message || 'Could not load live wait times.';
       error.hidden = false;
     }
+    waitsRoot.setAttribute('aria-busy', 'false');
   }
 
-  resolveSnapshotWithFallback(MAGICPULSE_PARK_ID)
-    .then(function (result) {
-      var snapshot = result && result.snapshot;
-      if (!snapshot || !Array.isArray(snapshot.rides)) {
-        showError('Live data unavailable right now.');
-        return;
-      }
-      var selectedParkId = result && result.selectedParkId ? result.selectedParkId : MAGICPULSE_PARK_ID;
-      var selectedParkMeta = parkMetaFromSnapshot(snapshot);
-      if (selectedParkMeta) {
-        selectedParkId = selectedParkMeta.id;
-      }
-      var items = selectSnapshotRides(snapshot.rides, selectedParkId);
+  function applyLiveResult(result, options) {
+    var isRefresh = options && options.refresh;
+    var snapshot = result && result.snapshot;
+    if (!snapshot || !Array.isArray(snapshot.rides)) {
+      showError('Live data unavailable right now.', isRefresh);
+      return;
+    }
+    var selectedParkId = result && result.selectedParkId ? result.selectedParkId : MAGICPULSE_PARK_ID;
+    var selectedParkMeta = parkMetaFromSnapshot(snapshot);
+    if (selectedParkMeta) {
+      selectedParkId = selectedParkMeta.id;
+    }
+    var items = selectSnapshotRides(snapshot.rides, selectedParkId);
 
-      if (!items.length) {
-        showError('Live data unavailable right now.');
-        return;
-      }
+    if (!items.length) {
+      showError('Live data unavailable right now.', isRefresh);
+      return;
+    }
 
-      if (loading) loading.hidden = true;
-      if (error) error.hidden = true;
-      render(items);
-      setPanelMeta(snapshot);
-    })
-    .catch(function (err) {
-      showError(getFetchErrorMessage(err));
-    });
+    if (loading) loading.hidden = true;
+    if (error) error.hidden = true;
+    render(items);
+    setPanelMeta(snapshot);
+    waitsRoot.setAttribute('aria-busy', 'false');
+    waitsRoot.classList.remove('is-refreshing');
+  }
+
+  function loadLiveWaits(options) {
+    var isRefresh = options && options.refresh;
+    if (isRefresh && document.visibilityState !== 'visible') {
+      return Promise.resolve();
+    }
+    if (liveFetchInFlight) return Promise.resolve();
+    liveFetchInFlight = true;
+    if (isRefresh) waitsRoot.classList.add('is-refreshing');
+
+    return resolveSnapshotWithFallback(MAGICPULSE_PARK_ID)
+      .then(function (result) {
+        applyLiveResult(result, options);
+      })
+      .catch(function (err) {
+        if (!isRefresh) showError(getFetchErrorMessage(err), false);
+        waitsRoot.classList.remove('is-refreshing');
+      })
+      .finally(function () {
+        liveFetchInFlight = false;
+        waitsRoot.classList.remove('is-refreshing');
+      });
+  }
+
+  loadLiveWaits({ refresh: false });
+
+  window.setInterval(function () {
+    loadLiveWaits({ refresh: true });
+  }, LIVE_REFRESH_MS);
+
+  document.addEventListener('visibilitychange', function () {
+    if (document.visibilityState === 'visible') {
+      loadLiveWaits({ refresh: true });
+    }
+  });
 })();

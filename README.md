@@ -1,68 +1,67 @@
-# MagicPulse Landing Page
+# Magic Pulse — marketing site
 
-A standalone marketing landing page for the MagicPulse iOS app. Lives in the `landing` folder, separate from the Xcode project.
+Static landing page for the **Magic Pulse** iOS app (`www.magicpulse.app`). No build step: HTML, CSS, and vanilla JS.
 
-## What’s included
+## Files
 
-- **index.html** — Single-page layout: hero, features, parks, download CTA, footer
-- **styles.css** — Dark theme, responsive layout, Outfit + Source Sans 3
-- **script.js** — Mobile menu, scroll reveal, **live waits from MagicPulseAPI**
+| File | Purpose |
+|------|---------|
+| `index.html` | Home: hero, features, pricing, FAQ (`<details>`), live snapshot |
+| `styles.css` | Dark theme, responsive layout, FAQ accordion, skip link |
+| `script.js` | Mobile nav (a11y), scroll reveal + fallback, live API panel + auto-refresh |
+| `favicon.svg` | Tab / social fallback icon |
+| `privacy.html` / `support.html` | Legal + contact (Formspree) |
 
-## How to view
+## Local preview
 
-1. **Local:** Open `index.html` in a browser, or run a simple server:
-   - `python3 -m http.server 8080` then visit `http://localhost:8080`
-   - Or use any static host (e.g. VS Code Live Server)
+```bash
+cd magicpulse-website
+python3 -m http.server 8080
+# http://localhost:8080
+```
 
-2. **Production:** Upload the contents of `landing/` to any static host (Netlify, Vercel, GitHub Pages, S3, etc.). No build step required.
+## Live snapshot (MagicPulseAPI)
 
-## Live ride data (MagicPulseAPI)
+The hero panel calls:
 
-The hero “Live wait snapshot” loads from your backend:
+`GET {API_BASE}/api/parks/public/{parkId}/snapshot`
 
-- **Endpoint:** `GET {API_BASE}/api/parks/public/{parkId}/snapshot`
-- **Response:** JSON with `snapshot.rides` (`id`, `name`, `wait`, `is_open`), `snapshot.park`, `snapshot.updated`, etc.
-- **Public route:** Defined in `MagicPulseAPI` at `src/routes/parks.ts` (`/public/:parkId/snapshot`, no auth).
-
-The site now preserves the backend ride `id` on rendered wait rows via `data-ride-id`, so it stays aligned with the stable ride identity system used by `MagicPulseAPI` and the iOS app.
-
-The live snapshot now prefers a curated set of popular rides for supported parks, then fills any remaining slots with the lowest current waits. You can also override this in `index.html` before `script.js` runs:
+- **No auth** (public route in `MagicPulseAPI` → `parks.ts`).
+- Configure **before** `script.js` loads:
 
 ```html
 <script>
-  window.MAGICPULSE_POPULAR_RIDES = [
-    { rideId: 'stable-backend-ride-id' },
-    { rideName: 'Space Mountain' }
-  ];
+  window.MAGICPULSE_API_BASE = 'https://api.magicpulse.app';
+  // window.MAGICPULSE_PARK_ID = 6;           // default: 6 (Magic Kingdom)
+  // window.MAGICPULSE_LIVE_REFRESH_MS = 180000; // 3 min (clamped 60s–10m)
+  // window.MAGICPULSE_SNAPSHOT_RIDE_COUNT = 4;   // 1–20
+  // window.MAGICPULSE_POPULAR_RIDES = [{ rideId: '…' }, { rideName: '…' }];
 </script>
 ```
 
-If the configured website park is closed, the site now automatically falls back to:
+Behavior:
 
-- another currently open park in the same resort first
-- then an open park in another supported resort if the original resort is fully closed
+- Prefers **popular rides** (by stable `id` or name) when open, then fills with **shortest waits**.
+- If the chosen park is **closed**, tries another **open** park (same resort, then other resorts).
+- **Auto-refreshes** on an interval while the tab is visible; also refreshes when you return to the tab.
 
-The hero panel still starts from `window.MAGICPULSE_PARK_ID` when that park is open, but it will no longer stay stuck on a closed park overnight.
+Ride rows include `data-ride-id` when the API provides an `id`.
 
-**Configure before `script.js` runs** (in `index.html`):
+## SEO & sharing
 
-```html
-<script>
-  window.MAGICPULSE_API_BASE = 'https://api.magicpulse.app'; // production API (also works when the site is served from the API host)
-  // Same-origin only: window.MAGICPULSE_API_BASE = '';
-  // window.MAGICPULSE_PARK_ID = 6; // optional; default 6 = MK (see MagicPulseAPI `src/constants/parks.ts`)
-  // window.MAGICPULSE_SNAPSHOT_RIDE_COUNT = 4; // optional; default 4 rides shown (max 20)
-</script>
-```
+- Canonical URLs assume **`https://www.magicpulse.app/`** (see `CNAME`).
+- Open Graph / Twitter meta are on `index.html`. For richer link previews, add a **1200×630** PNG (e.g. `/og-image.png`) and point `og:image` at it (many networks ignore SVG).
 
-After changing the site, copy the static files into `MagicPulseAPI/public/` if you serve the landing page from the API.
+## Deploy
 
-## Customize
+Upload the folder to **GitHub Pages**, **Netlify**, **Vercel**, S3, etc. Ensure `favicon.svg` is served at the site root.
 
-- **App Store link:** The App Store buttons in `index.html` point to `https://apps.apple.com/us/app/magic-pulse/id6759612612`.
-- **Copy/features:** Edit `index.html` to change headlines, feature text, or add screenshots.
-- **Colors/fonts:** Adjust `:root` in `styles.css` and swap Google Fonts in the `<link>` in `index.html` if desired.
+If you also serve this site from **MagicPulseAPI** `public/`, copy these files there after changes.
+
+## App Store
+
+Primary download link: `https://apps.apple.com/us/app/magic-pulse/id6759612612`
 
 ## Legal
 
-The footer includes a short disclaimer that MagicPulse is not affiliated with any park operator. Keep this (or your own disclaimer) when you publish.
+Footer and FAQ state that Magic Pulse is **not affiliated** with park operators. Keep that when you publish.

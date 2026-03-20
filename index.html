@@ -3,18 +3,59 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Magic Pulse is a real-time theme park planning app with live wait times, weather, operating hours, and alerts." />
+  <meta name="description" content="Magic Pulse — real-time theme park waits, hours, and weather for Orlando, California, Tokyo, and Paris. Plan in the park with one app." />
+  <meta name="theme-color" content="#0f0b23" />
+  <meta name="apple-itunes-app" content="app-id=6759612612" />
+  <link rel="canonical" href="https://www.magicpulse.app/" />
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <link rel="apple-touch-icon" href="/favicon.svg" />
   <title>Magic Pulse | Real-Time Theme Park Planning</title>
+
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Magic Pulse" />
+  <meta property="og:title" content="Magic Pulse | Real-Time Theme Park Planning" />
+  <meta property="og:description" content="Live waits, hours, and weather for Disney and more — Orlando, California, Tokyo, and Paris." />
+  <meta property="og:url" content="https://www.magicpulse.app/" />
+  <meta property="og:locale" content="en_US" />
+  <meta property="og:image" content="https://www.magicpulse.app/favicon.svg" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Magic Pulse | Real-Time Theme Park Planning" />
+  <meta name="twitter:description" content="Live waits, hours, and weather for Disney parks and more." />
+
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="styles.css" />
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "Magic Pulse",
+    "applicationCategory": "TravelApplication",
+    "operatingSystem": "iOS",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    },
+    "description": "Real-time theme park wait times, operating hours, and weather for Walt Disney World, Disneyland, Tokyo Disney Resort, and Disneyland Paris.",
+    "url": "https://www.magicpulse.app/",
+    "downloadUrl": "https://apps.apple.com/us/app/magic-pulse/id6759612612",
+    "author": {
+      "@type": "Organization",
+      "name": "Magic Pulse"
+    }
+  }
+  </script>
 </head>
 <body>
+  <a class="skip-link" href="#main-content">Skip to main content</a>
   <header class="site-header">
     <div class="container nav-row">
       <a href="index.html" class="brand"><span class="brand-pulse" aria-hidden="true"></span>Magic Pulse</a>
-      <nav class="site-nav" aria-label="Primary">
+      <nav id="site-navigation" class="site-nav" aria-label="Primary">
         <a href="#product">Product</a>
         <a href="#how">How it works</a>
         <a href="#pricing">Pricing</a>
@@ -22,13 +63,13 @@
         <a href="support.html">Support</a>
         <a href="#download" class="btn btn-nav">Get App</a>
       </nav>
-      <button class="menu-btn" type="button" aria-label="Open menu">
+      <button class="menu-btn" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="site-navigation">
         <span></span><span></span><span></span>
       </button>
     </div>
   </header>
 
-  <main>
+  <main id="main-content">
     <section class="hero">
       <div class="hero-signal" aria-hidden="true">
         <div class="hero-orbit"></div>
@@ -53,14 +94,15 @@
         <aside class="hero-panel reveal reveal-5" aria-label="Live example panel">
           <div class="panel-head">
             <h2>Live wait snapshot</h2>
-            <span class="live-badge"><span class="live-dot"></span>Live</span>
+            <span class="live-badge"><span class="live-dot" aria-hidden="true"></span>Live</span>
           </div>
           <p class="panel-sub"><span id="live-park-name">Loading…</span> · <span id="live-updated">—</span></p>
-          <div id="live-waits" class="live-waits" aria-live="polite">
+          <div id="live-waits" class="live-waits" aria-live="polite" aria-busy="true">
             <p class="waits-loading">Loading live rides...</p>
             <div class="waits-rows" hidden></div>
             <p class="waits-error" hidden></p>
           </div>
+          <p class="micro" style="margin-top:0.65rem;">Snapshot refreshes every few minutes while you’re on this page.</p>
         </aside>
       </div>
     </section>
@@ -73,15 +115,15 @@
         </article>
         <article class="reveal reveal-2">
           <h3>Privacy approach</h3>
-          <p>Core preferences and watchlist data are stored on device.</p>
+          <p>Core preferences and watchlist data stay on your device.</p>
         </article>
         <article class="reveal reveal-3">
           <h3>Coverage</h3>
-          <p>Four resort regions supported in one app.</p>
+          <p>Four resort regions in one app—WDW, Disneyland, Tokyo, Paris.</p>
         </article>
         <article class="reveal reveal-4">
-          <h3>Support target</h3>
-          <p>Responses within 1-2 business days.</p>
+          <h3>Support</h3>
+          <p>We aim to respond within 1–2 business days.</p>
         </article>
       </div>
     </section>
@@ -94,7 +136,7 @@
         <div class="cards">
           <article class="card">
             <h3>Live waits</h3>
-            <p>Current standby waits with practical sorting and filtering controls.</p>
+            <p>Current standby waits with sorting and filters tuned for quick decisions.</p>
           </article>
           <article class="card">
             <h3>Hours and status</h3>
@@ -102,7 +144,7 @@
           </article>
           <article class="card">
             <h3>Weather context</h3>
-            <p>Weather plus update timing for better short-term planning.</p>
+            <p>Weather plus update timing for short-term planning.</p>
           </article>
           <article class="card">
             <h3>Smart alerts (Pro)</h3>
@@ -114,7 +156,7 @@
           </article>
           <article class="card">
             <h3>Siri + Shortcuts (Pro)</h3>
-            <p>Quick automations for common checks while moving through the park.</p>
+            <p>Quick automations for common checks while you move through the park.</p>
           </article>
         </div>
       </div>
@@ -133,12 +175,12 @@
           <li>
             <span>02</span>
             <h3>Prioritize</h3>
-            <p>Sorts decision-critical information into one concise mobile interface.</p>
+            <p>Surfaces what matters most in one concise mobile interface.</p>
           </li>
           <li>
             <span>03</span>
             <h3>Act</h3>
-            <p>Use watchlists and alerts to time rides and reduce downtime.</p>
+            <p>Use watchlists and alerts to time rides and cut downtime.</p>
           </li>
         </ol>
       </div>
@@ -185,18 +227,26 @@
         <p class="eyebrow">FAQ</p>
         <h2>Common questions</h2>
         <div class="faq">
-          <article>
-            <h3>Is Magic Pulse affiliated with park operators?</h3>
-            <p>No. Magic Pulse is an independent app and is not endorsed by park operators.</p>
-          </article>
-          <article>
-            <h3>Where does wait data come from?</h3>
-            <p>Wait times and park hours are sourced from ThemeParks Wiki.</p>
-          </article>
-          <article>
-            <h3>Is the app free?</h3>
-            <p>Yes. Free includes core planning; Pro adds alerts, widgets, and automation.</p>
-          </article>
+          <details class="faq-details">
+            <summary>Is Magic Pulse affiliated with park operators?</summary>
+            <p class="faq-answer">No. Magic Pulse is an independent app and is not endorsed by Disney, Universal, or other park operators.</p>
+          </details>
+          <details class="faq-details">
+            <summary>Where does wait data come from?</summary>
+            <p class="faq-answer">Wait times and park hours are sourced from ThemeParks Wiki. The app and website may use MagicPulseAPI to aggregate and display snapshots.</p>
+          </details>
+          <details class="faq-details">
+            <summary>Is the app free?</summary>
+            <p class="faq-answer">Yes. Free includes core planning; Pro adds alerts, widgets, Live Activity, and Shortcuts.</p>
+          </details>
+          <details class="faq-details">
+            <summary>Which parks are supported?</summary>
+            <p class="faq-answer">Walt Disney World, Disneyland Resort, Tokyo Disney Resort, and Disneyland Paris—multiple parks per region in one app.</p>
+          </details>
+          <details class="faq-details">
+            <summary>Does the website show real waits?</summary>
+            <p class="faq-answer">The hero panel loads a live snapshot from the public Magic Pulse API when available. If the default park is closed, we try another open park automatically.</p>
+          </details>
         </div>
       </div>
     </section>
@@ -216,21 +266,24 @@
 
   <footer class="site-footer">
     <div class="container footer-grid">
-      <p class="brand">Magic Pulse</p>
+      <p class="brand"><span class="brand-pulse" aria-hidden="true"></span>Magic Pulse</p>
       <p>
         Wait and park data from <a href="https://themeparks.wiki" target="_blank" rel="noopener noreferrer">ThemeParks Wiki</a>.
         Weather by <a href="https://weather.apple.com" target="_blank" rel="noopener noreferrer">Apple Weather</a>.
         <a href="privacy.html">Privacy Policy</a> ·
-        <a href="https://www.apple.com/legal/internet-services/itunes/dev/stdeula/" target="_blank" rel="noopener noreferrer">Terms</a> ·
+        <a href="https://www.apple.com/legal/internet-services/itunes/dev/stdeula/" target="_blank" rel="noopener noreferrer">Apple Standard EULA</a> ·
         <a href="support.html">Support</a>
+      </p>
+      <p class="footer-disclaimer">
+        Magic Pulse is not affiliated with, endorsed by, or sponsored by The Walt Disney Company, NBCUniversal, Oriental Land Company, or other theme park operators. All park names and trademarks belong to their respective owners.
       </p>
     </div>
   </footer>
 
-  <!-- MagicPulseAPI: ride data from GET /api/parks/public/:parkId/snapshot -->
   <script>
     window.MAGICPULSE_API_BASE = 'https://api.magicpulse.app';
-    // window.MAGICPULSE_PARK_ID = 6; // optional — see MagicPulseAPI src/constants/parks.ts
+    // window.MAGICPULSE_PARK_ID = 6;
+    // window.MAGICPULSE_LIVE_REFRESH_MS = 180000; // 3 min (min 60s, max 10m)
   </script>
   <script src="script.js"></script>
 </body>

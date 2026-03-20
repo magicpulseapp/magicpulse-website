@@ -3,18 +3,27 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Magic Pulse privacy policy and data handling summary." />
+  <meta name="description" content="Magic Pulse privacy policy — how we handle data in the app and on this site." />
+  <meta name="theme-color" content="#0f0b23" />
+  <link rel="canonical" href="https://www.magicpulse.app/privacy.html" />
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
   <title>Privacy Policy | Magic Pulse</title>
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Privacy Policy | Magic Pulse" />
+  <meta property="og:url" content="https://www.magicpulse.app/privacy.html" />
+  <meta name="twitter:card" content="summary" />
+
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
+  <a class="skip-link" href="#main-content">Skip to main content</a>
   <header class="site-header">
     <div class="container nav-row">
-      <a href="index.html" class="brand">Magic Pulse</a>
-      <nav class="site-nav" aria-label="Primary">
+      <a href="index.html" class="brand"><span class="brand-pulse" aria-hidden="true"></span>Magic Pulse</a>
+      <nav id="site-navigation" class="site-nav" aria-label="Primary">
         <a href="index.html#product">Product</a>
         <a href="index.html#how">How it works</a>
         <a href="index.html#pricing">Pricing</a>
@@ -22,53 +31,59 @@
         <a href="support.html">Support</a>
         <a href="index.html#download" class="btn btn-nav">Get App</a>
       </nav>
-      <button class="menu-btn" type="button" aria-label="Open menu">
+      <button class="menu-btn" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="site-navigation">
         <span></span><span></span><span></span>
       </button>
     </div>
   </header>
 
-  <main class="section">
-    <article class="container card" style="max-width: 860px;">
+  <main id="main-content" class="section">
+    <article class="container card legal-page">
       <p class="eyebrow">Legal</p>
       <h1>Privacy Policy</h1>
       <p class="micro"><strong>Last updated:</strong> March 2026</p>
 
-      <h3 style="margin-top:1.2rem;">Overview</h3>
+      <h2>Overview</h2>
       <p class="section-copy">Magic Pulse is designed to provide live park planning information with a privacy-first approach.</p>
 
-      <h3>Data used in the app</h3>
+      <h2>Data used in the app</h2>
       <ul class="legal-list">
         <li><strong>Location (optional):</strong> Used to suggest nearby parks and location-based alerts if enabled.</li>
         <li><strong>Notifications:</strong> Used only for alerts you choose to enable.</li>
         <li><strong>On-device preferences:</strong> Watchlist, display settings, and app preferences are stored locally on your device.</li>
       </ul>
 
-      <h3 style="margin-top:1.2rem;">Data we do not sell</h3>
+      <h2>Data we do not sell</h2>
       <p class="section-copy">Magic Pulse does not sell personal data and does not use personal data for third-party ad profiling.</p>
 
-      <h3>Third-party services</h3>
+      <h2>Third-party services</h2>
       <ul class="legal-list">
         <li>Wait and park operating data: <a href="https://themeparks.wiki" target="_blank" rel="noopener noreferrer">ThemeParks Wiki</a>.</li>
         <li>Weather data: <a href="https://weather.apple.com" target="_blank" rel="noopener noreferrer">Apple Weather</a> via WeatherKit.</li>
         <li>In-app purchases are processed by Apple via the App Store.</li>
       </ul>
 
-      <h3 style="margin-top:1.2rem;">Policy updates</h3>
+      <h2>This website</h2>
+      <p class="section-copy">The marketing site may load a live wait snapshot from our API. That request is read-only and does not require an account. Support form submissions are handled by our form provider (e.g. Formspree) only when you choose to submit.</p>
+
+      <h2>Policy updates</h2>
       <p class="section-copy">This policy may be updated periodically. The date above reflects the current version.</p>
 
-      <h3>Contact</h3>
+      <h2>Contact</h2>
       <p class="section-copy">For privacy questions, use the <a href="support.html">support form</a>.</p>
     </article>
   </main>
 
   <footer class="site-footer">
     <div class="container footer-grid">
-      <p class="brand">Magic Pulse</p>
+      <p class="brand"><span class="brand-pulse" aria-hidden="true"></span>Magic Pulse</p>
       <p>
         <a href="privacy.html">Privacy Policy</a> ·
-        <a href="https://www.apple.com/legal/internet-services/itunes/dev/stdeula/" target="_blank" rel="noopener noreferrer">Terms</a> ·
+        <a href="https://www.apple.com/legal/internet-services/itunes/dev/stdeula/" target="_blank" rel="noopener noreferrer">Apple Standard EULA</a> ·
         <a href="support.html">Support</a>
+      </p>
+      <p class="footer-disclaimer">
+        Magic Pulse is not affiliated with theme park operators. Trademarks belong to their respective owners.
       </p>
     </div>
   </footer>

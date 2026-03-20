@@ -3,18 +3,27 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Magic Pulse support for product questions, billing, and troubleshooting." />
+  <meta name="description" content="Contact Magic Pulse support for product questions, billing, and troubleshooting." />
+  <meta name="theme-color" content="#0f0b23" />
+  <link rel="canonical" href="https://www.magicpulse.app/support.html" />
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
   <title>Support | Magic Pulse</title>
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Support | Magic Pulse" />
+  <meta property="og:url" content="https://www.magicpulse.app/support.html" />
+  <meta name="twitter:card" content="summary" />
+
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
+  <a class="skip-link" href="#main-content">Skip to main content</a>
   <header class="site-header">
     <div class="container nav-row">
-      <a href="index.html" class="brand">Magic Pulse</a>
-      <nav class="site-nav" aria-label="Primary">
+      <a href="index.html" class="brand"><span class="brand-pulse" aria-hidden="true"></span>Magic Pulse</a>
+      <nav id="site-navigation" class="site-nav" aria-label="Primary">
         <a href="index.html#product">Product</a>
         <a href="index.html#how">How it works</a>
         <a href="index.html#pricing">Pricing</a>
@@ -22,23 +31,23 @@
         <a href="support.html">Support</a>
         <a href="index.html#download" class="btn btn-nav">Get App</a>
       </nav>
-      <button class="menu-btn" type="button" aria-label="Open menu">
+      <button class="menu-btn" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="site-navigation">
         <span></span><span></span><span></span>
       </button>
     </div>
   </header>
 
-  <main class="section">
+  <main id="main-content" class="section">
     <div class="container">
       <p class="eyebrow">Support</p>
       <h1>Contact support</h1>
-      <p class="section-copy">Submit product, account, or billing questions. Response target is 1-2 business days.</p>
+      <p class="section-copy">Product, account, or billing questions. We aim to respond within 1–2 business days.</p>
 
       <section class="card" style="max-width: 700px;">
         <form id="support-form" action="https://formspree.io/f/xjgeljqp" method="POST">
           <input type="hidden" name="_subject" value="Magic Pulse Support Request" />
 
-          <p class="section-copy" style="margin-top:0;">Please include enough detail for faster resolution.</p>
+          <p class="section-copy" style="margin-top:0;">Include enough detail for a faster resolution (device, iOS version, and what you expected vs. what happened).</p>
 
           <label class="eyebrow" for="name">Name</label>
           <input class="form-input" id="name" name="name" type="text" placeholder="Your name" required autocomplete="name" />
@@ -53,6 +62,7 @@
             <option value="bug">Bug report</option>
             <option value="feature">Feature request</option>
             <option value="billing">Billing / Pro</option>
+            <option value="privacy">Privacy</option>
             <option value="other">Other</option>
           </select>
 
@@ -71,11 +81,14 @@
 
   <footer class="site-footer">
     <div class="container footer-grid">
-      <p class="brand">Magic Pulse</p>
+      <p class="brand"><span class="brand-pulse" aria-hidden="true"></span>Magic Pulse</p>
       <p>
         <a href="privacy.html">Privacy Policy</a> ·
-        <a href="https://www.apple.com/legal/internet-services/itunes/dev/stdeula/" target="_blank" rel="noopener noreferrer">Terms</a> ·
+        <a href="https://www.apple.com/legal/internet-services/itunes/dev/stdeula/" target="_blank" rel="noopener noreferrer">Apple Standard EULA</a> ·
         <a href="support.html">Support</a>
+      </p>
+      <p class="footer-disclaimer">
+        Magic Pulse is not affiliated with theme park operators. Trademarks belong to their respective owners.
       </p>
     </div>
   </footer>
@@ -103,12 +116,12 @@
         })
           .then(function (res) {
             if (!res.ok) throw new Error('failed');
-            status.textContent = 'Thanks. Your message has been sent.';
+            status.textContent = 'Thanks — your message has been sent. We’ll get back to you soon.';
             status.className = 'form-status form-status--success';
             form.reset();
           })
           .catch(function () {
-            status.textContent = 'Unable to send right now. Please try again.';
+            status.textContent = 'Unable to send right now. Please try again or email from the address you use for the App Store.';
             status.className = 'form-status form-status--error';
           })
           .finally(function () {

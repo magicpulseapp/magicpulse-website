@@ -13,9 +13,9 @@ Good if you want a dedicated repo for the website (e.g. `magicpulse-website`).
 2. **Push the landing files** as the only content in the repo root:
 
    ```bash
-   cd /Users/danielhoffman/Desktop/MagicPulse/landing
+   cd /path/to/magicpulse-website
    git init
-   git add index.html privacy.html styles.css script.js
+   git add index.html privacy.html support.html styles.css script.js favicon.svg CNAME
    git commit -m "Add MagicPulse landing page"
    git branch -M main
    git remote add origin https://github.com/YOUR_USERNAME/magicpulse-website.git
