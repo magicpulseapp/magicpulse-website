@@ -74,14 +74,35 @@ a:hover {
   margin: 0 auto;
 }
 
+/* Blur lives on .site-header-backdrop only so .site-nav is not under a filtered
+   ancestor — WebKit uses that as the containing block for position:fixed and
+   pins the mobile sheet to the wrong place. */
 .site-header {
   position: sticky;
   top: 0;
   z-index: 50;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: auto;
+}
+
+.site-header-backdrop {
+  grid-column: 1;
+  grid-row: 1;
+  min-height: 72px;
+  align-self: stretch;
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
   background: linear-gradient(180deg, rgba(22, 16, 48, 0.9), rgba(15, 11, 35, 0.84));
   border-bottom: 1px solid rgba(255, 255, 255, 0.16);
+}
+
+.site-header-main {
+  grid-column: 1;
+  grid-row: 1;
+  align-self: stretch;
+  position: relative;
+  z-index: 1;
 }
 
 .nav-row {
