@@ -83,17 +83,18 @@
       ? Math.max(60000, Math.min(600000, window.MAGICPULSE_LIVE_REFRESH_MS))
       : 180000;
 
+  // Keep `name` in sync with MagicPulseAPI `src/constants/parks.ts` (used for snapshot name fallbacks).
   var PARKS = [
-    { id: 6, name: 'MK', theme: 'mk', resort: 'WDW' },
-    { id: 5, name: 'EP', theme: 'epcot', resort: 'WDW' },
-    { id: 7, name: 'HS', theme: 'hs', resort: 'WDW' },
-    { id: 8, name: 'AK', theme: 'ak', resort: 'WDW' },
-    { id: 16, name: 'DL', theme: 'dl', resort: 'DLR' },
-    { id: 17, name: 'DCA', theme: 'dca', resort: 'DLR' },
-    { id: 274, name: 'TDL', theme: 'tdl', resort: 'TDR' },
-    { id: 275, name: 'TDS', theme: 'tds', resort: 'TDR' },
-    { id: 4, name: 'DLP', theme: 'dlp', resort: 'DLP' },
-    { id: 28, name: 'WDSP', theme: 'wdsp', resort: 'DLP' }
+    { id: 6, name: 'Magic Kingdom', theme: 'mk', resort: 'WDW' },
+    { id: 5, name: 'EPCOT', theme: 'epcot', resort: 'WDW' },
+    { id: 7, name: "Disney's Hollywood Studios", theme: 'hs', resort: 'WDW' },
+    { id: 8, name: "Disney's Animal Kingdom", theme: 'ak', resort: 'WDW' },
+    { id: 16, name: 'Disneyland Park', theme: 'dl', resort: 'DLR' },
+    { id: 17, name: 'Disney California Adventure', theme: 'dca', resort: 'DLR' },
+    { id: 274, name: 'Tokyo Disneyland', theme: 'tdl', resort: 'TDR' },
+    { id: 275, name: 'Tokyo DisneySea', theme: 'tds', resort: 'TDR' },
+    { id: 4, name: 'Disneyland Park (Paris)', theme: 'dlp', resort: 'DLP' },
+    { id: 28, name: 'Walt Disney Studios Park', theme: 'wdsp', resort: 'DLP' }
   ];
 
   var SNAPSHOT_RIDE_COUNT = 4;
