@@ -10,6 +10,7 @@
   --muted: rgba(245, 246, 251, 0.74);
   --accent: #9e59ff;
   --accent-strong: #8b49f1;
+  --accent-light: #c49aff;
   --shadow-soft: 0 8px 24px rgba(5, 3, 16, 0.35);
   --shadow-strong: 0 18px 48px rgba(5, 3, 16, 0.45);
   --radius: 14px;
@@ -730,6 +731,108 @@ h3 {
   color: var(--muted);
   font-size: 0.9rem;
   line-height: 1.65;
+}
+
+/* Gradient text for hero headline accent */
+.gradient-text {
+  background: linear-gradient(120deg, var(--accent-light) 0%, var(--accent) 40%, #c77dff 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Trust section icons */
+.trust-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 9px;
+  background: linear-gradient(135deg, rgba(158, 89, 255, 0.18), rgba(158, 89, 255, 0.06));
+  border: 1px solid rgba(158, 89, 255, 0.22);
+  color: var(--accent-light);
+  margin-bottom: 0.6rem;
+}
+
+/* Feature card icons */
+.card-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, rgba(158, 89, 255, 0.18), rgba(158, 89, 255, 0.05));
+  border: 1px solid rgba(158, 89, 255, 0.2);
+  color: var(--accent-light);
+  margin-bottom: 0.65rem;
+}
+
+/* Pro feature cards — subtle top accent */
+.card-pro {
+  border-top: 2px solid rgba(158, 89, 255, 0.45);
+  position: relative;
+}
+
+/* Pro badge on feature cards */
+.pro-badge {
+  display: inline-block;
+  padding: 0.18em 0.55em;
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--accent-light);
+  background: rgba(158, 89, 255, 0.16);
+  border: 1px solid rgba(158, 89, 255, 0.3);
+  border-radius: 4px;
+  margin-bottom: 0.4rem;
+}
+
+/* Featured badge on pricing cards */
+.featured-badge {
+  display: inline-block;
+  padding: 0.2em 0.65em;
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #fff;
+  background: linear-gradient(135deg, var(--accent) 0%, #7f45e8 100%);
+  border-radius: 5px;
+  margin-bottom: 0.5rem;
+}
+
+.featured-badge--alt {
+  background: linear-gradient(135deg, #2ecc71 0%, #16a085 100%);
+}
+
+/* Price period label */
+.price-period {
+  font-size: 0.78rem;
+  font-weight: 400;
+  color: var(--muted);
+  letter-spacing: 0;
+}
+
+/* CTA button inside pricing card */
+.price-cta {
+  display: block;
+  width: 100%;
+  margin-top: 1rem;
+  text-align: center;
+}
+
+/* Improved feature card title spacing when icon is present */
+.card h3 {
+  margin-top: 0;
+}
+
+/* Card hover: add a subtle accent glow */
+.card:hover {
+  border-color: rgba(158, 89, 255, 0.4);
+  box-shadow: var(--shadow-strong), 0 0 0 1px rgba(158, 89, 255, 0.12);
 }
 
 .footer-disclaimer {
