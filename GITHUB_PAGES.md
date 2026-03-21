@@ -15,7 +15,7 @@ Good if you want a dedicated repo for the website (e.g. `magicpulse-website`).
    ```bash
    cd /path/to/magicpulse-website
    git init
-   git add index.html privacy.html support.html styles.css script.js favicon.svg CNAME
+   git add index.html privacy.html support.html styles.css script.js favicon.svg robots.txt sitemap.xml CNAME
    git commit -m "Add MagicPulse landing page"
    git branch -M main
    git remote add origin https://github.com/YOUR_USERNAME/magicpulse-website.git
@@ -46,8 +46,8 @@ Good if you want the site at `https://YOUR_USERNAME.github.io/MagicPulse/` and k
    cd /Users/danielhoffman/Desktop/MagicPulse
    git checkout --orphan gh-pages
    git reset --hard
-   cp landing/index.html landing/privacy.html landing/styles.css landing/script.js .
-   git add index.html privacy.html styles.css script.js
+   cp landing/index.html landing/privacy.html landing/support.html landing/styles.css landing/script.js landing/favicon.svg landing/robots.txt landing/sitemap.xml .
+   git add index.html privacy.html support.html styles.css script.js favicon.svg robots.txt sitemap.xml
    git commit -m "Add landing page for GitHub Pages"
    git push -u origin gh-pages
    ```
