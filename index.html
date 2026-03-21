@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="referrer" content="strict-origin-when-cross-origin" />
   <meta name="description" content="Magic Pulse — real-time theme park waits, hours, and weather for Orlando, California, Tokyo, and Paris. Plan in the park with one app." />
   <meta name="theme-color" content="#0f0b23" />
   <meta name="apple-itunes-app" content="app-id=6759612612" />
@@ -18,35 +19,55 @@
   <meta property="og:url" content="https://www.magicpulse.app/" />
   <meta property="og:locale" content="en_US" />
   <meta property="og:image" content="https://www.magicpulse.app/favicon.svg" />
+  <meta property="og:image:alt" content="Magic Pulse — theme park wait times app" />
 
   <meta name="twitter:card" content="summary" />
   <meta name="twitter:title" content="Magic Pulse | Real-Time Theme Park Planning" />
-  <meta name="twitter:description" content="Live waits, hours, and weather for Disney parks and more." />
+  <meta name="twitter:description" content="Live waits, hours, and weather for Disney and more — Orlando, California, Tokyo, and Paris." />
+  <meta name="twitter:image" content="https://www.magicpulse.app/favicon.svg" />
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="preload" href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700;800&amp;family=Inter:wght@400;500;600;700&amp;display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'" />
+  <noscript><link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700;800&amp;family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet" /></noscript>
   <link rel="stylesheet" href="styles.css" />
 
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
-    "@type": "SoftwareApplication",
-    "name": "Magic Pulse",
-    "applicationCategory": "TravelApplication",
-    "operatingSystem": "iOS",
-    "offers": {
-      "@type": "Offer",
-      "price": "0",
-      "priceCurrency": "USD"
-    },
-    "description": "Real-time theme park wait times, operating hours, and weather for Walt Disney World, Disneyland, Tokyo Disney Resort, and Disneyland Paris.",
-    "url": "https://www.magicpulse.app/",
-    "downloadUrl": "https://apps.apple.com/us/app/magic-pulse/id6759612612",
-    "author": {
-      "@type": "Organization",
-      "name": "Magic Pulse"
-    }
+    "@graph": [
+      {
+        "@type": "WebSite",
+        "@id": "https://www.magicpulse.app/#website",
+        "url": "https://www.magicpulse.app/",
+        "name": "Magic Pulse",
+        "description": "Real-time theme park wait times, hours, and weather for Disney parks and more.",
+        "publisher": { "@id": "https://www.magicpulse.app/#organization" },
+        "inLanguage": "en-US"
+      },
+      {
+        "@type": "Organization",
+        "@id": "https://www.magicpulse.app/#organization",
+        "name": "Magic Pulse",
+        "url": "https://www.magicpulse.app/"
+      },
+      {
+        "@type": "SoftwareApplication",
+        "name": "Magic Pulse",
+        "applicationCategory": "TravelApplication",
+        "operatingSystem": "iOS",
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "USD"
+        },
+        "description": "Real-time theme park wait times, operating hours, and weather for Walt Disney World, Disneyland, Tokyo Disney Resort, and Disneyland Paris.",
+        "url": "https://www.magicpulse.app/",
+        "downloadUrl": "https://apps.apple.com/us/app/magic-pulse/id6759612612",
+        "author": { "@id": "https://www.magicpulse.app/#organization" },
+        "publisher": { "@id": "https://www.magicpulse.app/#organization" }
+      }
+    ]
   }
   </script>
 </head>
@@ -286,6 +307,6 @@
     // window.MAGICPULSE_PARK_ID = 6;
     // window.MAGICPULSE_LIVE_REFRESH_MS = 180000; // 3 min (min 60s, max 10m)
   </script>
-  <script src="script.js"></script>
+  <script src="script.js" defer></script>
 </body>
 </html>

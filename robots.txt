@@ -1,0 +1,5 @@
+# https://www.magicpulse.app
+User-agent: *
+Allow: /
+
+Sitemap: https://www.magicpulse.app/sitemap.xml

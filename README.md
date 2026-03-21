@@ -11,6 +11,8 @@ Static landing page for the **Magic Pulse** iOS app (`www.magicpulse.app`). No b
 | `script.js` | Mobile nav (a11y), scroll reveal + fallback, live API panel + auto-refresh |
 | `favicon.svg` | Tab / social fallback icon |
 | `privacy.html` / `support.html` | Legal + contact (Formspree) |
+| `robots.txt` | Crawl rules + `Sitemap` URL |
+| `sitemap.xml` | Index URLs for search engines |
 
 ## Local preview
 
@@ -50,7 +52,19 @@ Ride rows include `data-ride-id` when the API provides an `id`.
 ## SEO & sharing
 
 - Canonical URLs assume **`https://www.magicpulse.app/`** (see `CNAME`).
-- Open Graph / Twitter meta are on `index.html`. For richer link previews, add a **1200×630** PNG (e.g. `/og-image.png`) and point `og:image` at it (many networks ignore SVG).
+- **`robots.txt`** allows all crawlers and references **`sitemap.xml`** (home, support, privacy).
+- **Open Graph / Twitter** tags are on all public pages; **`og:image:alt`** and matching Twitter fields improve accessibility and previews.
+- **Structured data** on the home page uses JSON-LD **`@graph`**: `WebSite`, `Organization`, and `SoftwareApplication`.
+- **Performance:** Google Fonts load via **`preload` + async stylesheet** (with `<noscript>` fallback); **`script.js`** uses **`defer`** so HTML paints sooner.
+- For **rich** social previews, add a **1200×630** PNG (e.g. `/og-image.png`) and set `og:image` / `twitter:image` to it (many networks ignore SVG).
+
+### Lighthouse (local)
+
+```bash
+cd magicpulse-website && python3 -m http.server 8080
+# Other terminal:
+npx --yes lighthouse http://127.0.0.1:8080/ --only-categories=performance,seo,accessibility,best-practices --view
+```
 
 ## Deploy
 
