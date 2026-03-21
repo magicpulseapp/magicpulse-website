@@ -9,7 +9,8 @@ Static landing page for the **Magic Pulse** iOS app (`www.magicpulse.app`). No b
 | `index.html` | Home: hero, features, pricing, FAQ (`<details>`), live snapshot |
 | `styles.css` | Dark theme, responsive layout, FAQ accordion, skip link |
 | `script.js` | Mobile nav (a11y), scroll reveal + fallback, live API panel + auto-refresh |
-| `favicon.svg` | Tab / social fallback icon |
+| `favicon.svg` | Tab icon |
+| `og-image.png` | Open Graph / Twitter card image (1200×630); referenced in page `<meta>` tags |
 | `privacy.html` / `support.html` | Legal + contact (Formspree) |
 | `robots.txt` | Crawl rules + `Sitemap` URL |
 | `sitemap.xml` | Index URLs for search engines |
