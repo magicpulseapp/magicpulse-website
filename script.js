@@ -64,6 +64,45 @@
     });
   }
 
+  // Sticky mobile CTA bar — show after hero, hide near download section
+  (function () {
+    var ctaBar = document.getElementById('mobile-cta-bar');
+    var downloadSection = document.getElementById('download');
+    if (!ctaBar) return;
+
+    var shown = false;
+
+    function updateCtaBar() {
+      var scrollY = window.scrollY || window.pageYOffset;
+      var heroHeight = 320;
+      var nearBottom = false;
+
+      if (downloadSection) {
+        var rect = downloadSection.getBoundingClientRect();
+        nearBottom = rect.top < window.innerHeight * 0.85;
+      }
+
+      var shouldShow = scrollY > heroHeight && !nearBottom;
+
+      if (shouldShow && !shown) {
+        shown = true;
+        ctaBar.classList.add('is-visible');
+        ctaBar.removeAttribute('aria-hidden');
+        ctaBar.querySelector('a').removeAttribute('tabindex');
+        document.body.classList.add('has-mobile-cta');
+      } else if (!shouldShow && shown) {
+        shown = false;
+        ctaBar.classList.remove('is-visible');
+        ctaBar.setAttribute('aria-hidden', 'true');
+        ctaBar.querySelector('a').setAttribute('tabindex', '-1');
+        document.body.classList.remove('has-mobile-cta');
+      }
+    }
+
+    window.addEventListener('scroll', updateCtaBar, { passive: true });
+    updateCtaBar();
+  }());
+
   var waitsRoot = document.getElementById('live-waits');
   if (!waitsRoot) return;
 
@@ -437,18 +476,28 @@
     }
   }
 
+  function waitValueClass(waitTime) {
+    if (waitTime == null) return '';
+    if (waitTime < 20) return ' value--low';
+    if (waitTime <= 45) return ' value--med';
+    return ' value--high';
+  }
+
   function render(list) {
     if (!rows) return;
     rows.innerHTML = list
       .map(function (item) {
         var wait = item.waitTime != null ? item.waitTime + ' min' : '-';
         var rideAttrs = item.rideId ? ' data-ride-id="' + escapeHtml(item.rideId) + '"' : '';
+        var valueClass = 'value' + waitValueClass(item.waitTime);
         return (
           '<div class="waits-row"' +
           rideAttrs +
           '><span>' +
           escapeHtml(item.name) +
-          '</span><span class="value">' +
+          '</span><span class="' +
+          valueClass +
+          '">' +
           wait +
           '</span></div>'
         );
