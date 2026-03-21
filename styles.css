@@ -973,13 +973,15 @@ h3 {
     overflow: hidden;
   }
 
+  /* Below .site-header (50): sheet lives inside header’s stacking context, so overlay
+     must not sit above 50 or it captures all taps and nav links never receive clicks. */
   .nav-overlay {
     display: none;
     position: fixed;
     inset: 0;
     /* Solid scrim only — backdrop blur on overlay blurs the header/page oddly on iOS */
     background: rgba(5, 3, 16, 0.72);
-    z-index: 70;
+    z-index: 40;
   }
 
   body.nav-open .nav-overlay {
