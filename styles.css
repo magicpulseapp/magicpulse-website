@@ -473,7 +473,7 @@ h3 {
 .reveal.reveal-6 { transition-delay: 0.3s; }
 
 .trust {
-  padding: 0 0 0.6rem;
+  padding: 2.4rem 0 0.6rem;
 }
 
 .trust-grid {
@@ -856,7 +856,7 @@ h3 {
 
 /* Stats strip */
 .stats-strip {
-  padding: 1.4rem 0;
+  padding: 2rem 0 2.4rem;
   border-bottom: 1px solid var(--card-border);
 }
 
