@@ -1,5 +1,11 @@
 # Hosting the MagicPulse landing page on GitHub Pages
 
+**Production domain:** `https://www.magicpulse.app` — use **`https://www.magicpulse.app/privacy.html`** and **`https://www.magicpulse.app/support.html`** in **App Store Connect** (Privacy Policy URL + Support URL). The iOS app’s `PrivacyPolicyURL` in Info.plist matches.
+
+Below: generic GitHub Pages setup if you use a `*.github.io` URL instead.
+
+---
+
 Two ways to get a URL like `https://YOUR_USERNAME.github.io/SITE_NAME/`.
 
 ---

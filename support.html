@@ -56,7 +56,17 @@
     <div class="container">
       <p class="eyebrow">Support</p>
       <h1>Contact support</h1>
-      <p class="section-copy">Product, account, or billing questions. We aim to respond within 1–2 business days.</p>
+      <p class="section-copy">Product, account, billing, or privacy questions. We aim to respond within <strong>1–2 business days</strong> (U.S. business days).</p>
+
+      <section class="card legal-page" style="max-width: 700px; margin-bottom: 1.25rem;">
+        <h2 style="margin-top:0;">Before you write</h2>
+        <ul class="legal-list">
+          <li><strong>Billing / Pro:</strong> Include the Apple ID email used for purchases if different from the email below.</li>
+          <li><strong>Bugs:</strong> Device model, iOS version (Settings → General → About), and steps to reproduce.</li>
+          <li><strong>Privacy:</strong> See our <a href="privacy.html">Privacy Policy</a>; use topic “Privacy” for data requests.</li>
+          <li><strong>Trust:</strong> Submissions go through Formspree (HTTPS). We use your email only to reply unless you ask us to retain details for an open issue.</li>
+        </ul>
+      </section>
 
       <section class="card" style="max-width: 700px;">
         <form id="support-form" action="https://formspree.io/f/xjgeljqp" method="POST">
@@ -136,7 +146,8 @@
             form.reset();
           })
           .catch(function () {
-            status.textContent = 'Unable to send right now. Please try again or email from the address you use for the App Store.';
+            status.textContent =
+              'Unable to send right now. Please try again in a moment, use a different network, or open the Privacy Policy and use any alternate contact instructions there.';
             status.className = 'form-status form-status--error';
           })
           .finally(function () {

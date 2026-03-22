@@ -73,9 +73,20 @@ Upload the folder to **GitHub Pages**, **Netlify**, **Vercel**, S3, etc. Ensure 
 
 If you also serve this site from **MagicPulseAPI** `public/`, copy these files there after changes.
 
-## App Store
+## App Store Connect (copy-paste)
 
-Primary download link: `https://apps.apple.com/us/app/magic-pulse/id6759612612`
+Use the **custom domain** URLs in [App Store Connect](https://appstoreconnect.apple.com) → your app → **App Information**:
+
+| Field | URL |
+|--------|-----|
+| Privacy Policy URL | `https://www.magicpulse.app/privacy.html` |
+| Support URL | `https://www.magicpulse.app/support.html` |
+
+Must match the iOS target’s **`PrivacyPolicyURL`** in `Info.plist` (see Magic Pulse Xcode project).
+
+**App Store product page:** `https://apps.apple.com/us/app/magic-pulse/id6759612612`
+
+Full checklist: `MagicPulse/docs/APP_STORE_CONNECT_MANUAL.md` (in the iOS repo).
 
 ## Legal
 
