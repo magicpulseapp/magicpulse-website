@@ -235,16 +235,7 @@
   }
 
   function getFetchErrorMessage(err) {
-    var msg = err && err.message ? err.message : '';
-    if (msg.indexOf('fetch') !== -1 || msg === 'Failed to fetch') {
-      var apiIsHttp = apiUrl.indexOf('http://') === 0;
-      var pageIsHttps = typeof location !== 'undefined' && location.protocol === 'https:';
-      if (pageIsHttps && apiIsHttp) {
-        return 'API unreachable (HTTPS page cannot call HTTP API). Use HTTPS for the API or a same-origin proxy.';
-      }
-      return 'Could not reach the API. Check that it’s running and reachable, and that CORS is enabled.';
-    }
-    return msg || 'Could not load live wait times.';
+    return 'Live data temporarily unavailable — download the app for real-time updates.';
   }
 
   function escapeHtml(str) {
@@ -483,6 +474,13 @@
     return ' value--high';
   }
 
+  function waitLevelLabel(waitTime) {
+    if (waitTime == null) return '';
+    if (waitTime < 20) return '<span class="sr-only"> (short wait)</span>';
+    if (waitTime <= 45) return '<span class="sr-only"> (moderate wait)</span>';
+    return '<span class="sr-only"> (long wait)</span>';
+  }
+
   function render(list) {
     if (!rows) return;
     rows.innerHTML = list
@@ -499,6 +497,7 @@
           valueClass +
           '">' +
           wait +
+          waitLevelLabel(item.waitTime) +
           '</span></div>'
         );
       })
@@ -528,7 +527,7 @@
     var isRefresh = options && options.refresh;
     var snapshot = result && result.snapshot;
     if (!snapshot || !Array.isArray(snapshot.rides)) {
-      showError('Live data unavailable right now.', isRefresh);
+      showError('Live data temporarily unavailable — download the app for real-time updates.', isRefresh);
       return;
     }
     var selectedParkId = result && result.selectedParkId ? result.selectedParkId : MAGICPULSE_PARK_ID;
@@ -539,7 +538,7 @@
     var items = selectSnapshotRides(snapshot.rides, selectedParkId);
 
     if (!items.length) {
-      showError('Live data unavailable right now.', isRefresh);
+      showError('Live data temporarily unavailable — download the app for real-time updates.', isRefresh);
       return;
     }
 
