@@ -32,8 +32,9 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link rel="preload" href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700;800&amp;family=Inter:wght@400;500;600;700&amp;display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'" />
-  <noscript><link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700;800&amp;family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet" /></noscript>
+  <link rel="preload" href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700;800&amp;family=Inter:wght@400;500;600;700&amp;display=optional" as="style" onload="this.onload=null;this.rel='stylesheet'" />
+  <noscript><link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700;800&amp;family=Inter:wght@400;500;600;700&amp;display=optional" rel="stylesheet" /></noscript>
+  <noscript><style>.reveal,.section,.section-alt{opacity:1!important;transform:none!important;transition:none!important}</style></noscript>
   <link rel="stylesheet" href="styles.css" />
 
   <script type="application/ld+json">
@@ -155,7 +156,7 @@
         <a href="#pricing">Pricing</a>
         <a href="#faq">FAQ</a>
         <a href="support.html">Support</a>
-        <a href="#download" class="btn btn-nav">Get App</a>
+        <a href="#download" class="btn btn-nav">Get the app</a>
       </nav>
       <button class="menu-btn" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="site-navigation">
         <span></span><span></span><span></span>
@@ -191,7 +192,7 @@
         <aside class="hero-panel reveal reveal-5" aria-label="Live example panel">
           <div class="panel-head">
             <h2>Live wait snapshot</h2>
-            <span class="live-badge"><span class="live-dot" aria-hidden="true"></span>Live</span>
+            <span class="live-badge" id="live-badge"><span class="live-dot" aria-hidden="true"></span>Live</span>
           </div>
           <p class="panel-sub"><span id="live-park-name">Loading…</span> · <span id="live-updated">—</span></p>
           <div id="live-waits" class="live-waits" aria-live="polite" aria-busy="true">
@@ -199,6 +200,7 @@
             <div class="waits-rows" hidden></div>
             <p class="waits-error" hidden></p>
           </div>
+          <p class="live-waits-fallback-note" id="live-waits-fallback-note" hidden>Live data unavailable — example rides shown.</p>
           <p class="micro" style="margin-top:0.65rem;">Snapshot refreshes every few minutes while you’re on this page.</p>
         </aside>
       </div>
@@ -381,6 +383,8 @@
           </article>
         </div>
 
+        <p class="pricing-legal">Prices shown are for the United States App Store and may vary by region or over time. Pro purchases are billed through your Apple ID.</p>
+
         <div class="compare-table">
           <p class="compare-table-label">Full feature comparison</p>
           <table>
@@ -447,7 +451,7 @@
         <div class="hero-actions">
           <a class="btn btn-primary" href="https://apps.apple.com/us/app/magic-pulse/id6759612612" target="_blank" rel="noopener noreferrer">
             <svg aria-hidden="true" width="17" height="17" viewBox="0 0 24 24" fill="currentColor" style="margin-right:0.4em;flex-shrink:0"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
-            Download on App Store
+            Install Magic Pulse
           </a>
           <a class="btn btn-ghost" href="support.html">Contact support</a>
         </div>
@@ -474,7 +478,7 @@
   <div class="mobile-cta-bar" id="mobile-cta-bar" aria-hidden="true">
     <a class="btn btn-primary mobile-cta-btn" href="https://apps.apple.com/us/app/magic-pulse/id6759612612" target="_blank" rel="noopener noreferrer" tabindex="-1">
       <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
-      Download Free on iOS
+      Get it free — App Store
     </a>
   </div>
 

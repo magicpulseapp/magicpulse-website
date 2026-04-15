@@ -1,26 +1,35 @@
 (function () {
-  var revealObserver = new IntersectionObserver(
-    function (entries) {
-      entries.forEach(function (entry) {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('revealed');
-        }
-      });
-    },
-    { rootMargin: '0px 0px -8% 0px', threshold: 0 }
-  );
-  document.querySelectorAll('.reveal, .section, .section-alt').forEach(function (el) {
-    revealObserver.observe(el);
-  });
+  function revealAllNow() {
+    document.querySelectorAll('.reveal, .section, .section-alt').forEach(function (el) {
+      el.classList.add('revealed');
+    });
+  }
 
-  window.setTimeout(function () {
-    document.querySelectorAll('.reveal:not(.revealed)').forEach(function (el) {
-      el.classList.add('revealed');
+  var prefersReducedMotion =
+    window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var noIntersectionObserver = typeof window.IntersectionObserver === 'undefined';
+
+  if (prefersReducedMotion || noIntersectionObserver) {
+    revealAllNow();
+  } else {
+    var revealObserver = new IntersectionObserver(
+      function (entries) {
+        entries.forEach(function (entry) {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('revealed');
+          }
+        });
+      },
+      { rootMargin: '0px 0px -8% 0px', threshold: 0 }
+    );
+    document.querySelectorAll('.reveal, .section, .section-alt').forEach(function (el) {
+      revealObserver.observe(el);
     });
-    document.querySelectorAll('.section:not(.revealed), .section-alt:not(.revealed)').forEach(function (el) {
-      el.classList.add('revealed');
-    });
-  }, 4000);
+
+    window.setTimeout(function () {
+      revealAllNow();
+    }, 4000);
+  }
 
   var menuBtn = document.querySelector('.menu-btn');
   var nav = document.getElementById('site-navigation') || document.querySelector('.site-nav');
@@ -483,11 +492,55 @@
     return ' value--high';
   }
 
+  var HERO_STATIC_FALLBACK_RIDES = [
+    { name: 'Seven Dwarfs Mine Train' },
+    { name: 'Space Mountain' },
+    { name: 'TRON Lightcycle / Run' },
+    { name: "Peter Pan's Flight" }
+  ];
+
+  function clearHeroFallbackState() {
+    waitsRoot.classList.remove('live-waits--fallback');
+    var note = document.getElementById('live-waits-fallback-note');
+    if (note) note.hidden = true;
+    var badge = document.getElementById('live-badge');
+    if (badge) {
+      badge.classList.remove('live-badge--demo');
+      badge.innerHTML = '<span class="live-dot" aria-hidden="true"></span>Live';
+    }
+  }
+
+  function renderHeroStaticFallback() {
+    if (!rows) return;
+    var list = HERO_STATIC_FALLBACK_RIDES.map(function (r) {
+      return { name: r.name, waitTime: null, rideId: null };
+    });
+    render(list);
+    waitsRoot.classList.add('live-waits--fallback');
+    var badge = document.getElementById('live-badge');
+    if (badge) {
+      badge.classList.add('live-badge--demo');
+      badge.innerHTML = '<span class="live-dot live-dot--muted" aria-hidden="true"></span>Example';
+    }
+    var parkEl = document.getElementById('live-park-name');
+    var updatedEl = document.getElementById('live-updated');
+    if (parkEl) parkEl.textContent = 'Magic Kingdom (example)';
+    if (updatedEl) updatedEl.textContent = 'Illustrative sample';
+    var note = document.getElementById('live-waits-fallback-note');
+    if (note) note.hidden = false;
+    if (loading) loading.hidden = true;
+    if (error) {
+      error.textContent = '';
+      error.hidden = true;
+    }
+    waitsRoot.setAttribute('aria-busy', 'false');
+  }
+
   function render(list) {
     if (!rows) return;
     rows.innerHTML = list
       .map(function (item) {
-        var wait = item.waitTime != null ? item.waitTime + ' min' : '-';
+        var wait = item.waitTime != null ? item.waitTime + ' min' : '—';
         var rideAttrs = item.rideId ? ' data-ride-id="' + escapeHtml(item.rideId) + '"' : '';
         var valueClass = 'value' + waitValueClass(item.waitTime);
         return (
@@ -508,20 +561,10 @@
 
   function showError(message, isRefresh) {
     if (isRefresh) return;
-    if (loading) loading.hidden = true;
-    if (rows) {
-      rows.hidden = true;
-      rows.innerHTML = '';
+    if (typeof console !== 'undefined' && console.warn) {
+      console.warn('[Magic Pulse]', message || 'Live wait snapshot failed');
     }
-    var parkEl = document.getElementById('live-park-name');
-    var updatedEl = document.getElementById('live-updated');
-    if (parkEl) parkEl.textContent = '—';
-    if (updatedEl) updatedEl.textContent = '—';
-    if (error) {
-      error.textContent = message || 'Could not load live wait times.';
-      error.hidden = false;
-    }
-    waitsRoot.setAttribute('aria-busy', 'false');
+    renderHeroStaticFallback();
   }
 
   function applyLiveResult(result, options) {
@@ -542,6 +585,8 @@
       showError('Live data unavailable right now.', isRefresh);
       return;
     }
+
+    clearHeroFallbackState();
 
     if (loading) loading.hidden = true;
     if (error) error.hidden = true;
