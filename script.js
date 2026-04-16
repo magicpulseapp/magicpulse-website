@@ -253,6 +253,13 @@
     );
   }
 
+  /** Unique URL per request so browsers and intermediaries cannot serve a stale cached GET snapshot. */
+  function apiSnapshotUrlNoCache(parkId) {
+    var base = apiSnapshotUrl(parkId);
+    var sep = base.indexOf('?') === -1 ? '?' : '&';
+    return base + sep + '_ts=' + String(Date.now());
+  }
+
   function getFetchErrorMessage(err) {
     var msg = err && err.message ? err.message : '';
     if (err && (err.name === 'AbortError' || msg === 'Snapshot time budget exceeded')) {
@@ -436,7 +443,10 @@
   }
 
   function fetchSnapshotForPark(parkId, budgetEndTs) {
-    var opts = { method: 'GET' };
+    var opts = {
+      method: 'GET',
+      cache: 'no-store'
+    };
     if (MAGICPULSE_API_TOKEN) {
       opts.headers = { Authorization: 'Bearer ' + MAGICPULSE_API_TOKEN };
     }
@@ -452,7 +462,7 @@
     }, timeoutMs);
     opts.signal = controller.signal;
 
-    return fetch(apiSnapshotUrl(parkId), opts)
+    return fetch(apiSnapshotUrlNoCache(parkId), opts)
       .then(function (res) {
         if (!res.ok) throw new Error(res.status === 401 ? 'API token required' : 'Request failed');
         return res.json();
@@ -656,6 +666,13 @@
 
   document.addEventListener('visibilitychange', function () {
     if (document.visibilityState === 'visible') {
+      loadLiveWaits({ refresh: true });
+    }
+  });
+
+  // Back/forward cache: WebKit may restore the page without a full reload; fetch a new snapshot each time.
+  window.addEventListener('pageshow', function (event) {
+    if (event.persisted) {
       loadLiveWaits({ refresh: true });
     }
   });
