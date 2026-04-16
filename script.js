@@ -131,6 +131,16 @@
       ? Math.max(60000, Math.min(600000, window.MAGICPULSE_LIVE_REFRESH_MS))
       : 180000;
 
+  var LIVE_FETCH_TIMEOUT_MS =
+    typeof window.MAGICPULSE_LIVE_FETCH_TIMEOUT_MS === 'number' && !Number.isNaN(window.MAGICPULSE_LIVE_FETCH_TIMEOUT_MS)
+      ? Math.max(3000, Math.min(60000, window.MAGICPULSE_LIVE_FETCH_TIMEOUT_MS))
+      : 8000;
+
+  var LIVE_SNAPSHOT_BUDGET_MS =
+    typeof window.MAGICPULSE_LIVE_SNAPSHOT_BUDGET_MS === 'number' && !Number.isNaN(window.MAGICPULSE_LIVE_SNAPSHOT_BUDGET_MS)
+      ? Math.max(4000, Math.min(120000, window.MAGICPULSE_LIVE_SNAPSHOT_BUDGET_MS))
+      : 14000;
+
   // Keep `name` in sync with MagicPulseAPI `src/constants/parks.ts` (used for snapshot name fallbacks).
   var PARKS = [
     { id: 6, name: 'Magic Kingdom', theme: 'mk', resort: 'WDW' },
@@ -245,6 +255,9 @@
 
   function getFetchErrorMessage(err) {
     var msg = err && err.message ? err.message : '';
+    if (err && (err.name === 'AbortError' || msg === 'Snapshot time budget exceeded')) {
+      return 'Live data took too long. Showing example rides.';
+    }
     if (msg.indexOf('fetch') !== -1 || msg === 'Failed to fetch') {
       var apiIsHttp = apiUrl.indexOf('http://') === 0;
       var pageIsHttps = typeof location !== 'undefined' && location.protocol === 'https:';
@@ -422,11 +435,23 @@
     return !!(snapshot && snapshot.parkHours && snapshot.parkHours.status === 'OPEN');
   }
 
-  function fetchSnapshotForPark(parkId) {
+  function fetchSnapshotForPark(parkId, budgetEndTs) {
     var opts = { method: 'GET' };
     if (MAGICPULSE_API_TOKEN) {
       opts.headers = { Authorization: 'Bearer ' + MAGICPULSE_API_TOKEN };
     }
+    var msLeft =
+      typeof budgetEndTs === 'number' ? budgetEndTs - Date.now() : LIVE_FETCH_TIMEOUT_MS;
+    if (msLeft < 200) {
+      return Promise.reject(new Error('Snapshot time budget exceeded'));
+    }
+    var timeoutMs = Math.min(LIVE_FETCH_TIMEOUT_MS, Math.max(400, msLeft - 80));
+    var controller = new AbortController();
+    var timerId = window.setTimeout(function () {
+      controller.abort();
+    }, timeoutMs);
+    opts.signal = controller.signal;
+
     return fetch(apiSnapshotUrl(parkId), opts)
       .then(function (res) {
         if (!res.ok) throw new Error(res.status === 401 ? 'API token required' : 'Request failed');
@@ -434,11 +459,15 @@
       })
       .then(function (payload) {
         return payload && payload.snapshot ? payload.snapshot : null;
+      })
+      .finally(function () {
+        window.clearTimeout(timerId);
       });
   }
 
   function resolveSnapshotWithFallback(primaryParkId) {
-    return fetchSnapshotForPark(primaryParkId).then(function (primarySnapshot) {
+    var budgetEnd = Date.now() + LIVE_SNAPSHOT_BUDGET_MS;
+    return fetchSnapshotForPark(primaryParkId, budgetEnd).then(function (primarySnapshot) {
       if (!isSnapshotUsable(primarySnapshot)) {
         return { snapshot: primarySnapshot, selectedParkId: primaryParkId };
       }
@@ -452,7 +481,7 @@
       candidateIds.forEach(function (candidateParkId) {
         chain = chain.then(function (resolved) {
           if (resolved) return resolved;
-          return fetchSnapshotForPark(candidateParkId)
+          return fetchSnapshotForPark(candidateParkId, budgetEnd)
             .then(function (candidateSnapshot) {
               if (isSnapshotUsable(candidateSnapshot) && isSnapshotOpen(candidateSnapshot)) {
                 return { snapshot: candidateSnapshot, selectedParkId: candidateParkId };
