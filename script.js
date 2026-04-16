@@ -260,6 +260,28 @@
     return base + sep + '_ts=' + String(Date.now());
   }
 
+  /**
+   * Extract the HUD snapshot object from API JSON (shape has varied by route/version).
+   */
+  function snapshotFromAPIPayload(payload) {
+    if (!payload || typeof payload !== 'object') return null;
+    if (payload.snapshot && typeof payload.snapshot === 'object') return payload.snapshot;
+    if (payload.data && typeof payload.data === 'object' && payload.data.snapshot) {
+      return payload.data.snapshot;
+    }
+    if (Array.isArray(payload.rides) && payload.park) {
+      return payload;
+    }
+    return null;
+  }
+
+  /** Match app JSON: `is_open` may be omitted when wait is present — do not treat as closed. */
+  function rideHasUsableWait(ride) {
+    if (ride == null || ride.wait == null) return false;
+    if (ride.is_open === false) return false;
+    return true;
+  }
+
   function getFetchErrorMessage(err) {
     var msg = err && err.message ? err.message : '';
     if (err && (err.name === 'AbortError' || msg === 'Snapshot time budget exceeded')) {
@@ -306,16 +328,14 @@
   }
 
   function selectSnapshotRides(snapshotRides, parkId) {
-    var openRides = snapshotRides.filter(function (ride) {
-      return ride.is_open && ride.wait != null;
-    });
+    var openRides = snapshotRides.filter(rideHasUsableWait);
 
     var selected = [];
     var selectedKeys = {};
     configuredPopularRidesForPark(parkId).forEach(function (target) {
       if (selected.length >= SNAPSHOT_RIDE_COUNT) return;
       var match = openRides.find(function (ride) {
-        if (target.rideId && typeof ride.id === 'string' && ride.id === target.rideId) {
+        if (target.rideId && ride.id != null && String(ride.id) === String(target.rideId)) {
           return true;
         }
         if (target.rideName && normalizedRideName(ride.name) === normalizedRideName(target.rideName)) {
@@ -380,7 +400,8 @@
     if (!selectedMeta || !snapshot || !Array.isArray(snapshot.parkStatuses)) return [];
 
     var openStatuses = snapshot.parkStatuses.filter(function (status) {
-      return status && status.status === 'OPEN';
+      var s = status && status.status;
+      return s && String(s).trim().toUpperCase() === 'OPEN';
     });
 
     return openStatuses
@@ -439,16 +460,22 @@
   }
 
   function isSnapshotOpen(snapshot) {
-    return !!(snapshot && snapshot.parkHours && snapshot.parkHours.status === 'OPEN');
+    var st = snapshot && snapshot.parkHours && snapshot.parkHours.status;
+    if (st == null || String(st).trim() === '') {
+      return true;
+    }
+    return String(st).trim().toUpperCase() === 'OPEN';
   }
 
   function fetchSnapshotForPark(parkId, budgetEndTs) {
     var opts = {
       method: 'GET',
-      cache: 'no-store'
+      cache: 'no-store',
+      mode: 'cors',
+      headers: { Accept: 'application/json' }
     };
     if (MAGICPULSE_API_TOKEN) {
-      opts.headers = { Authorization: 'Bearer ' + MAGICPULSE_API_TOKEN };
+      opts.headers.Authorization = 'Bearer ' + MAGICPULSE_API_TOKEN;
     }
     var msLeft =
       typeof budgetEndTs === 'number' ? budgetEndTs - Date.now() : LIVE_FETCH_TIMEOUT_MS;
@@ -468,7 +495,7 @@
         return res.json();
       })
       .then(function (payload) {
-        return payload && payload.snapshot ? payload.snapshot : null;
+        return snapshotFromAPIPayload(payload);
       })
       .finally(function () {
         window.clearTimeout(timerId);
