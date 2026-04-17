@@ -30,7 +30,6 @@
   <meta name="twitter:description" content="Live Disney wait times, park hours, and weather for Walt Disney World, Disneyland, Tokyo, and Paris. Free iOS app." />
   <meta name="twitter:image" content="https://www.magicpulse.app/og-image.jpg" />
 
-  <link rel="preconnect" href="https://api.magicpulse.app" crossorigin />
   <link rel="preload" href="fonts/inter-400-latin.woff2" as="font" type="font/woff2" crossorigin />
   <link rel="preload" href="fonts/outfit-700-latin.woff2" as="font" type="font/woff2" crossorigin />
   <noscript><style>.reveal,.section,.section-alt{opacity:1!important;transform:none!important;transition:none!important}</style></noscript>
@@ -188,7 +187,7 @@
           </div>
           <p class="micro">Free on iOS · Android coming soon</p>
         </div>
-        <aside class="hero-panel reveal reveal-5" aria-label="Live wait times from Magic Pulse API">
+        <aside class="hero-panel reveal reveal-5" aria-label="Live example panel">
           <div class="panel-head">
             <h2>Live wait snapshot</h2>
             <span class="live-badge" id="live-badge"><span class="live-dot" aria-hidden="true"></span>Live</span>
@@ -482,11 +481,7 @@
   </div>
 
   <script>
-    // Optional overrides — script.js defaults to https://api.magicpulse.app if unset.
     window.MAGICPULSE_API_BASE = 'https://api.magicpulse.app';
-    // Fetch the API directly. (Default script behavior uses /mp-api on *.magicpulse.app, but production currently 404s that path until hosting rewrites exist.)
-    window.MAGICPULSE_SITE_PROXY_PREFIX = '';
-    // Same-origin proxy optional: window.MAGICPULSE_SITE_PROXY_PREFIX = '/mp-api';
     // window.MAGICPULSE_PARK_ID = 6;
     // window.MAGICPULSE_LIVE_REFRESH_MS = 180000; // 3 min (min 60s, max 10m)
   </script>

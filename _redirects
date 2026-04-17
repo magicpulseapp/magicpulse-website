@@ -1,2 +1,0 @@
-# Cloudflare Pages / Netlify: proxy marketing-site path → Magic Pulse API (same-origin fetch = no CORS).
-/mp-api/* https://api.magicpulse.app/:splat 200

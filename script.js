@@ -115,20 +115,8 @@
   var waitsRoot = document.getElementById('live-waits');
   if (!waitsRoot) return;
 
-  /** Production API — always use an absolute origin so fetches never go to the marketing site’s domain by mistake. */
-  var DEFAULT_MAGICPULSE_API_BASE = 'https://api.magicpulse.app';
-
-  function normalizeMagicPulseAPIBase(raw) {
-    var s = typeof raw === 'string' ? raw.trim() : '';
-    if (!s) return DEFAULT_MAGICPULSE_API_BASE;
-    s = s.replace(/\/+$/, '');
-    if (/^https?:\/\//i.test(s)) return s;
-    // Host or host:port only (domains, IPv4, etc.) — avoid relative URLs that hit the marketing origin.
-    if (s.indexOf('/') === -1) return 'https://' + s;
-    return s;
-  }
-
-  var MAGICPULSE_API_BASE = normalizeMagicPulseAPIBase(window.MAGICPULSE_API_BASE);
+  var MAGICPULSE_API_BASE =
+    typeof window.MAGICPULSE_API_BASE === 'string' ? window.MAGICPULSE_API_BASE : '';
   var MAGICPULSE_API_TOKEN = window.MAGICPULSE_API_TOKEN || '';
   var MAGICPULSE_PARK_ID = 6;
   if (typeof window.MAGICPULSE_PARK_ID === 'number' && !Number.isNaN(window.MAGICPULSE_PARK_ID)) {
@@ -248,145 +236,21 @@
   var loading = waitsRoot.querySelector('.waits-loading');
   var rows = waitsRoot.querySelector('.waits-rows');
   var error = waitsRoot.querySelector('.waits-error');
-
-  /**
-   * Same-origin path prefix (e.g. `/mp-api`) reverse-proxied to `api.magicpulse.app` on Netlify / Vercel / Cloudflare Pages.
-   * Avoids browser CORS blocking cross-origin fetches from www → api.
-   * Set `window.MAGICPULSE_SITE_PROXY_PREFIX = ''` or `false` to force direct API only.
-   */
-  function siteProxyPrefix() {
-    if (Object.prototype.hasOwnProperty.call(window, 'MAGICPULSE_SITE_PROXY_PREFIX')) {
-      var explicit = window.MAGICPULSE_SITE_PROXY_PREFIX;
-      if (explicit === false || explicit == null) return '';
-      return String(explicit).trim();
-    }
-    if (typeof location !== 'undefined' && location.hostname && /(^|\.)magicpulse\.app$/i.test(location.hostname)) {
-      return '/mp-api';
-    }
-    return '';
-  }
-
-  function absoluteAPIPath(restPath) {
-    var p = restPath.indexOf('/') === 0 ? restPath : '/' + restPath;
-    return MAGICPULSE_API_BASE.replace(/\/$/, '') + p;
-  }
-
-  function proxiedOrAbsoluteAPIPath(restPath) {
-    var prefix = siteProxyPrefix();
-    var p = restPath.indexOf('/') === 0 ? restPath : '/' + restPath;
-    if (!prefix) return absoluteAPIPath(p);
-    var pre = prefix.charAt(0) === '/' ? prefix : '/' + prefix;
-    return pre.replace(/\/$/, '') + p;
-  }
-
-  var apiUrl = absoluteAPIPath('/api/parks/public/' + MAGICPULSE_PARK_ID + '/snapshot');
+  var apiUrl =
+    (MAGICPULSE_API_BASE ? MAGICPULSE_API_BASE.replace(/\/$/, '') : '') +
+    '/api/parks/public/' +
+    MAGICPULSE_PARK_ID +
+    '/snapshot';
 
   var liveFetchInFlight = false;
 
-  function apiWidgetUrl(parkId) {
-    return proxiedOrAbsoluteAPIPath('/api/parks/public/' + parkId + '/widget');
-  }
-
   function apiSnapshotUrl(parkId) {
-    return proxiedOrAbsoluteAPIPath('/api/parks/public/' + parkId + '/snapshot');
-  }
-
-  function apiWidgetUrlDirect(parkId) {
-    return absoluteAPIPath('/api/parks/public/' + parkId + '/widget');
-  }
-
-  function apiSnapshotUrlDirect(parkId) {
-    return absoluteAPIPath('/api/parks/public/' + parkId + '/snapshot');
-  }
-
-  /** Unique URL per request so browsers and intermediaries cannot serve a stale cached GET snapshot. */
-  function withCacheBustParam(url) {
-    var sep = url.indexOf('?') === -1 ? '?' : '&';
-    return url + sep + '_ts=' + String(Date.now());
-  }
-
-  function apiWidgetUrlNoCache(parkId) {
-    return withCacheBustParam(apiWidgetUrl(parkId));
-  }
-
-  function apiSnapshotUrlNoCache(parkId) {
-    return withCacheBustParam(apiSnapshotUrl(parkId));
-  }
-
-  /**
-   * Extract the HUD snapshot object from API JSON (shape has varied by route/version).
-   */
-  function snapshotFromAPIPayload(payload) {
-    if (!payload || typeof payload !== 'object') return null;
-    if (payload.snapshot && typeof payload.snapshot === 'object') return payload.snapshot;
-    if (payload.data && typeof payload.data === 'object' && payload.data.snapshot) {
-      return payload.data.snapshot;
-    }
-    if (Array.isArray(payload.rides) && payload.park) {
-      return payload;
-    }
-    return null;
-  }
-
-  /**
-   * `GET .../public/:id/widget` schema v1 — same route the iOS widget uses first (MagicPulseAPI `WidgetSnapshotEnvelopeV1`).
-   * Maps into a minimal HUD-like snapshot for the hero panel.
-   */
-  function snapshotFromWidgetSchemaV1(payload) {
-    if (!payload || Number(payload.schemaVersion) !== 1 || !payload.park || !Array.isArray(payload.rides)) {
-      return null;
-    }
-    var p = payload;
-    var rides = p.rides.map(function (r) {
-      var w = r.wait;
-      if (w != null) {
-        var n = Number(w);
-        w = Number.isNaN(n) ? null : n;
-      }
-      var open = r.is_open;
-      if (open === undefined && r.isOpen !== undefined) open = r.isOpen;
-      return {
-        id: r.id,
-        name: r.name,
-        wait: w,
-        is_open: open
-      };
-    });
-    return {
-      park: {
-        name: p.park.name,
-        icon: p.park.icon,
-        id: p.park.id != null ? String(p.park.id) : undefined,
-        theme: p.park.theme
-      },
-      parkHours: {
-        status: p.hours && p.hours.status
-      },
-      parkStatuses: [],
-      updated: p.updatedISO || p.updated_iso || '',
-      rides: rides
-    };
-  }
-
-  function normalizeLivePayloadToSnapshot(payload) {
-    if (!payload || typeof payload !== 'object') return null;
-    var fromEnvelope = snapshotFromAPIPayload(payload);
-    if (isSnapshotUsable(fromEnvelope)) return fromEnvelope;
-    var fromWidget = snapshotFromWidgetSchemaV1(payload);
-    if (isSnapshotUsable(fromWidget)) return fromWidget;
-    return null;
-  }
-
-  /** Match app JSON: `is_open` / `isOpen` may be omitted when wait is present — do not treat as closed. */
-  function rideHasUsableWait(ride) {
-    if (ride == null) return false;
-    var w = ride.wait;
-    if (w == null && ride.waitMinutes != null) w = ride.waitMinutes;
-    if (w == null) return false;
-    var n = Number(w);
-    if (Number.isNaN(n)) return false;
-    if (ride.is_open === false || ride.isOpen === false) return false;
-    return true;
+    return (
+      (MAGICPULSE_API_BASE ? MAGICPULSE_API_BASE.replace(/\/$/, '') : '') +
+      '/api/parks/public/' +
+      parkId +
+      '/snapshot'
+    );
   }
 
   function getFetchErrorMessage(err) {
@@ -435,14 +299,16 @@
   }
 
   function selectSnapshotRides(snapshotRides, parkId) {
-    var openRides = snapshotRides.filter(rideHasUsableWait);
+    var openRides = snapshotRides.filter(function (ride) {
+      return ride.is_open && ride.wait != null;
+    });
 
     var selected = [];
     var selectedKeys = {};
     configuredPopularRidesForPark(parkId).forEach(function (target) {
       if (selected.length >= SNAPSHOT_RIDE_COUNT) return;
       var match = openRides.find(function (ride) {
-        if (target.rideId && ride.id != null && String(ride.id) === String(target.rideId)) {
+        if (target.rideId && typeof ride.id === 'string' && ride.id === target.rideId) {
           return true;
         }
         if (target.rideName && normalizedRideName(ride.name) === normalizedRideName(target.rideName)) {
@@ -451,7 +317,7 @@
         return false;
       });
       if (!match) return;
-      var key = match.id != null ? String(match.id) : match.name;
+      var key = typeof match.id === 'string' && match.id ? match.id : match.name;
       if (selectedKeys[key]) return;
       selectedKeys[key] = true;
       selected.push(match);
@@ -464,19 +330,17 @@
       })
       .forEach(function (ride) {
         if (selected.length >= SNAPSHOT_RIDE_COUNT) return;
-        var key = ride.id != null ? String(ride.id) : ride.name;
+        var key = typeof ride.id === 'string' && ride.id ? ride.id : ride.name;
         if (selectedKeys[key]) return;
         selectedKeys[key] = true;
         selected.push(ride);
       });
 
     return selected.slice(0, SNAPSHOT_RIDE_COUNT).map(function (ride) {
-      var wm = ride.wait != null ? Number(ride.wait) : null;
-      if (wm != null && Number.isNaN(wm)) wm = null;
       return {
-        rideId: ride.id != null ? String(ride.id) : null,
+        rideId: typeof ride.id === 'string' && ride.id ? ride.id : null,
         name: ride.name,
-        waitTime: wm
+        waitTime: ride.wait
       };
     });
   }
@@ -509,8 +373,7 @@
     if (!selectedMeta || !snapshot || !Array.isArray(snapshot.parkStatuses)) return [];
 
     var openStatuses = snapshot.parkStatuses.filter(function (status) {
-      var s = status && status.status;
-      return s && String(s).trim().toUpperCase() === 'OPEN';
+      return status && status.status === 'OPEN';
     });
 
     return openStatuses
@@ -569,14 +432,14 @@
   }
 
   function isSnapshotOpen(snapshot) {
-    var st = snapshot && snapshot.parkHours && snapshot.parkHours.status;
-    if (st == null || String(st).trim() === '') {
-      return true;
-    }
-    return String(st).trim().toUpperCase() === 'OPEN';
+    return !!(snapshot && snapshot.parkHours && snapshot.parkHours.status === 'OPEN');
   }
 
-  function fetchJSONWithBudget(url, budgetEndTs) {
+  function fetchSnapshotForPark(parkId, budgetEndTs) {
+    var opts = { method: 'GET' };
+    if (MAGICPULSE_API_TOKEN) {
+      opts.headers = { Authorization: 'Bearer ' + MAGICPULSE_API_TOKEN };
+    }
     var msLeft =
       typeof budgetEndTs === 'number' ? budgetEndTs - Date.now() : LIVE_FETCH_TIMEOUT_MS;
     if (msLeft < 200) {
@@ -587,75 +450,18 @@
     var timerId = window.setTimeout(function () {
       controller.abort();
     }, timeoutMs);
-    var opts = {
-      method: 'GET',
-      cache: 'no-store',
-      mode: 'cors',
-      headers: { Accept: 'application/json' },
-      signal: controller.signal
-    };
-    if (MAGICPULSE_API_TOKEN) {
-      opts.headers.Authorization = 'Bearer ' + MAGICPULSE_API_TOKEN;
-    }
-    return fetch(url, opts)
-      .finally(function () {
-        window.clearTimeout(timerId);
-      });
-  }
+    opts.signal = controller.signal;
 
-  function fetchGETWithProxy404Fallback(url, budgetEndTs, directUrlFn) {
-    return fetchJSONWithBudget(url, budgetEndTs).then(function (res) {
-      if ((res.status === 404 || res.status === 502 || res.status === 503) && siteProxyPrefix() && directUrlFn) {
-        return fetchJSONWithBudget(directUrlFn(), budgetEndTs);
-      }
-      return res;
-    });
-  }
-
-  function fetchSnapshotEnvelopeOnly(parkId, budgetEndTs) {
-    return fetchGETWithProxy404Fallback(
-      apiSnapshotUrlNoCache(parkId),
-      budgetEndTs,
-      function () {
-        return withCacheBustParam(apiSnapshotUrlDirect(parkId));
-      }
-    )
-      .then(function (res2) {
-        if (!res2.ok) {
-          throw new Error(res2.status === 401 ? 'API token required' : 'Request failed');
-        }
-        return res2.json();
-      })
-      .then(function (payload2) {
-        return normalizeLivePayloadToSnapshot(payload2);
-      });
-  }
-
-  /**
-   * Same order as iOS widgets: public **widget** JSON first (`schemaVersion: 1`), then full **snapshot** envelope.
-   * Uses same-origin `/mp-api` proxy when configured (see `siteProxyPrefix`) to avoid CORS; falls back to direct API on 404.
-   */
-  function fetchSnapshotForPark(parkId, budgetEndTs) {
-    return fetchGETWithProxy404Fallback(
-      apiWidgetUrlNoCache(parkId),
-      budgetEndTs,
-      function () {
-        return withCacheBustParam(apiWidgetUrlDirect(parkId));
-      }
-    )
+    return fetch(apiSnapshotUrl(parkId), opts)
       .then(function (res) {
-        if (!res.ok) return null;
-        return res.json().catch(function () {
-          return null;
-        });
+        if (!res.ok) throw new Error(res.status === 401 ? 'API token required' : 'Request failed');
+        return res.json();
       })
       .then(function (payload) {
-        var snap = normalizeLivePayloadToSnapshot(payload);
-        if (isSnapshotUsable(snap)) return snap;
-        return fetchSnapshotEnvelopeOnly(parkId, budgetEndTs);
+        return payload && payload.snapshot ? payload.snapshot : null;
       })
-      .catch(function () {
-        return fetchSnapshotEnvelopeOnly(parkId, budgetEndTs);
+      .finally(function () {
+        window.clearTimeout(timerId);
       });
   }
 
@@ -804,18 +610,6 @@
     }
     var items = selectSnapshotRides(snapshot.rides, selectedParkId);
 
-    if (!items.length && snapshot.rides.length > 0) {
-      items = snapshot.rides.slice(0, SNAPSHOT_RIDE_COUNT).map(function (ride) {
-        var w = ride.wait != null ? Number(ride.wait) : null;
-        if (w != null && Number.isNaN(w)) w = null;
-        return {
-          rideId: ride.id != null ? String(ride.id) : null,
-          name: ride.name || 'Ride',
-          waitTime: w
-        };
-      });
-    }
-
     if (!items.length) {
       showError('Live data unavailable right now.', isRefresh);
       return;
@@ -862,13 +656,6 @@
 
   document.addEventListener('visibilitychange', function () {
     if (document.visibilityState === 'visible') {
-      loadLiveWaits({ refresh: true });
-    }
-  });
-
-  // Back/forward cache: WebKit may restore the page without a full reload; fetch a new snapshot each time.
-  window.addEventListener('pageshow', function (event) {
-    if (event.persisted) {
       loadLiveWaits({ refresh: true });
     }
   });
