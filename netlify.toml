@@ -1,0 +1,5 @@
+[[redirects]]
+  from = "/mp-api/*"
+  to = "https://api.magicpulse.app/:splat"
+  status = 200
+  force = true

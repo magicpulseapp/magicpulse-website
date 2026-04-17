@@ -1,0 +1,8 @@
+{
+  "rewrites": [
+    {
+      "source": "/mp-api/:path*",
+      "destination": "https://api.magicpulse.app/:path*"
+    }
+  ]
+}

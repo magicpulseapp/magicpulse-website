@@ -248,16 +248,55 @@
   var loading = waitsRoot.querySelector('.waits-loading');
   var rows = waitsRoot.querySelector('.waits-rows');
   var error = waitsRoot.querySelector('.waits-error');
-  var apiUrl = MAGICPULSE_API_BASE + '/api/parks/public/' + MAGICPULSE_PARK_ID + '/snapshot';
+
+  /**
+   * Same-origin path prefix (e.g. `/mp-api`) reverse-proxied to `api.magicpulse.app` on Netlify / Vercel / Cloudflare Pages.
+   * Avoids browser CORS blocking cross-origin fetches from www → api.
+   * Set `window.MAGICPULSE_SITE_PROXY_PREFIX = ''` or `false` to force direct API only.
+   */
+  function siteProxyPrefix() {
+    if (Object.prototype.hasOwnProperty.call(window, 'MAGICPULSE_SITE_PROXY_PREFIX')) {
+      var explicit = window.MAGICPULSE_SITE_PROXY_PREFIX;
+      if (explicit === false || explicit == null) return '';
+      return String(explicit).trim();
+    }
+    if (typeof location !== 'undefined' && location.hostname && /(^|\.)magicpulse\.app$/i.test(location.hostname)) {
+      return '/mp-api';
+    }
+    return '';
+  }
+
+  function absoluteAPIPath(restPath) {
+    var p = restPath.indexOf('/') === 0 ? restPath : '/' + restPath;
+    return MAGICPULSE_API_BASE.replace(/\/$/, '') + p;
+  }
+
+  function proxiedOrAbsoluteAPIPath(restPath) {
+    var prefix = siteProxyPrefix();
+    var p = restPath.indexOf('/') === 0 ? restPath : '/' + restPath;
+    if (!prefix) return absoluteAPIPath(p);
+    var pre = prefix.charAt(0) === '/' ? prefix : '/' + prefix;
+    return pre.replace(/\/$/, '') + p;
+  }
+
+  var apiUrl = absoluteAPIPath('/api/parks/public/' + MAGICPULSE_PARK_ID + '/snapshot');
 
   var liveFetchInFlight = false;
 
   function apiWidgetUrl(parkId) {
-    return MAGICPULSE_API_BASE + '/api/parks/public/' + parkId + '/widget';
+    return proxiedOrAbsoluteAPIPath('/api/parks/public/' + parkId + '/widget');
   }
 
   function apiSnapshotUrl(parkId) {
-    return MAGICPULSE_API_BASE + '/api/parks/public/' + parkId + '/snapshot';
+    return proxiedOrAbsoluteAPIPath('/api/parks/public/' + parkId + '/snapshot');
+  }
+
+  function apiWidgetUrlDirect(parkId) {
+    return absoluteAPIPath('/api/parks/public/' + parkId + '/widget');
+  }
+
+  function apiSnapshotUrlDirect(parkId) {
+    return absoluteAPIPath('/api/parks/public/' + parkId + '/snapshot');
   }
 
   /** Unique URL per request so browsers and intermediaries cannot serve a stale cached GET snapshot. */
@@ -564,8 +603,23 @@
       });
   }
 
+  function fetchGETWithProxy404Fallback(url, budgetEndTs, directUrlFn) {
+    return fetchJSONWithBudget(url, budgetEndTs).then(function (res) {
+      if ((res.status === 404 || res.status === 502 || res.status === 503) && siteProxyPrefix() && directUrlFn) {
+        return fetchJSONWithBudget(directUrlFn(), budgetEndTs);
+      }
+      return res;
+    });
+  }
+
   function fetchSnapshotEnvelopeOnly(parkId, budgetEndTs) {
-    return fetchJSONWithBudget(apiSnapshotUrlNoCache(parkId), budgetEndTs)
+    return fetchGETWithProxy404Fallback(
+      apiSnapshotUrlNoCache(parkId),
+      budgetEndTs,
+      function () {
+        return withCacheBustParam(apiSnapshotUrlDirect(parkId));
+      }
+    )
       .then(function (res2) {
         if (!res2.ok) {
           throw new Error(res2.status === 401 ? 'API token required' : 'Request failed');
@@ -579,10 +633,16 @@
 
   /**
    * Same order as iOS widgets: public **widget** JSON first (`schemaVersion: 1`), then full **snapshot** envelope.
-   * If the widget route errors (network/CORS), still try `/snapshot`.
+   * Uses same-origin `/mp-api` proxy when configured (see `siteProxyPrefix`) to avoid CORS; falls back to direct API on 404.
    */
   function fetchSnapshotForPark(parkId, budgetEndTs) {
-    return fetchJSONWithBudget(apiWidgetUrlNoCache(parkId), budgetEndTs)
+    return fetchGETWithProxy404Fallback(
+      apiWidgetUrlNoCache(parkId),
+      budgetEndTs,
+      function () {
+        return withCacheBustParam(apiWidgetUrlDirect(parkId));
+      }
+    )
       .then(function (res) {
         if (!res.ok) return null;
         return res.json().catch(function () {
@@ -743,6 +803,18 @@
       selectedParkId = selectedParkMeta.id;
     }
     var items = selectSnapshotRides(snapshot.rides, selectedParkId);
+
+    if (!items.length && snapshot.rides.length > 0) {
+      items = snapshot.rides.slice(0, SNAPSHOT_RIDE_COUNT).map(function (ride) {
+        var w = ride.wait != null ? Number(ride.wait) : null;
+        if (w != null && Number.isNaN(w)) w = null;
+        return {
+          rideId: ride.id != null ? String(ride.id) : null,
+          name: ride.name || 'Ride',
+          waitTime: w
+        };
+      });
+    }
 
     if (!items.length) {
       showError('Live data unavailable right now.', isRefresh);

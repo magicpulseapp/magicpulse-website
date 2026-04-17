@@ -484,6 +484,8 @@
   <script>
     // Optional overrides — script.js defaults to https://api.magicpulse.app if unset.
     window.MAGICPULSE_API_BASE = 'https://api.magicpulse.app';
+    // Same-origin proxy to the API (see /_redirects or vercel.json). Required for live data when the API does not send CORS for this site.
+    // window.MAGICPULSE_SITE_PROXY_PREFIX = '/mp-api';
     // window.MAGICPULSE_PARK_ID = 6;
     // window.MAGICPULSE_LIVE_REFRESH_MS = 180000; // 3 min (min 60s, max 10m)
   </script>
