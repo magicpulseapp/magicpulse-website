@@ -111,7 +111,7 @@
         "name": "Where does the Disney wait time data come from?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "Wait times and park hours are sourced from ThemeParks Wiki. The app and website use the Magic Pulse API to aggregate and display live snapshots."
+          "text": "Wait times and park hours are sourced from ThemeParks Wiki. This website’s hero panel loads live waits directly from ThemeParks Wiki’s public API; the iOS app may use Magic Pulse API when configured."
         }
       },
       {
@@ -135,7 +135,7 @@
         "name": "Does the website show real Disney wait times?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "Yes. The hero panel loads a live snapshot from the Magic Pulse API. If the default park is closed, the app automatically tries another open park in the same resort."
+          "text": "Yes. The hero panel loads live attraction waits from ThemeParks Wiki’s public API. If the default park has no usable posted waits, the site tries other parks automatically."
         }
       }
     ]
@@ -199,7 +199,7 @@
             <p class="waits-error" hidden></p>
           </div>
           <p class="live-waits-fallback-note" id="live-waits-fallback-note" hidden>Live data unavailable — example rides shown.</p>
-          <p class="micro" style="margin-top:0.65rem;">Snapshot refreshes every few minutes while you’re on this page.</p>
+          <p class="micro" style="margin-top:0.65rem;">Live waits from ThemeParks Wiki; refreshes every few minutes on this page.</p>
         </aside>
       </div>
     </section>
@@ -423,7 +423,7 @@
           </details>
           <details class="faq-details">
             <summary>Where does wait data come from?</summary>
-            <p class="faq-answer">Wait times and park hours are sourced from ThemeParks Wiki. The app and website may use MagicPulseAPI to aggregate and display snapshots.</p>
+            <p class="faq-answer">Wait times and park hours come from ThemeParks Wiki. This site’s hero loads live waits straight from ThemeParks Wiki’s public API; the iOS app can use Magic Pulse API when configured.</p>
           </details>
           <details class="faq-details">
             <summary>Is the app free?</summary>
@@ -435,7 +435,7 @@
           </details>
           <details class="faq-details">
             <summary>Does the website show real waits?</summary>
-            <p class="faq-answer">The hero panel loads a live snapshot from the public Magic Pulse API when available. If the default park is closed, we try another open park automatically.</p>
+            <p class="faq-answer">The hero panel loads live waits from ThemeParks Wiki’s public API. If the default park has no usable waits posted, we try other parks automatically.</p>
           </details>
         </div>
       </div>

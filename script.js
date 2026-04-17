@@ -141,18 +141,25 @@
       ? Math.max(4000, Math.min(120000, window.MAGICPULSE_LIVE_SNAPSHOT_BUDGET_MS))
       : 14000;
 
-  // Keep `name` in sync with MagicPulseAPI `src/constants/parks.ts` (used for snapshot name fallbacks).
+  /** Default hero data: ThemeParks Wiki public API (same source labels as the iOS app). */
+  var THEMEPARKS_WIKI_LIVE_BASE = 'https://api.themeparks.wiki/v1/entity';
+  var SNAPSHOT_SOURCE_MAGICPULSE =
+    window.MAGICPULSE_SNAPSHOT_SOURCE === 'magicpulse' &&
+    typeof MAGICPULSE_API_BASE === 'string' &&
+    MAGICPULSE_API_BASE.replace(/\s/g, '').length > 0;
+
+  // Keep `name` / `entityId` in sync with `HUDConstants.parks` + MagicPulseAPI `src/constants/parks.ts`.
   var PARKS = [
-    { id: 6, name: 'Magic Kingdom', theme: 'mk', resort: 'WDW' },
-    { id: 5, name: 'EPCOT', theme: 'epcot', resort: 'WDW' },
-    { id: 7, name: "Disney's Hollywood Studios", theme: 'hs', resort: 'WDW' },
-    { id: 8, name: "Disney's Animal Kingdom", theme: 'ak', resort: 'WDW' },
-    { id: 16, name: 'Disneyland Park', theme: 'dl', resort: 'DLR' },
-    { id: 17, name: 'Disney California Adventure', theme: 'dca', resort: 'DLR' },
-    { id: 274, name: 'Tokyo Disneyland', theme: 'tdl', resort: 'TDR' },
-    { id: 275, name: 'Tokyo DisneySea', theme: 'tds', resort: 'TDR' },
-    { id: 4, name: 'Disneyland Park (Paris)', theme: 'dlp', resort: 'DLP' },
-    { id: 28, name: 'Walt Disney Studios Park', theme: 'wdsp', resort: 'DLP' }
+    { id: 6, name: 'Magic Kingdom', theme: 'mk', resort: 'WDW', icon: '🎢', entityId: '75ea578a-adc8-4116-a54d-dccb60765ef9' },
+    { id: 5, name: 'EPCOT', theme: 'epcot', resort: 'WDW', icon: '🌐', entityId: '47f90d2c-e191-4239-a466-5892ef59a88b' },
+    { id: 7, name: "Disney's Hollywood Studios", theme: 'hs', resort: 'WDW', icon: '🎬', entityId: '288747d1-8b4f-4a64-867e-ea7c9b27bad8' },
+    { id: 8, name: "Disney's Animal Kingdom", theme: 'ak', resort: 'WDW', icon: '🦁', entityId: '1c84a229-8862-4648-9c71-378ddd2c7693' },
+    { id: 16, name: 'Disneyland Park', theme: 'dl', resort: 'DLR', icon: '🏛', entityId: '7340550b-c14d-4def-80bb-acdb51d49a66' },
+    { id: 17, name: 'Disney California Adventure', theme: 'dca', resort: 'DLR', icon: '🌴', entityId: '832fcd51-ea19-4e77-85c7-75d5843b127c' },
+    { id: 274, name: 'Tokyo Disneyland', theme: 'tdl', resort: 'TDR', icon: '🗼', entityId: '3cc919f1-d16d-43e0-8c3f-1dd269bd1a42' },
+    { id: 275, name: 'Tokyo DisneySea', theme: 'tds', resort: 'TDR', icon: '🌊', entityId: '67b290d5-3478-4f23-b601-2f8fb71ba803' },
+    { id: 4, name: 'Disneyland Park (Paris)', theme: 'dlp', resort: 'DLP', icon: '🏛', entityId: 'dae968d5-630d-4719-8b06-3d107e944401' },
+    { id: 28, name: 'Walt Disney Studios Park', theme: 'wdsp', resort: 'DLP', icon: '🎬', entityId: 'ca888437-ebb4-4d50-aed2-d227f7096968' }
   ];
 
   var SNAPSHOT_RIDE_COUNT = 4;
@@ -244,6 +251,160 @@
 
   var liveFetchInFlight = false;
 
+  function themeParksLiveUrl(entityId) {
+    return THEMEPARKS_WIKI_LIVE_BASE + '/' + encodeURIComponent(entityId) + '/live';
+  }
+
+  function isProbablyNotARide(name) {
+    var n = String(name || '').toLowerCase();
+    var bad = [
+      'meet ',
+      'character',
+      'dining',
+      'restaurant',
+      'table',
+      'buffet',
+      'cafe',
+      'snack',
+      'shop',
+      'store',
+      'photo',
+      'photopass',
+      'merch',
+      'boutique',
+      'parade',
+      'fireworks',
+      'show',
+      'theater',
+      'stage',
+      'spectacular',
+      'presentation',
+      'tour',
+      'experience',
+      'exhibit',
+      'gallery',
+      'trail',
+      'walkthrough',
+      'playground',
+      'play area',
+      'splash',
+      'splash zone',
+      'transport',
+      'transportation',
+      'railroad',
+      'train',
+      'monorail',
+      'bus',
+      'ferry',
+      'boat',
+      'character dining',
+      'meet and greet',
+      'meet n greet'
+    ];
+    for (var i = 0; i < bad.length; i++) {
+      if (n.indexOf(bad[i]) !== -1) return true;
+    }
+    return false;
+  }
+
+  /** ThemeParks Wiki `live` JSON → snapshot `rides` rows (`is_open`, `wait`, `id`, `name`). */
+  function themeParksPayloadToRides(payload) {
+    var items = (payload && payload.liveData) || [];
+    var rides = [];
+    for (var i = 0; i < items.length; i++) {
+      var item = items[i];
+      if ((item.entityType || '').toUpperCase() !== 'ATTRACTION') continue;
+      var nm = item.name;
+      if (!nm) continue;
+      if (isProbablyNotARide(nm)) continue;
+      var isOpen = (item.status || '').toUpperCase() === 'OPERATING';
+      var q = item.queue || {};
+      var standby = q.STANDBY || q.standby;
+      var wait = standby && standby.waitTime != null ? standby.waitTime : null;
+      rides.push({
+        id: item.id || null,
+        name: nm,
+        wait: wait,
+        is_open: isOpen
+      });
+    }
+    return rides;
+  }
+
+  function buildSyntheticSnapshot(parkId, rides) {
+    var meta = parkMetaById(parkId);
+    var now = new Date();
+    return {
+      park: {
+        id: String(parkId),
+        name: meta ? meta.name : 'Park',
+        icon: meta && meta.icon ? meta.icon : '',
+        theme: meta ? meta.theme : ''
+      },
+      updated: now.toLocaleString(undefined, { dateStyle: 'short', timeStyle: 'short' }),
+      rides: rides
+    };
+  }
+
+  function fetchThemeParksLive(parkId, budgetEndTs) {
+    var meta = parkMetaById(parkId);
+    if (!meta || !meta.entityId) {
+      return Promise.reject(new Error('Unknown park'));
+    }
+    var msLeft =
+      typeof budgetEndTs === 'number' ? budgetEndTs - Date.now() : LIVE_FETCH_TIMEOUT_MS;
+    if (msLeft < 200) {
+      return Promise.reject(new Error('Snapshot time budget exceeded'));
+    }
+    var timeoutMs = Math.min(LIVE_FETCH_TIMEOUT_MS, Math.max(400, msLeft - 80));
+    var controller = new AbortController();
+    var timerId = window.setTimeout(function () {
+      controller.abort();
+    }, timeoutMs);
+    return fetch(themeParksLiveUrl(meta.entityId), {
+      method: 'GET',
+      signal: controller.signal,
+      headers: { Accept: 'application/json' }
+    })
+      .then(function (res) {
+        if (!res.ok) throw new Error('ThemeParks Wiki request failed');
+        return res.json();
+      })
+      .finally(function () {
+        window.clearTimeout(timerId);
+      });
+  }
+
+  function resolveThemeParksWithFallback(primaryParkId) {
+    var budgetEnd = Date.now() + LIVE_SNAPSHOT_BUDGET_MS;
+    var order = buildFallbackParkOrder(primaryParkId, { parkStatuses: [] });
+    var chain = Promise.resolve(null);
+
+    order.forEach(function (candidateParkId) {
+      chain = chain.then(function (resolved) {
+        if (resolved) return resolved;
+        return fetchThemeParksLive(candidateParkId, budgetEnd)
+          .then(function (payload) {
+            var rides = themeParksPayloadToRides(payload);
+            if (!rides.length) return null;
+            var snapshot = buildSyntheticSnapshot(candidateParkId, rides);
+            var items = selectSnapshotRides(snapshot.rides, candidateParkId);
+            if (items.length > 0) {
+              return { snapshot: snapshot, selectedParkId: candidateParkId };
+            }
+            return null;
+          })
+          .catch(function () {
+            return null;
+          });
+      });
+    });
+
+    return chain.then(function (resolved) {
+      return resolved || { snapshot: null, selectedParkId: primaryParkId };
+    });
+  }
+
   function apiSnapshotUrl(parkId) {
     return (
       (MAGICPULSE_API_BASE ? MAGICPULSE_API_BASE.replace(/\/$/, '') : '') +
@@ -259,6 +420,9 @@
       return 'Live data took too long. Showing example rides.';
     }
     if (msg.indexOf('fetch') !== -1 || msg === 'Failed to fetch') {
+      if (!SNAPSHOT_SOURCE_MAGICPULSE) {
+        return 'Could not reach ThemeParks Wiki (api.themeparks.wiki). Try again in a moment.';
+      }
       var apiIsHttp = apiUrl.indexOf('http://') === 0;
       var pageIsHttps = typeof location !== 'undefined' && location.protocol === 'https:';
       if (pageIsHttps && apiIsHttp) {
@@ -634,7 +798,11 @@
     liveFetchInFlight = true;
     if (isRefresh) waitsRoot.classList.add('is-refreshing');
 
-    return resolveSnapshotWithFallback(MAGICPULSE_PARK_ID)
+    var loadChain = SNAPSHOT_SOURCE_MAGICPULSE
+      ? resolveSnapshotWithFallback(MAGICPULSE_PARK_ID)
+      : resolveThemeParksWithFallback(MAGICPULSE_PARK_ID);
+
+    return loadChain
       .then(function (result) {
         applyLiveResult(result, options);
       })
