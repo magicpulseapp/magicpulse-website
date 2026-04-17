@@ -252,15 +252,26 @@
 
   var liveFetchInFlight = false;
 
+  function apiWidgetUrl(parkId) {
+    return MAGICPULSE_API_BASE + '/api/parks/public/' + parkId + '/widget';
+  }
+
   function apiSnapshotUrl(parkId) {
     return MAGICPULSE_API_BASE + '/api/parks/public/' + parkId + '/snapshot';
   }
 
   /** Unique URL per request so browsers and intermediaries cannot serve a stale cached GET snapshot. */
+  function withCacheBustParam(url) {
+    var sep = url.indexOf('?') === -1 ? '?' : '&';
+    return url + sep + '_ts=' + String(Date.now());
+  }
+
+  function apiWidgetUrlNoCache(parkId) {
+    return withCacheBustParam(apiWidgetUrl(parkId));
+  }
+
   function apiSnapshotUrlNoCache(parkId) {
-    var base = apiSnapshotUrl(parkId);
-    var sep = base.indexOf('?') === -1 ? '?' : '&';
-    return base + sep + '_ts=' + String(Date.now());
+    return withCacheBustParam(apiSnapshotUrl(parkId));
   }
 
   /**
@@ -278,10 +289,64 @@
     return null;
   }
 
-  /** Match app JSON: `is_open` may be omitted when wait is present — do not treat as closed. */
+  /**
+   * `GET .../public/:id/widget` schema v1 — same route the iOS widget uses first (MagicPulseAPI `WidgetSnapshotEnvelopeV1`).
+   * Maps into a minimal HUD-like snapshot for the hero panel.
+   */
+  function snapshotFromWidgetSchemaV1(payload) {
+    if (!payload || Number(payload.schemaVersion) !== 1 || !payload.park || !Array.isArray(payload.rides)) {
+      return null;
+    }
+    var p = payload;
+    var rides = p.rides.map(function (r) {
+      var w = r.wait;
+      if (w != null) {
+        var n = Number(w);
+        w = Number.isNaN(n) ? null : n;
+      }
+      var open = r.is_open;
+      if (open === undefined && r.isOpen !== undefined) open = r.isOpen;
+      return {
+        id: r.id,
+        name: r.name,
+        wait: w,
+        is_open: open
+      };
+    });
+    return {
+      park: {
+        name: p.park.name,
+        icon: p.park.icon,
+        id: p.park.id != null ? String(p.park.id) : undefined,
+        theme: p.park.theme
+      },
+      parkHours: {
+        status: p.hours && p.hours.status
+      },
+      parkStatuses: [],
+      updated: p.updatedISO || p.updated_iso || '',
+      rides: rides
+    };
+  }
+
+  function normalizeLivePayloadToSnapshot(payload) {
+    if (!payload || typeof payload !== 'object') return null;
+    var fromEnvelope = snapshotFromAPIPayload(payload);
+    if (isSnapshotUsable(fromEnvelope)) return fromEnvelope;
+    var fromWidget = snapshotFromWidgetSchemaV1(payload);
+    if (isSnapshotUsable(fromWidget)) return fromWidget;
+    return null;
+  }
+
+  /** Match app JSON: `is_open` / `isOpen` may be omitted when wait is present — do not treat as closed. */
   function rideHasUsableWait(ride) {
-    if (ride == null || ride.wait == null) return false;
-    if (ride.is_open === false) return false;
+    if (ride == null) return false;
+    var w = ride.wait;
+    if (w == null && ride.waitMinutes != null) w = ride.waitMinutes;
+    if (w == null) return false;
+    var n = Number(w);
+    if (Number.isNaN(n)) return false;
+    if (ride.is_open === false || ride.isOpen === false) return false;
     return true;
   }
 
@@ -347,7 +412,7 @@
         return false;
       });
       if (!match) return;
-      var key = typeof match.id === 'string' && match.id ? match.id : match.name;
+      var key = match.id != null ? String(match.id) : match.name;
       if (selectedKeys[key]) return;
       selectedKeys[key] = true;
       selected.push(match);
@@ -360,17 +425,19 @@
       })
       .forEach(function (ride) {
         if (selected.length >= SNAPSHOT_RIDE_COUNT) return;
-        var key = typeof ride.id === 'string' && ride.id ? ride.id : ride.name;
+        var key = ride.id != null ? String(ride.id) : ride.name;
         if (selectedKeys[key]) return;
         selectedKeys[key] = true;
         selected.push(ride);
       });
 
     return selected.slice(0, SNAPSHOT_RIDE_COUNT).map(function (ride) {
+      var wm = ride.wait != null ? Number(ride.wait) : null;
+      if (wm != null && Number.isNaN(wm)) wm = null;
       return {
-        rideId: typeof ride.id === 'string' && ride.id ? ride.id : null,
+        rideId: ride.id != null ? String(ride.id) : null,
         name: ride.name,
-        waitTime: ride.wait
+        waitTime: wm
       };
     });
   }
@@ -470,16 +537,7 @@
     return String(st).trim().toUpperCase() === 'OPEN';
   }
 
-  function fetchSnapshotForPark(parkId, budgetEndTs) {
-    var opts = {
-      method: 'GET',
-      cache: 'no-store',
-      mode: 'cors',
-      headers: { Accept: 'application/json' }
-    };
-    if (MAGICPULSE_API_TOKEN) {
-      opts.headers.Authorization = 'Bearer ' + MAGICPULSE_API_TOKEN;
-    }
+  function fetchJSONWithBudget(url, budgetEndTs) {
     var msLeft =
       typeof budgetEndTs === 'number' ? budgetEndTs - Date.now() : LIVE_FETCH_TIMEOUT_MS;
     if (msLeft < 200) {
@@ -490,18 +548,54 @@
     var timerId = window.setTimeout(function () {
       controller.abort();
     }, timeoutMs);
-    opts.signal = controller.signal;
-
-    return fetch(apiSnapshotUrlNoCache(parkId), opts)
-      .then(function (res) {
-        if (!res.ok) throw new Error(res.status === 401 ? 'API token required' : 'Request failed');
-        return res.json();
-      })
-      .then(function (payload) {
-        return snapshotFromAPIPayload(payload);
-      })
+    var opts = {
+      method: 'GET',
+      cache: 'no-store',
+      mode: 'cors',
+      headers: { Accept: 'application/json' },
+      signal: controller.signal
+    };
+    if (MAGICPULSE_API_TOKEN) {
+      opts.headers.Authorization = 'Bearer ' + MAGICPULSE_API_TOKEN;
+    }
+    return fetch(url, opts)
       .finally(function () {
         window.clearTimeout(timerId);
+      });
+  }
+
+  function fetchSnapshotEnvelopeOnly(parkId, budgetEndTs) {
+    return fetchJSONWithBudget(apiSnapshotUrlNoCache(parkId), budgetEndTs)
+      .then(function (res2) {
+        if (!res2.ok) {
+          throw new Error(res2.status === 401 ? 'API token required' : 'Request failed');
+        }
+        return res2.json();
+      })
+      .then(function (payload2) {
+        return normalizeLivePayloadToSnapshot(payload2);
+      });
+  }
+
+  /**
+   * Same order as iOS widgets: public **widget** JSON first (`schemaVersion: 1`), then full **snapshot** envelope.
+   * If the widget route errors (network/CORS), still try `/snapshot`.
+   */
+  function fetchSnapshotForPark(parkId, budgetEndTs) {
+    return fetchJSONWithBudget(apiWidgetUrlNoCache(parkId), budgetEndTs)
+      .then(function (res) {
+        if (!res.ok) return null;
+        return res.json().catch(function () {
+          return null;
+        });
+      })
+      .then(function (payload) {
+        var snap = normalizeLivePayloadToSnapshot(payload);
+        if (isSnapshotUsable(snap)) return snap;
+        return fetchSnapshotEnvelopeOnly(parkId, budgetEndTs);
+      })
+      .catch(function () {
+        return fetchSnapshotEnvelopeOnly(parkId, budgetEndTs);
       });
   }
 
