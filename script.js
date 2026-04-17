@@ -115,8 +115,20 @@
   var waitsRoot = document.getElementById('live-waits');
   if (!waitsRoot) return;
 
-  var MAGICPULSE_API_BASE =
-    typeof window.MAGICPULSE_API_BASE === 'string' ? window.MAGICPULSE_API_BASE : '';
+  /** Production API — always use an absolute origin so fetches never go to the marketing site’s domain by mistake. */
+  var DEFAULT_MAGICPULSE_API_BASE = 'https://api.magicpulse.app';
+
+  function normalizeMagicPulseAPIBase(raw) {
+    var s = typeof raw === 'string' ? raw.trim() : '';
+    if (!s) return DEFAULT_MAGICPULSE_API_BASE;
+    s = s.replace(/\/+$/, '');
+    if (/^https?:\/\//i.test(s)) return s;
+    // Host or host:port only (domains, IPv4, etc.) — avoid relative URLs that hit the marketing origin.
+    if (s.indexOf('/') === -1) return 'https://' + s;
+    return s;
+  }
+
+  var MAGICPULSE_API_BASE = normalizeMagicPulseAPIBase(window.MAGICPULSE_API_BASE);
   var MAGICPULSE_API_TOKEN = window.MAGICPULSE_API_TOKEN || '';
   var MAGICPULSE_PARK_ID = 6;
   if (typeof window.MAGICPULSE_PARK_ID === 'number' && !Number.isNaN(window.MAGICPULSE_PARK_ID)) {
@@ -236,21 +248,12 @@
   var loading = waitsRoot.querySelector('.waits-loading');
   var rows = waitsRoot.querySelector('.waits-rows');
   var error = waitsRoot.querySelector('.waits-error');
-  var apiUrl =
-    (MAGICPULSE_API_BASE ? MAGICPULSE_API_BASE.replace(/\/$/, '') : '') +
-    '/api/parks/public/' +
-    MAGICPULSE_PARK_ID +
-    '/snapshot';
+  var apiUrl = MAGICPULSE_API_BASE + '/api/parks/public/' + MAGICPULSE_PARK_ID + '/snapshot';
 
   var liveFetchInFlight = false;
 
   function apiSnapshotUrl(parkId) {
-    return (
-      (MAGICPULSE_API_BASE ? MAGICPULSE_API_BASE.replace(/\/$/, '') : '') +
-      '/api/parks/public/' +
-      parkId +
-      '/snapshot'
-    );
+    return MAGICPULSE_API_BASE + '/api/parks/public/' + parkId + '/snapshot';
   }
 
   /** Unique URL per request so browsers and intermediaries cannot serve a stale cached GET snapshot. */
