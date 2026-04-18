@@ -1,20 +1,27 @@
 :root {
-  --bg: #0f0b23;
-  --bg-alt: #171133;
+  --bg: #0c0820;
+  --bg-alt: #14102e;
   --bg-accent-2: #1f1646;
   --card: rgba(255, 255, 255, 0.04);
   --card-strong: rgba(255, 255, 255, 0.07);
   --card-border: rgba(255, 255, 255, 0.12);
   --card-border-strong: rgba(255, 255, 255, 0.2);
-  --text: #f5f6fb;
-  --muted: rgba(245, 246, 251, 0.74);
+  --text: #f7f8fd;
+  --muted: rgba(245, 246, 251, 0.72);
   --accent: #9e59ff;
   --accent-strong: #8b49f1;
   --accent-light: #c49aff;
-  --shadow-soft: 0 8px 24px rgba(5, 3, 16, 0.35);
-  --shadow-strong: 0 18px 48px rgba(5, 3, 16, 0.45);
-  --radius: 14px;
-  --radius-sm: 10px;
+  --shadow-soft: 0 8px 28px rgba(5, 3, 20, 0.38);
+  --shadow-strong: 0 22px 56px rgba(5, 3, 22, 0.5);
+  --shadow-glow: 0 0 0 1px rgba(255, 255, 255, 0.1), 0 0 48px -16px rgba(158, 89, 255, 0.45);
+  --glass-surface: linear-gradient(
+    155deg,
+    rgba(255, 255, 255, 0.11) 0%,
+    rgba(255, 255, 255, 0.04) 42%,
+    rgba(255, 255, 255, 0.07) 100%
+  );
+  --radius: 16px;
+  --radius-sm: 11px;
   --container: min(1100px, 94vw);
 }
 
@@ -184,11 +191,17 @@ body {
   margin: 0;
   color: var(--text);
   background:
-    radial-gradient(1200px 600px at 0% 0%, rgba(158, 89, 255, 0.2), transparent 52%),
-    radial-gradient(700px 420px at 100% 8%, rgba(69, 153, 255, 0.16), transparent 58%),
-    radial-gradient(760px 500px at 50% 100%, rgba(158, 89, 255, 0.12), transparent 64%),
-    linear-gradient(180deg, var(--bg) 0%, var(--bg-alt) 100%);
+    radial-gradient(ellipse 900px 480px at 15% -8%, rgba(158, 89, 255, 0.22), transparent 55%),
+    radial-gradient(ellipse 700px 400px at 92% 5%, rgba(56, 189, 248, 0.1), transparent 50%),
+    radial-gradient(ellipse 800px 520px at 50% 108%, rgba(158, 89, 255, 0.14), transparent 58%),
+    linear-gradient(180deg, var(--bg) 0%, #120e28 48%, var(--bg-alt) 100%);
   font: 400 16px/1.65 Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+::selection {
+  background: rgba(158, 89, 255, 0.38);
+  color: #fff;
 }
 
 a {
@@ -222,10 +235,11 @@ a:hover {
   grid-row: 1;
   min-height: 72px;
   align-self: stretch;
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
-  background: linear-gradient(180deg, rgba(22, 16, 48, 0.9), rgba(15, 11, 35, 0.84));
-  border-bottom: 1px solid rgba(255, 255, 255, 0.16);
+  backdrop-filter: blur(16px) saturate(1.15);
+  -webkit-backdrop-filter: blur(16px) saturate(1.15);
+  background: linear-gradient(180deg, rgba(18, 14, 40, 0.92), rgba(12, 8, 28, 0.82));
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 1px 0 rgba(158, 89, 255, 0.06);
 }
 
 .site-header-main {
@@ -391,7 +405,7 @@ body.nav-open .menu-btn span:nth-child(3) {
 
 .hero {
   position: relative;
-  padding: 5.2rem 0 3.2rem;
+  padding: 5.5rem 0 3.6rem;
   overflow: hidden;
 }
 
@@ -485,6 +499,19 @@ body.nav-open .menu-btn span:nth-child(3) {
   font-weight: 600;
 }
 
+.hero .eyebrow {
+  display: inline-block;
+  margin-bottom: 0.85rem;
+  padding: 0.38rem 0.85rem;
+  border-radius: 999px;
+  letter-spacing: 0.1em;
+  font-size: 0.68rem;
+  color: rgba(245, 246, 251, 0.88);
+  background: rgba(158, 89, 255, 0.14);
+  border: 1px solid rgba(158, 89, 255, 0.28);
+  box-shadow: 0 0 24px -8px rgba(158, 89, 255, 0.5);
+}
+
 h1,
 h2,
 h3 {
@@ -499,6 +526,10 @@ h1 {
   max-width: 15ch;
   /* Reduce layout shift when webfonts swap in */
   min-height: 2.85em;
+}
+
+.hero h1 {
+  text-shadow: 0 2px 40px rgba(158, 89, 255, 0.18);
 }
 
 h2 {
@@ -533,11 +564,17 @@ h3 {
 }
 
 .hero-panel {
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.04));
-  border: 1px solid var(--card-border-strong);
+  position: relative;
+  background: var(--glass-surface);
+  backdrop-filter: blur(22px) saturate(1.2);
+  -webkit-backdrop-filter: blur(22px) saturate(1.2);
+  border: 1px solid rgba(255, 255, 255, 0.14);
   border-radius: var(--radius);
-  padding: 1rem;
-  box-shadow: var(--shadow-soft);
+  padding: 1.2rem 1.25rem;
+  box-shadow:
+    var(--shadow-glow),
+    var(--shadow-soft),
+    inset 0 1px 0 rgba(255, 255, 255, 0.12);
 }
 
 .panel-head {
@@ -551,6 +588,7 @@ h3 {
 .hero-panel h2 {
   font-size: 1.08rem;
   margin: 0;
+  letter-spacing: -0.01em;
 }
 
 .live-badge {
@@ -686,6 +724,14 @@ h3 {
   box-shadow: var(--shadow-strong);
 }
 
+.trust-grid h3 {
+  margin: 0;
+  font-size: 1.02rem;
+  font-weight: 600;
+  letter-spacing: -0.015em;
+  line-height: 1.25;
+}
+
 .trust-grid p {
   margin: 0.35rem 0 0;
   color: var(--muted);
@@ -725,12 +771,13 @@ h3 {
 }
 
 .section {
-  padding: 3.6rem 0;
+  padding: 4rem 0;
 }
 
 .section-alt {
   background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0.01)),
+    radial-gradient(ellipse 80% 60% at 50% 0%, rgba(158, 89, 255, 0.06), transparent 55%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.035), rgba(255, 255, 255, 0.012)),
     rgba(255, 255, 255, 0.02);
   border-top: 1px solid var(--card-border);
   border-bottom: 1px solid var(--card-border);
@@ -741,6 +788,31 @@ h3 {
   max-width: 66ch;
 }
 
+.section .container:not(.legal-page) > h2 {
+  position: relative;
+  padding-bottom: 0.7rem;
+  margin-bottom: 0.2rem;
+}
+
+.section .container:not(.legal-page) > h2::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: min(4.5rem, 22vw);
+  height: 3px;
+  border-radius: 3px;
+  background: linear-gradient(90deg, var(--accent-light), var(--accent) 70%, transparent);
+  opacity: 0.9;
+}
+
+.cta .container:not(.legal-page) > h2::after {
+  left: 50%;
+  transform: translateX(-50%);
+  width: 3.5rem;
+  background: linear-gradient(90deg, transparent, var(--accent-light), var(--accent), transparent);
+}
+
 .cards {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -748,18 +820,18 @@ h3 {
 }
 
 .card {
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.035));
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.09), rgba(255, 255, 255, 0.038));
   border: 1px solid var(--card-border);
   border-radius: var(--radius-sm);
-  padding: 1rem;
+  padding: 1.05rem 1.1rem;
   box-shadow: var(--shadow-soft);
   transition: transform 0.24s ease, border-color 0.24s ease, box-shadow 0.24s ease;
 }
 
 .card:hover {
   transform: translateY(-4px);
-  border-color: var(--card-border-strong);
-  box-shadow: var(--shadow-strong);
+  border-color: rgba(158, 89, 255, 0.42);
+  box-shadow: var(--shadow-strong), 0 0 0 1px rgba(158, 89, 255, 0.14);
 }
 
 .card p {
@@ -924,7 +996,13 @@ h3 {
 
 /* Gradient text for hero headline accent */
 .gradient-text {
-  background: linear-gradient(120deg, var(--accent-light) 0%, var(--accent) 40%, #c77dff 100%);
+  background: linear-gradient(
+    115deg,
+    #e9deff 0%,
+    var(--accent-light) 22%,
+    var(--accent) 52%,
+    #7dd3fc 100%
+  );
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -1018,12 +1096,6 @@ h3 {
   margin-top: 0;
 }
 
-/* Card hover: add a subtle accent glow */
-.card:hover {
-  border-color: rgba(158, 89, 255, 0.4);
-  box-shadow: var(--shadow-strong), 0 0 0 1px rgba(158, 89, 255, 0.12);
-}
-
 /* Wave section dividers */
 .wave-sep {
   overflow: hidden;
@@ -1045,8 +1117,9 @@ h3 {
 
 /* Stats strip */
 .stats-strip {
-  padding: 2rem 0 2.4rem;
+  padding: 2.25rem 0 2.6rem;
   border-bottom: 1px solid var(--card-border);
+  background: linear-gradient(180deg, rgba(158, 89, 255, 0.07), transparent 72%);
 }
 
 .stats-row {
@@ -1060,7 +1133,14 @@ h3 {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.2rem;
+  gap: 0.35rem;
+  padding: 0.35rem 0.25rem;
+  border-radius: var(--radius-sm);
+  transition: background 0.2s ease;
+}
+
+.stat-item:hover {
+  background: rgba(255, 255, 255, 0.03);
 }
 
 .stat-num {
@@ -1401,9 +1481,9 @@ h3 {
 }
 
 .site-footer {
-  border-top: 1px solid var(--card-border);
-  padding: 2.2rem 0;
-  background: linear-gradient(180deg, rgba(13, 10, 30, 0.4), rgba(13, 10, 30, 0.7));
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 2.75rem 0 2.5rem;
+  background: linear-gradient(180deg, rgba(8, 5, 22, 0.5), rgba(10, 7, 26, 0.92));
 }
 
 .site-footer .brand {
