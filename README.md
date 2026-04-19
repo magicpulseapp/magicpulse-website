@@ -6,11 +6,15 @@ Static landing page for the **Magic Pulse** iOS app (`www.magicpulse.app`). No b
 
 | File | Purpose |
 |------|---------|
-| `index.html` | Home: hero, features, pricing, FAQ (`<details>`), live snapshot |
-| `styles.css` | Dark theme, responsive layout, FAQ accordion, skip link |
-| `script.js` | Mobile nav (a11y), scroll reveal + fallback, live API panel + auto-refresh |
+| `index.html` | Home: hero, features, pricing, FAQ (`<details>`), live snapshot panel |
+| `styles.css` | Dark theme, responsive layout, self-hosted `@font-face` (Outfit + Inter) |
+| `script.js` | Mobile nav (a11y), scroll reveal + fallback, hero live waits + auto-refresh |
+| `fonts/*.woff2` | Self-hosted webfonts (latin + latin-ext); no Google Fonts runtime |
 | `favicon.svg` | Tab icon |
-| `og-image.png` | Open Graph / Twitter card image (1200×630); referenced in page `<meta>` tags |
+| `og-image.jpg` | Open Graph / Twitter card image (1200×630 JPEG) |
+| `_headers` | Cache-Control hints for **Netlify / Cloudflare Pages** (ignored by stock GitHub Pages) |
+| `CNAME` | Custom hostname for GitHub Pages: `www.magicpulse.app` |
+| `app-ads.txt` | AdMob `app-ads.txt` at site root |
 | `privacy.html` / `support.html` | Legal + contact (Formspree) |
 | `robots.txt` | Crawl rules + `Sitemap` URL |
 | `sitemap.xml` | Index URLs for search engines |
@@ -23,41 +27,51 @@ python3 -m http.server 8080
 # http://localhost:8080
 ```
 
-## Live snapshot (MagicPulseAPI)
+## Hero live snapshot (default: ThemeParks Wiki)
 
-The hero panel calls:
-
-`GET {API_BASE}/api/parks/public/{parkId}/snapshot`
-
-- **No auth** (public route in `MagicPulseAPI` → `parks.ts`).
-- Configure **before** `script.js` loads:
+By default the hero panel loads **live attraction waits** from the public **ThemeParks Wiki** API (`api.themeparks.wiki`). No API key. Configure **before** `script.js` loads if needed:
 
 ```html
 <script>
-  window.MAGICPULSE_API_BASE = 'https://api.magicpulse.app';
-  // window.MAGICPULSE_PARK_ID = 6;           // default: 6 (Magic Kingdom)
+  // Optional overrides (defaults are usually fine):
+  // window.MAGICPULSE_PARK_ID = 6; // Magic Kingdom; see script.js PARKS list
   // window.MAGICPULSE_LIVE_REFRESH_MS = 180000; // 3 min (clamped 60s–10m)
-  // window.MAGICPULSE_SNAPSHOT_RIDE_COUNT = 4;   // 1–20
+  // window.MAGICPULSE_SNAPSHOT_RIDE_COUNT = 4; // 1–20
   // window.MAGICPULSE_POPULAR_RIDES = [{ rideId: '…' }, { rideName: '…' }];
 </script>
 ```
 
 Behavior:
 
-- Prefers **popular rides** (by stable `id` or name) when open, then fills with **shortest waits**.
-- If the chosen park is **closed**, tries another **open** park (same resort, then other resorts).
-- **Auto-refreshes** on an interval while the tab is visible; also refreshes when you return to the tab.
+- Maps ThemeParks **`live`** payloads into the same ride picker used for the Magic Pulse snapshot shape.
+- Prefers **popular rides** (by `id` or name) when open with a posted standby wait, then fills with **shortest waits**.
+- If the chosen park has **no usable waits**, tries other parks (same resort order, then others).
+- **Auto-refreshes** while the tab is visible; refreshes when you return to the tab.
 
-Ride rows include `data-ride-id` when the API provides an `id`.
+### Optional: Magic Pulse API instead
+
+To use your **Magic Pulse** public snapshot route instead of ThemeParks Wiki:
+
+```html
+<script>
+  window.MAGICPULSE_SNAPSHOT_SOURCE = 'magicpulse';
+  window.MAGICPULSE_API_BASE = 'https://api.magicpulse.app';
+  // window.MAGICPULSE_PARK_ID = 6;
+  // window.MAGICPULSE_LIVE_REFRESH_MS = 180000;
+</script>
+```
+
+Calls: `GET {API_BASE}/api/parks/public/{parkId}/snapshot` (no auth on the public route). **`MAGICPULSE_SNAPSHOT_SOURCE` must be `'magicpulse'`** — setting only `MAGICPULSE_API_BASE` does **not** switch the hero off ThemeParks.
+
+Ride rows include `data-ride-id` when the source provides an `id`.
 
 ## SEO & sharing
 
-- Canonical URLs assume **`https://www.magicpulse.app/`** (see `CNAME`).
-- **`robots.txt`** allows all crawlers and references **`sitemap.xml`** (home, support, privacy).
+- Canonical URLs assume **`https://www.magicpulse.app/`** (see `CNAME` and each page’s `<link rel="canonical">`). Configure **apex** (`magicpulse.app`) to **301 redirect** to `https://www.magicpulse.app` at your DNS or CDN so one hostname wins.
+- **`robots.txt`** allows all crawlers and references **`sitemap.xml`** (home, support, privacy). Bump **`<lastmod>`** in `sitemap.xml` when you ship meaningful content changes.
 - **Open Graph / Twitter** tags are on all public pages; **`og:image:alt`** and matching Twitter fields improve accessibility and previews.
 - **Structured data** on the home page uses JSON-LD **`@graph`**: `WebSite`, `Organization`, and `SoftwareApplication`.
-- **Performance:** Google Fonts load via **`preload` + async stylesheet** (with `<noscript>` fallback); **`script.js`** uses **`defer`** so HTML paints sooner.
-- For **rich** social previews, add a **1200×630** PNG (e.g. `/og-image.png`) and set `og:image` / `twitter:image` to it (many networks ignore SVG).
+- **Performance:** Self-hosted fonts with **`preload`** for critical WOFF2 files; **`script.js`** uses **`defer`**. Social image is **`og-image.jpg`** (optimized JPEG).
 
 ### Lighthouse (local)
 
@@ -69,9 +83,10 @@ npx --yes lighthouse http://127.0.0.1:8080/ --only-categories=performance,seo,ac
 
 ## Deploy
 
-Upload the folder to **GitHub Pages**, **Netlify**, **Vercel**, S3, etc. Ensure `favicon.svg` is served at the site root.
+Upload the folder to **GitHub Pages**, **Netlify**, **Cloudflare Pages**, **Vercel**, S3, etc. Ensure `favicon.svg`, `app-ads.txt`, and font files under `fonts/` are served from the site root (same paths as in `styles.css`).
 
-If you also serve this site from **MagicPulseAPI** `public/`, copy these files there after changes.
+- **`_headers`:** Applied automatically on **Netlify** and **Cloudflare Pages**. **Stock GitHub Pages does not read `_headers`** — for aggressive cache headers on CSS/JS/fonts, put **Cloudflare** (or similar) in front of the site or use another host that supports header rules.
+- If you also serve this site from **MagicPulseAPI** `public/`, copy these files there after changes.
 
 ## App Store Connect (copy-paste)
 

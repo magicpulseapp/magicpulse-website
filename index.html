@@ -483,9 +483,11 @@
   </div>
 
   <script>
-    window.MAGICPULSE_API_BASE = 'https://api.magicpulse.app';
+    // Hero live panel defaults to ThemeParks Wiki (see README). To use Magic Pulse API instead, uncomment:
+    // window.MAGICPULSE_SNAPSHOT_SOURCE = 'magicpulse';
+    // window.MAGICPULSE_API_BASE = 'https://api.magicpulse.app';
     // window.MAGICPULSE_PARK_ID = 6;
-    // window.MAGICPULSE_LIVE_REFRESH_MS = 180000; // 3 min (min 60s, max 10m)
+    // window.MAGICPULSE_LIVE_REFRESH_MS = 180000; // 3 min (clamped 60s–10m)
   </script>
   <script src="script.js" defer></script>
 </body>

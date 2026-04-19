@@ -111,6 +111,17 @@ You can serve the site from your own domain (e.g. `https://magicpulse.app`) inst
 
 After DNS propagates, your site will be available at your custom domain over HTTPS. Use that URL (e.g. `https://magicpulse.app/privacy.html`) for App Store Connect and elsewhere.
 
+### Canonical host: `www` vs apex
+
+This repo’s **`CNAME`** file is set to **`www.magicpulse.app`**, and page **`<link rel="canonical">`** tags use **`https://www.magicpulse.app/...`**. For SEO and consistent analytics:
+
+- Prefer sending all traffic to **`https://www.magicpulse.app`**.
+- Configure **apex** `magicpulse.app` → **301 redirect** to `https://www.magicpulse.app` using your registrar’s redirect feature, a **CNAME/ALIAS** apex-to-www pattern, or a CDN (e.g. Cloudflare forwarding rule). If both hostnames point at GitHub Pages without a redirect, search engines may see duplicate URLs.
+
+### `_headers` and caching
+
+The repo root **`_headers`** file sets **Cache-Control** for fonts, CSS, JS, and HTML. **GitHub Pages does not process `_headers`.** It is honored on **Netlify**, **Cloudflare Pages**, and similar hosts. For long-lived caching on GitHub Pages alone, you typically need **Cloudflare** (or another proxy) in front of the site with matching rules.
+
 ---
 
 ## After it’s live
