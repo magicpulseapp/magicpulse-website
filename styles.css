@@ -819,12 +819,6 @@ h3 {
   gap: 0.85rem;
 }
 
-.my-plan-footnote {
-  margin-top: 1.25rem;
-  max-width: 52rem;
-  color: var(--muted);
-}
-
 .card {
   background: linear-gradient(180deg, rgba(255, 255, 255, 0.09), rgba(255, 255, 255, 0.038));
   border: 1px solid var(--card-border);
