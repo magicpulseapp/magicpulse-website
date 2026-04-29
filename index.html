@@ -4,8 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="referrer" content="strict-origin-when-cross-origin" />
-  <meta name="description" content="Magic Pulse — live Disney wait times, park hours, and weather for Walt Disney World, Disneyland, Tokyo, and Paris. The #1 theme park planning app for iOS." />
-  <meta name="keywords" content="Disney wait times, theme park app, Walt Disney World waits, Disneyland wait times, Magic Kingdom rides, theme park planning, live ride waits, Disney park hours" />
+  <meta name="description" content="Magic Pulse — live Disney wait times, day plans, Lightning Lane price tracking, Apple Watch glances, and weather for Walt Disney World, Disneyland, Tokyo, and Paris. The #1 theme park planning app for iOS." />
+  <meta name="keywords" content="Disney wait times, theme park app, day plan, Lightning Lane tracker, Apple Watch Disney, Walt Disney World waits, Disneyland wait times, Magic Kingdom rides, theme park planning, live ride waits, Disney park hours, shared day plan, trip recap" />
   <meta name="theme-color" content="#0c0820" media="(prefers-color-scheme: dark)" />
   <meta name="apple-itunes-app" content="app-id=6759612612" />
   <link rel="canonical" href="https://www.magicpulse.app/" />
@@ -16,7 +16,7 @@
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="Magic Pulse" />
   <meta property="og:title" content="Magic Pulse — Live Disney Wait Times & Theme Park Planning App" />
-  <meta property="og:description" content="Live Disney wait times, park hours, and weather for Walt Disney World, Disneyland, Tokyo Disney Resort, and Disneyland Paris. Free iOS app." />
+  <meta property="og:description" content="Live Disney wait times, collaborative day plans, Lightning Lane price tracking, and an Apple Watch glance for Walt Disney World, Disneyland, Tokyo, and Paris. Free iOS app." />
   <meta property="og:url" content="https://www.magicpulse.app/" />
   <meta property="og:locale" content="en_US" />
   <meta property="og:image" content="https://www.magicpulse.app/og-image.jpg" />
@@ -27,7 +27,7 @@
 
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="Magic Pulse — Live Disney Wait Times & Theme Park Planning App" />
-  <meta name="twitter:description" content="Live Disney wait times, park hours, and weather for Walt Disney World, Disneyland, Tokyo, and Paris. Free iOS app." />
+  <meta name="twitter:description" content="Live Disney wait times, day plans, Lightning Lane price tracking, and an Apple Watch glance for Walt Disney World, Disneyland, Tokyo, and Paris. Free iOS app." />
   <meta name="twitter:image" content="https://www.magicpulse.app/og-image.jpg" />
 
   <link rel="preload" href="fonts/inter-400-latin.woff2" as="font" type="font/woff2" crossorigin="anonymous" />
@@ -79,13 +79,13 @@
             "name": "Pro Lifetime"
           }
         ],
-        "description": "Live Disney wait times, park hours, and weather for Walt Disney World, Disneyland Resort, Tokyo Disney Resort, and Disneyland Paris. Plan theme park visits with real-time ride waits, smart alerts, Live Activity on Lock Screen, Siri Shortcuts, and an ad-free experience with Pro.",
+        "description": "Live Disney wait times, collaborative day plans, Lightning Lane price tracking, an Apple Watch glance, and post-trip recaps for Walt Disney World, Disneyland Resort, Tokyo Disney Resort, and Disneyland Paris. Plan theme park visits with real-time ride waits, smart alerts, Live Activity on Lock Screen, Siri Shortcuts, and an ad-free experience with Pro.",
         "image": "https://www.magicpulse.app/og-image.jpg",
         "url": "https://www.magicpulse.app/",
         "downloadUrl": "https://apps.apple.com/us/app/magic-pulse/id6759612612",
         "screenshot": "https://www.magicpulse.app/og-image.jpg",
-        "featureList": "Live wait times, Park hours, Weather forecast, Smart alerts, Live Activity, Siri Shortcuts, Watchlist, No ads (Pro)",
-        "keywords": "Disney wait times, theme park, Disneyland, Walt Disney World, Tokyo Disney, ride waits",
+        "featureList": "Live wait times, Day plan with auto-optimize, Lightning Lane price tracking, Apple Watch glance, Trip recap, Park hours, Weather forecast, Smart alerts, Live Activity, Home Screen widgets, Siri Shortcuts, Watchlist, CloudKit shared plans, No ads (Pro)",
+        "keywords": "Disney wait times, day plan, Lightning Lane tracker, Apple Watch theme park, theme park, Disneyland, Walt Disney World, Tokyo Disney, ride waits, trip recap",
         "author": { "@id": "https://www.magicpulse.app/#organization" },
         "publisher": { "@id": "https://www.magicpulse.app/#organization" }
       }
@@ -137,6 +137,38 @@
           "@type": "Answer",
           "text": "Yes. The hero panel loads live attraction waits from ThemeParks Wiki’s public API. If the default park has no usable posted waits, the site tries other parks automatically."
         }
+      },
+      {
+        "@type": "Question",
+        "name": "Can I plan my day and share it with family?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes. The My Day tab is a collaborative day planner — add rides, events, meals, and custom items, then share the plan via iCloud (CloudKit) so family members on iPhone or iPad can see and edit the same plan in real time. Auto-optimize reorders rides for the shortest total wait, and a post-day recap shows time saved, items completed, and walking distance."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Does Magic Pulse track Lightning Lane prices?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes. The Lightning Lane tab shows live posted prices for Disney's Lightning Lane Multi Pass and Single Pass attractions, a 'Best Buy' recommendation based on standby waits and historical price patterns, and price-drop alerts (Pro) so you can buy at the right moment."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Is there an Apple Watch app?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes. The Apple Watch app shows your selected park's headline crowd level, hours, and your top watchlist ride wait at a glance. Complications surface the same data on supported watch faces, and reachability indicators tell you when the iPhone is connected so you know your data is fresh."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Will my settings sync across my devices?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes. Magic Pulse uses iCloud Key-Value storage to sync your watchlist, thresholds, accent color, notification preferences, and other settings across the iPhones and iPads signed in to your Apple ID. Plans shared via CloudKit also sync among invited family members."
+        }
       }
     ]
   }
@@ -173,10 +205,10 @@
       </div>
       <div class="container hero-grid">
         <div>
-          <p class="eyebrow reveal reveal-1">Live Disney wait times — no guesswork.</p>
+          <p class="eyebrow reveal reveal-1">Live waits, smarter plans, less waiting in line.</p>
           <h1 class="reveal reveal-2">Your next ride, <span class="gradient-text">in real time.</span></h1>
           <p class="hero-copy reveal reveal-3">
-            Live wait times, park hours, and weather for Walt Disney World, Disneyland, Tokyo Disney Resort, and Disneyland Paris — one app, one tap.
+            Live wait times, a collaborative day plan, Lightning Lane price tracking, and an Apple Watch glance — for Walt Disney World, Disneyland, Tokyo Disney Resort, and Disneyland Paris.
           </p>
           <div class="hero-actions reveal reveal-4">
             <a class="btn btn-appstore" href="https://apps.apple.com/us/app/magic-pulse/id6759612612" target="_blank" rel="noopener noreferrer">
@@ -217,8 +249,8 @@
           <span class="stat-label">Tracked attractions</span>
         </div>
         <div class="stat-item reveal reveal-3">
-          <span class="stat-num">Live</span>
-          <span class="stat-label">Wait time updates</span>
+          <span class="stat-num">iPhone&nbsp;+&nbsp;Watch</span>
+          <span class="stat-label">Synced glance everywhere</span>
         </div>
         <div class="stat-item reveal reveal-4">
           <span class="stat-num">Free</span>
@@ -277,6 +309,27 @@
           </article>
           <article class="card">
             <div class="card-icon" aria-hidden="true">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11H5a2 2 0 0 0-2 2v3a2 2 0 0 0 2 2h4"/><path d="M15 11h4a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2h-4"/><path d="M9 6V4a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2"/><line x1="12" y1="11" x2="12" y2="22"/></svg>
+            </div>
+            <h3>My Day planner</h3>
+            <p>Build a day plan with rides, events, meals, and custom items. Auto-optimize reorders for the shortest total wait. Tick items off as you ride and watch progress climb.</p>
+          </article>
+          <article class="card">
+            <div class="card-icon" aria-hidden="true">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9h6.5a2 2 0 0 1 1.4.6l2.6 2.6a2 2 0 0 0 1.4.6H22"/><path d="M2 15h6.5a2 2 0 0 1 1.4.6l2.6 2.6a2 2 0 0 0 1.4.6H22"/><circle cx="22" cy="9" r="1.5"/><circle cx="22" cy="18.8" r="1.5"/></svg>
+            </div>
+            <h3>Lightning Lane tracker</h3>
+            <p>Live posted Lightning Lane prices, a "Best Buy" recommendation that combines standby wait + historical price patterns, and a per-ride price history so you know what's actually a deal.</p>
+          </article>
+          <article class="card">
+            <div class="card-icon" aria-hidden="true">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="2" width="12" height="20" rx="2" ry="2"/><circle cx="12" cy="12" r="3"/><line x1="12" y1="6" x2="12" y2="6.01"/><line x1="12" y1="18" x2="12" y2="18.01"/></svg>
+            </div>
+            <h3>Apple Watch glance</h3>
+            <p>Standalone watchOS app showing your park's crowd level, hours, and top watchlist ride wait at a glance — plus complications for supported faces. Auto-syncs from your iPhone in seconds.</p>
+          </article>
+          <article class="card">
+            <div class="card-icon" aria-hidden="true">
               <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
             </div>
             <h3>Park hours and status</h3>
@@ -289,13 +342,27 @@
             <h3>Weather context</h3>
             <p>Hourly forecasts and conditions synced with your park visit for smarter short-term planning.</p>
           </article>
+          <article class="card">
+            <div class="card-icon" aria-hidden="true">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+            </div>
+            <h3>Now recommendations</h3>
+            <p>The app reads the live snapshot and surfaces what to do next: a low-wait window opening, a nearby ride about to drop, a Lightning Lane just posted at a fair price.</p>
+          </article>
+          <article class="card">
+            <div class="card-icon" aria-hidden="true">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/><circle cx="12" cy="12" r="10"/></svg>
+            </div>
+            <h3>Trip recap</h3>
+            <p>After your visit: shortest wait you scored, biggest queue drop you caught, rides you marked, and how much time you saved over the optimizer's prediction. Shareable as a card.</p>
+          </article>
           <article class="card card-pro">
             <div class="card-icon" aria-hidden="true">
               <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
             </div>
             <span class="pro-badge">Pro</span>
             <h3>Smart alerts</h3>
-            <p>Get notified when a watchlist ride drops to a short wait so you can move before the window closes.</p>
+            <p>Drop alerts when a watchlist ride dips below your threshold, Lightning Lane price drops, park-opening reminders, day-plan item reminders, and severe-weather safety notifications.</p>
           </article>
           <article class="card card-pro">
             <div class="card-icon" aria-hidden="true">
@@ -303,7 +370,15 @@
             </div>
             <span class="pro-badge">Pro</span>
             <h3>Live Activity</h3>
-            <p>Glanceable ride wait updates on your iPhone Lock Screen and Dynamic Island without opening the app.</p>
+            <p>Glanceable ride wait updates on your iPhone Lock Screen and Dynamic Island. Plus Home Screen widgets that follow your selected park or a specific favorite.</p>
+          </article>
+          <article class="card card-pro">
+            <div class="card-icon" aria-hidden="true">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><path d="M20 8v6"/><path d="M23 11h-6"/></svg>
+            </div>
+            <span class="pro-badge">Pro</span>
+            <h3>Shared day plans</h3>
+            <p>Invite family or friends to a plan via iCloud — everyone on iPhone or iPad sees the same ride list, completion checks, and Lightning Lane spend in real time.</p>
           </article>
           <article class="card card-pro">
             <div class="card-icon" aria-hidden="true">
@@ -324,18 +399,23 @@
         <ol class="steps">
           <li>
             <span>01</span>
-            <h3>Collect live data</h3>
-            <p>Magic Pulse fetches current Disney ride wait times, park hours, and weather from trusted providers — refreshed every few minutes.</p>
+            <h3>Plan your day the night before</h3>
+            <p>Build a list of rides, events, meals, and custom items. Auto-optimize reorders for shortest total wait. Share the plan via iCloud so the whole party stays in sync.</p>
           </li>
           <li>
             <span>02</span>
-            <h3>Prioritize what matters</h3>
-            <p>The app surfaces your watchlist rides, shortest waits, and relevant alerts in a clean, distraction-free interface.</p>
+            <h3>See what's happening, live</h3>
+            <p>Magic Pulse pulls current wait times, park hours, weather, and Lightning Lane prices every few minutes — and surfaces what's most actionable on your Now card.</p>
           </li>
           <li>
             <span>03</span>
-            <h3>Act with confidence</h3>
-            <p>Use Smart Alerts, Live Activity, and Siri Shortcuts to time your rides perfectly and cut queue time.</p>
+            <h3>Act on alerts, not feelings</h3>
+            <p>Smart drop alerts, Lightning Lane price alerts, and day-plan reminders fire when a window matters. A glance at your Apple Watch tells you the score without unlocking your phone.</p>
+          </li>
+          <li>
+            <span>04</span>
+            <h3>Recap and share</h3>
+            <p>After the visit, the trip recap shows your shortest wait, biggest drop, and time saved. Share a clean summary card with your group or save it as a memory.</p>
           </li>
         </ol>
       </div>
@@ -364,8 +444,9 @@
             <ul>
               <li>Everything in Free</li>
               <li>No ads</li>
-              <li>Smart low-wait alerts</li>
+              <li>Smart drop &amp; LL price alerts</li>
               <li>Live Activity &amp; widgets</li>
+              <li>Shared day plans (iCloud)</li>
               <li>Siri &amp; Shortcuts</li>
             </ul>
             <a class="btn btn-primary price-cta" href="https://apps.apple.com/us/app/magic-pulse/id6759612612" target="_blank" rel="noopener noreferrer">Get Pro</a>
@@ -400,8 +481,16 @@
               <tr><td>Weather forecasts</td><td class="check">✓</td><td class="check">✓</td></tr>
               <tr><td>Ride sorting &amp; filters</td><td class="check">✓</td><td class="check">✓</td></tr>
               <tr><td>Watchlist</td><td class="check">✓</td><td class="check">✓</td></tr>
+              <tr><td>My Day planner (single device)</td><td class="check">✓</td><td class="check">✓</td></tr>
+              <tr><td>Lightning Lane price tracker</td><td class="check">✓</td><td class="check">✓</td></tr>
+              <tr><td>Apple Watch glance &amp; complications</td><td class="check">✓</td><td class="check">✓</td></tr>
+              <tr><td>Trip recap</td><td class="check">✓</td><td class="check">✓</td></tr>
+              <tr><td>iCloud settings sync</td><td class="check">✓</td><td class="check">✓</td></tr>
               <tr><td>No ads</td><td class="dash">—</td><td class="check">✓</td></tr>
-              <tr><td>Smart low-wait alerts</td><td class="dash">—</td><td class="check">✓</td></tr>
+              <tr><td>Smart drop &amp; reopen alerts</td><td class="dash">—</td><td class="check">✓</td></tr>
+              <tr><td>Lightning Lane price alerts</td><td class="dash">—</td><td class="check">✓</td></tr>
+              <tr><td>Day plan reminders</td><td class="dash">—</td><td class="check">✓</td></tr>
+              <tr><td>Shared day plans (CloudKit)</td><td class="dash">—</td><td class="check">✓</td></tr>
               <tr><td>Live Activity &amp; Lock Screen</td><td class="dash">—</td><td class="check">✓</td></tr>
               <tr><td>Home Screen widgets</td><td class="dash">—</td><td class="check">✓</td></tr>
               <tr><td>Siri &amp; Shortcuts</td><td class="dash">—</td><td class="check">✓</td></tr>
@@ -429,7 +518,23 @@
           </details>
           <details class="faq-details">
             <summary>Is the app free?</summary>
-            <p class="faq-answer">Yes. Free includes core planning; Pro adds alerts, widgets, Live Activity, Shortcuts, and no ads.</p>
+            <p class="faq-answer">Yes. Free includes live waits, the day planner, Lightning Lane price tracking, the trip recap, the Apple Watch app, and iCloud settings sync. Pro adds drop alerts, Lightning Lane price alerts, day plan reminders, shared day plans, Live Activity, widgets, Shortcuts, and no ads.</p>
+          </details>
+          <details class="faq-details">
+            <summary>Can I plan my day and share it with family?</summary>
+            <p class="faq-answer">Yes. The My Day tab is a collaborative day planner — add rides, events, meals, and custom items, then share via iCloud (CloudKit) so family members on iPhone or iPad can see and edit the same plan in real time. Auto-optimize reorders rides for the shortest total wait, and a post-day recap shows time saved, items completed, and walking distance.</p>
+          </details>
+          <details class="faq-details">
+            <summary>Does Magic Pulse track Lightning Lane prices?</summary>
+            <p class="faq-answer">Yes. The Lightning Lane tab shows live posted prices for Multi Pass and Single Pass attractions, a "Best Buy" recommendation that combines standby waits with historical price patterns, and price-drop alerts (Pro) so you can buy at the right moment.</p>
+          </details>
+          <details class="faq-details">
+            <summary>Is there an Apple Watch app?</summary>
+            <p class="faq-answer">Yes. The Apple Watch app shows your selected park's headline crowd level, hours, and your top watchlist ride wait at a glance. Complications surface the same data on supported watch faces, and a reachability indicator tells you when the iPhone is connected so you know your data is fresh.</p>
+          </details>
+          <details class="faq-details">
+            <summary>Will my settings sync across my devices?</summary>
+            <p class="faq-answer">Yes. Magic Pulse uses iCloud Key-Value storage to sync your watchlist, thresholds, accent color, notification preferences, and other settings across the iPhones and iPads signed in to your Apple ID. Plans shared via CloudKit also sync among invited family members.</p>
           </details>
           <details class="faq-details">
             <summary>Which parks are supported?</summary>

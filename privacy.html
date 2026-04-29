@@ -52,21 +52,26 @@
     <article class="container card legal-page">
       <p class="eyebrow">Legal</p>
       <h1>Privacy Policy</h1>
-      <p class="micro"><strong>Last updated:</strong> March 18, 2026</p>
+      <p class="micro"><strong>Last updated:</strong> April 29, 2026</p>
 
       <h2>Overview</h2>
-      <p class="section-copy">Magic Pulse (“we”, “our”) provides live theme park planning information. This policy describes what data is involved in the <strong>iOS app</strong>, the optional <strong>Magic Pulse API</strong>, and this <strong>website</strong>.</p>
+      <p class="section-copy">Magic Pulse (“we”, “our”) provides live theme park planning information. This policy describes what data is involved in the <strong>iOS app</strong>, the <strong>Apple Watch app</strong>, the optional <strong>Magic Pulse API</strong>, and this <strong>website</strong>.</p>
 
       <h2>Data used in the iOS app</h2>
       <ul class="legal-list">
         <li><strong>Location (optional):</strong> Used to suggest nearby parks and to deliver location-based alerts you enable. We do not sell your location.</li>
-        <li><strong>Notifications:</strong> Used only for alerts you opt into; you can turn them off in Settings.</li>
+        <li><strong>Notifications:</strong> Used only for alerts you opt into — including drop alerts, Lightning Lane price alerts, day-plan reminders, park-opening alerts, and severe-weather notifications. You can turn them off individually or globally in Settings.</li>
         <li><strong>On-device preferences:</strong> Watchlist, thresholds, display settings, and similar preferences are stored on your device.</li>
+        <li><strong>iCloud settings sync:</strong> If you’re signed in to iCloud, certain preferences (watchlist, thresholds, notification toggles, accent color, default share format) sync across your own iPhones and iPads via Apple’s Key-Value Store. The data is stored in your private iCloud account; we never see it. You can disable iCloud Drive for Magic Pulse to opt out.</li>
+        <li><strong>Day plans:</strong> Plans (rides, events, meals, custom items, completion checks, captured Lightning Lane prices) are stored locally in Core Data. When you choose to <strong>share a plan</strong>, that plan is mirrored to your private iCloud database via Apple’s CloudKit so invited family members can collaborate. Magic Pulse never holds a copy of your CloudKit data; it lives entirely in your and your collaborators’ iCloud accounts.</li>
         <li><strong>On-device history (forecasts):</strong> Wait-time history used for trends and on-device forecasts stays on your device unless you use the optional API path below.</li>
-        <li><strong>Optional Magic Pulse API:</strong> If you or the default configuration use our servers (e.g. <code>api.magicpulse.app</code>), the app may send requests authenticated with Apple’s App Attest and an app API key. We process park snapshots and aggregated wait history on our servers to power features such as forecasts and crowd insights. We do not use this to build an advertising profile.</li>
+        <li><strong>Optional Magic Pulse API:</strong> If you or the default configuration use our servers (e.g. <code>api.magicpulse.app</code>), the app may send requests authenticated with Apple’s App Attest and an app API key. We process park snapshots and aggregated wait history on our servers to power features such as forecasts, Lightning Lane price history, and crowd insights. We do not use this to build an advertising profile.</li>
         <li><strong>Advertising (free tier):</strong> The free tier may show banner ads through <strong>Google AdMob</strong>. Google may collect device and usage data as described in <a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer">Google’s Privacy Policy</a>. Magic Pulse Pro removes the in-app banner.</li>
         <li><strong>Diagnostics:</strong> Lightweight app events may be logged locally on your device for product improvement (not uploaded by default).</li>
       </ul>
+
+      <h2>Apple Watch app</h2>
+      <p class="section-copy">The Apple Watch companion is read-only. It receives a snapshot of your selected park’s name, hours, crowd level, and top watchlist ride wait from the iPhone via Apple’s WatchConnectivity framework. No data leaves the watch independently — there’s no network connection, no separate account, and no analytics.</p>
 
       <h2>Data we do not sell</h2>
       <p class="section-copy">We do not sell your personal information. We do not use your data for third-party behavioral advertising beyond what ad networks apply when ads are shown on the free tier.</p>
@@ -75,6 +80,7 @@
       <ul class="legal-list">
         <li>Wait times and park operating data: <a href="https://themeparks.wiki" target="_blank" rel="noopener noreferrer">ThemeParks Wiki</a> (and our API may aggregate the same class of public data).</li>
         <li>Weather: <a href="https://weather.apple.com" target="_blank" rel="noopener noreferrer">Apple Weather</a> via WeatherKit in the app.</li>
+        <li>Settings sync &amp; shared day plans: Apple iCloud (Key-Value Store + CloudKit). Data lives in your iCloud account; we have no access.</li>
         <li>Purchases: Apple App Store (subscriptions and one-time purchases).</li>
         <li>Ads: Google AdMob on the free tier (see above).</li>
       </ul>
