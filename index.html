@@ -60,9 +60,24 @@
         "applicationCategory": "TravelApplication",
         "operatingSystem": "iOS",
         "offers": [
-          { "@type": "Offer", "price": "0", "priceCurrency": "USD", "name": "Free" },
-          { "@type": "Offer", "price": "0.99", "priceCurrency": "USD", "name": "Pro Weekly" },
-          { "@type": "Offer", "price": "2.99", "priceCurrency": "USD", "name": "Pro Lifetime" }
+          {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "USD",
+            "name": "Free"
+          },
+          {
+            "@type": "Offer",
+            "price": "0.99",
+            "priceCurrency": "USD",
+            "name": "Pro Weekly"
+          },
+          {
+            "@type": "Offer",
+            "price": "2.99",
+            "priceCurrency": "USD",
+            "name": "Pro Lifetime"
+          }
         ],
         "description": "Live Disney wait times, collaborative day plans, Lightning Lane price tracking, an Apple Watch glance, and post-trip recaps for Walt Disney World, Disneyland Resort, Tokyo Disney Resort, and Disneyland Paris. Plan theme park visits with real-time ride waits, smart alerts, Live Activity on Lock Screen, Siri Shortcuts, and an ad-free experience with Pro.",
         "image": "https://www.magicpulse.app/og-image.jpg",
@@ -85,38 +100,75 @@
     "mainEntity": [
       {
         "@type": "Question",
-        "name": "Is the app free?",
-        "acceptedAnswer": { "@type": "Answer", "text": "Yes. Free includes live waits, the day planner, Lightning Lane price tracking, the trip recap, the Apple Watch app, and iCloud settings sync. Pro adds drop alerts, Lightning Lane price alerts, day-plan reminders, shared day plans, Live Activity, widgets, Shortcuts, and no ads." }
+        "name": "Is Magic Pulse affiliated with Disney or other park operators?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "No. Magic Pulse is an independent app and is not endorsed by Disney, Universal, or other park operators."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Where does the Disney wait time data come from?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Wait times and park hours are sourced from ThemeParks Wiki. This website’s hero panel loads live waits directly from ThemeParks Wiki’s public API; the iOS app may use Magic Pulse API when configured."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Is Magic Pulse free to download?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes. The free tier includes live wait times, park hours, and weather. Pro adds smart alerts, Live Activity, widgets, Siri Shortcuts, and no ads — available as a $0.99/week subscription or $2.99 lifetime purchase."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Which Disney parks are supported?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Magic Pulse supports Walt Disney World (Magic Kingdom, EPCOT, Hollywood Studios, Animal Kingdom), Disneyland Resort (Disneyland Park, Disney California Adventure), Tokyo Disney Resort (Tokyo Disneyland, Tokyo DisneySea), and Disneyland Paris — multiple parks per region in one app."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Does the website show real Disney wait times?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes. The hero panel loads live attraction waits from ThemeParks Wiki’s public API. If the default park has no usable posted waits, the site tries other parks automatically."
+        }
       },
       {
         "@type": "Question",
         "name": "Can I plan my day and share it with family?",
-        "acceptedAnswer": { "@type": "Answer", "text": "Yes. The My Day tab is a collaborative planner — add rides, events, meals, and custom items, then share via iCloud (CloudKit) so family on iPhone or iPad sees and edits the same plan in real time. Auto-optimize reorders rides for the shortest total wait, and a post-day recap shows time saved, items completed, and walking distance." }
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes. The My Day tab is a collaborative day planner — add rides, events, meals, and custom items, then share the plan via iCloud (CloudKit) so family members on iPhone or iPad can see and edit the same plan in real time. Auto-optimize reorders rides for the shortest total wait, and a post-day recap shows time saved, items completed, and walking distance."
+        }
       },
       {
         "@type": "Question",
         "name": "Does Magic Pulse track Lightning Lane prices?",
-        "acceptedAnswer": { "@type": "Answer", "text": "Yes. The Lightning Lane tab shows live posted prices for Multi Pass and Single Pass attractions, a Best Buy recommendation that combines standby waits with historical price patterns, and price-drop alerts (Pro) so you can buy at the right moment." }
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes. The Lightning Lane tab shows live posted prices for Disney's Lightning Lane Multi Pass and Single Pass attractions, a 'Best Buy' recommendation based on standby waits and historical price patterns, and price-drop alerts (Pro) so you can buy at the right moment."
+        }
       },
       {
         "@type": "Question",
         "name": "Is there an Apple Watch app?",
-        "acceptedAnswer": { "@type": "Answer", "text": "Yes. The Watch app shows your selected park's crowd level, hours, and top watchlist ride wait at a glance. Complications surface the same data on supported watch faces, and a reachability indicator tells you when the iPhone is connected so you know your data is fresh." }
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes. The Apple Watch app shows your selected park's headline crowd level, hours, and your top watchlist ride wait at a glance. Complications surface the same data on supported watch faces, and reachability indicators tell you when the iPhone is connected so you know your data is fresh."
+        }
       },
       {
         "@type": "Question",
         "name": "Will my settings sync across my devices?",
-        "acceptedAnswer": { "@type": "Answer", "text": "Yes. Magic Pulse uses iCloud Key-Value storage to sync your watchlist, thresholds, accent color, and notification preferences across the iPhones and iPads on your Apple ID. Shared CloudKit plans also sync among invited family members." }
-      },
-      {
-        "@type": "Question",
-        "name": "Where does wait data come from?",
-        "acceptedAnswer": { "@type": "Answer", "text": "Wait times and park hours come from ThemeParks Wiki. This site's hero loads waits straight from their public API; the iOS app can use the Magic Pulse API when configured." }
-      },
-      {
-        "@type": "Question",
-        "name": "Is Magic Pulse affiliated with park operators?",
-        "acceptedAnswer": { "@type": "Answer", "text": "No. Magic Pulse is an independent app and is not endorsed by Disney, Universal, or other park operators." }
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes. Magic Pulse uses iCloud Key-Value storage to sync your watchlist, thresholds, accent color, notification preferences, and other settings across the iPhones and iPads signed in to your Apple ID. Plans shared via CloudKit also sync among invited family members."
+        }
       }
     ]
   }
@@ -129,7 +181,8 @@
     <div class="container nav-row site-header-main">
       <a href="index.html" class="brand"><span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M11.39 1.13a.7.7 0 0 1 1.22 0l1.43 2.86a3 3 0 0 0 1.97 1.59l3.13.7a.7.7 0 0 1 .38 1.16l-2.21 2.32a3 3 0 0 0-.81 2.34l.34 3.18a.7.7 0 0 1-1 .73l-2.85-1.4a3 3 0 0 0-2.5 0l-2.85 1.4a.7.7 0 0 1-1-.73l.34-3.18a3 3 0 0 0-.81-2.34L3.5 7.44a.7.7 0 0 1 .38-1.16l3.13-.7a3 3 0 0 0 1.97-1.59ZM18.5 16.5l.43.95a1 1 0 0 0 .65.55l1 .27a.4.4 0 0 1 0 .77l-1 .27a1 1 0 0 0-.65.55l-.43.95a.4.4 0 0 1-.74 0l-.43-.95a1 1 0 0 0-.65-.55l-1-.27a.4.4 0 0 1 0-.77l1-.27a1 1 0 0 0 .65-.55l.43-.95a.4.4 0 0 1 .74 0Z"/></svg></span>Magic Pulse</a>
       <nav id="site-navigation" class="site-nav" aria-label="Primary">
-        <a href="#tour">Features</a>
+        <a href="#product">Product</a>
+        <a href="#how">How it works</a>
         <a href="#pricing">Pricing</a>
         <a href="#faq">FAQ</a>
         <a href="support.html">Support</a>
@@ -142,10 +195,8 @@
   </header>
 
   <main id="main-content">
-    <!-- ============================================================
-         HERO — copy on left, faux Now card on right (live API)
-         ============================================================ -->
     <section class="hero">
+      <div class="aurora" aria-hidden="true"></div>
       <div class="hero-signal" aria-hidden="true">
         <div class="hero-orbit"></div>
         <svg class="hero-wave" viewBox="0 0 720 220" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
@@ -165,12 +216,11 @@
               <svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
               <span class="appstore-text"><span class="appstore-sub">Download on the</span><span class="appstore-main">App Store</span></span>
             </a>
-            <a class="btn btn-ghost" href="#tour">See features</a>
+            <a class="btn btn-ghost" href="#product">See features</a>
           </div>
           <p class="micro">Free on iOS · Android coming soon</p>
         </div>
         <aside class="hero-panel reveal reveal-5" role="region" aria-live="polite" aria-label="Live wait times example">
-          <span class="hero-panel-tab" aria-hidden="true">Now · Waits</span>
           <div class="panel-head">
             <h2>Live wait snapshot</h2>
             <span class="live-badge" id="live-badge"><span class="live-dot" aria-hidden="true"></span>Live</span>
@@ -198,9 +248,6 @@
 
     <div class="wave-sep" aria-hidden="true"><svg viewBox="0 0 1440 36" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><path d="M0,18 C240,36 480,0 720,18 C960,36 1200,0 1440,18 L1440,36 L0,36 Z" fill="rgba(158,89,255,0.09)"/></svg></div>
 
-    <!-- ============================================================
-         STATS — quick credibility strip (preserved from original)
-         ============================================================ -->
     <section class="stats-strip">
       <div class="container stats-row">
         <div class="stat-item reveal reveal-1">
@@ -222,294 +269,132 @@
       </div>
     </section>
 
-    <!-- ============================================================
-         APP TOUR — 5 sections, each pairing copy with a faux app
-         screen. Section content mirrors the iOS app's actual chrome.
-         ============================================================ -->
-    <div id="tour"></div>
-
-    <!-- 01 · Live waits -->
-    <section class="section app-tour">
-      <div class="container app-tour-grid">
-        <div class="app-tour-copy">
-          <p class="app-tour-eyebrow"><span class="num">01</span> Live waits</p>
-          <h2>Every ride, every park, every minute.</h2>
-          <p>The Waits tab shows real-time wait times, sorted the way you want — by wait, by name, or by land. Top three lowest waits get a hero treatment so you can act fast.</p>
-          <ul class="app-tour-feature-bullets">
-            <li>Color-coded pills (green / amber / coral) match the on-device app.</li>
-            <li>Tap a row to see ride detail with a sparkline of today's wait history (Pro).</li>
-            <li>Filter to your watchlist with one tap.</li>
-          </ul>
-        </div>
-        <div class="app-tour-mock reveal reveal-3">
-          <div class="app-screen" aria-hidden="true">
-            <div class="app-screen-head">
-              <span class="app-screen-tab">Waits</span>
-              <span class="tiny-pill">Live · 2 min ago</span>
-            </div>
-            <div class="app-screen-park">Magic Kingdom</div>
-            <div class="app-screen-meta" style="margin-bottom:0.5rem;">8 rides open · 2 closed for refurbishment</div>
-            <div class="hairline-dot" style="margin: 0.4rem 0 0.6rem;"><span class="dot"></span></div>
-            <div class="waits-rows" style="display:block;">
-              <div class="waits-row is-hero"><span class="rank">1</span><span class="name">Peter Pan's Flight</span><span class="value value--low">12 min</span></div>
-              <div class="waits-row is-hero"><span class="rank">2</span><span class="name">it's a small world</span><span class="value value--low">15 min</span></div>
-              <div class="waits-row is-hero"><span class="rank">3</span><span class="name">Big Thunder Mountain</span><span class="value value--med">28 min</span></div>
-              <div class="waits-row"><span class="name">Haunted Mansion</span><span class="value value--med">35 min</span></div>
-              <div class="waits-row"><span class="name">Pirates of the Caribbean</span><span class="value value--med">40 min</span></div>
-              <div class="waits-row"><span class="name">Space Mountain</span><span class="value value--high">62 min</span></div>
-              <div class="waits-row"><span class="name">Seven Dwarfs Mine Train</span><span class="value value--high">85 min</span></div>
-            </div>
+    <section class="trust">
+      <div class="container trust-grid">
+        <article class="reveal reveal-1">
+          <div class="trust-icon" aria-hidden="true">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
           </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- 02 · My Day -->
-    <section class="section section-alt app-tour">
-      <div class="container app-tour-grid app-tour-grid--reverse">
-        <div class="app-tour-copy">
-          <p class="app-tour-eyebrow"><span class="num">02</span> My Day</p>
-          <h2>Plan the night before. Live the day.</h2>
-          <p>Build a list of rides, events, meals, and custom items. Auto-optimize reorders for shortest total wait. Share via iCloud and the whole party stays in sync — see check-offs and Lightning Lane spend in real time.</p>
-          <ul class="app-tour-feature-bullets">
-            <li>Drag-to-reorder, or tap Auto-optimize and let the planner do it.</li>
-            <li>Walking-time chips between items so you don't underestimate park geography.</li>
-            <li>End-of-day recap: time saved, items completed, walk distance, share-card.</li>
-          </ul>
-        </div>
-        <div class="app-tour-mock reveal reveal-3">
-          <div class="app-screen" aria-hidden="true">
-            <div class="app-screen-head">
-              <span class="app-screen-tab">My Day</span>
-              <span class="tiny-pill">3 of 7 done</span>
-            </div>
-            <div class="app-screen-park">Sat · Apr 27 · MK</div>
-            <div class="app-screen-meta" style="margin-bottom:0.5rem;">Auto-optimize on · 2 LL flagged</div>
-            <div class="hairline-dot" style="margin: 0.4rem 0 0.6rem;"><span class="dot"></span></div>
-            <div class="plan-item plan-item--done">
-              <span class="plan-checkbox" aria-hidden="true"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
-              <span class="plan-icon" aria-hidden="true">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
-              </span>
-              <span class="plan-body"><span class="plan-title">Peter Pan's Flight</span><span class="plan-sub">9:12 AM · 14 min wait</span></span>
-              <span class="plan-trail">✓</span>
-            </div>
-            <div class="plan-item plan-item--done">
-              <span class="plan-checkbox" aria-hidden="true"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
-              <span class="plan-icon plan-icon--meal" aria-hidden="true">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 2v7a3 3 0 0 0 3 3v9"/><path d="M9 2v7"/><path d="M14 2c-1.1 0-2 .9-2 2v7c0 1.1.9 2 2 2h0v9"/></svg>
-              </span>
-              <span class="plan-body"><span class="plan-title">Be Our Guest · Lunch</span><span class="plan-sub">11:45 AM · Reservation</span></span>
-              <span class="plan-trail">✓</span>
-            </div>
-            <div class="plan-item">
-              <span class="plan-checkbox" aria-hidden="true"></span>
-              <span class="plan-icon" aria-hidden="true">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
-              </span>
-              <span class="plan-body"><span class="plan-title">Big Thunder Mountain</span><span class="plan-sub">~ 1:20 PM · 28 min standby</span></span>
-              <span class="plan-walking-chip">
-                <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="13" cy="4" r="2"/><path d="m5 22 5-7 4 3 5-9"/></svg>
-                4 min
-              </span>
-            </div>
-            <div class="plan-item">
-              <span class="plan-checkbox" aria-hidden="true"></span>
-              <span class="plan-icon" aria-hidden="true">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
-              </span>
-              <span class="plan-body"><span class="plan-title">Space Mountain</span><span class="plan-sub">~ 2:45 PM · LL · $19 captured</span></span>
-              <span class="plan-walking-chip">
-                <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="13" cy="4" r="2"/><path d="m5 22 5-7 4 3 5-9"/></svg>
-                7 min
-              </span>
-            </div>
-            <div class="plan-item">
-              <span class="plan-checkbox" aria-hidden="true"></span>
-              <span class="plan-icon plan-icon--event" aria-hidden="true">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-              </span>
-              <span class="plan-body"><span class="plan-title">Festival of Fantasy Parade</span><span class="plan-sub">3:00 PM · Main Street</span></span>
-            </div>
-            <div class="plan-toolbar" aria-hidden="true">
-              <button class="plan-optimize-btn" type="button">
-                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1px"><path d="M21 12a9 9 0 1 1-3.5-7.1"/><polyline points="21 4 21 12 13 12"/></svg>
-                Auto-optimize
-              </button>
-              <span class="plan-progress" style="--p: 43%;"></span>
-            </div>
+          <h3>Trusted data sources</h3>
+          <p>Wait times and hours from ThemeParks Wiki. Weather powered by Apple WeatherKit.</p>
+        </article>
+        <article class="reveal reveal-2">
+          <div class="trust-icon" aria-hidden="true">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
           </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- 03 · Lightning Lane -->
-    <section class="section app-tour">
-      <div class="container app-tour-grid">
-        <div class="app-tour-copy">
-          <p class="app-tour-eyebrow"><span class="num">03</span> Lightning Lane</p>
-          <h2>Buy the right pass at the right moment.</h2>
-          <p>The Lightning Lane tab shows live posted prices, a Best Buy recommendation that combines standby waits with historical price patterns, and per-ride price history so you know what's actually a deal.</p>
-          <ul class="app-tour-feature-bullets">
-            <li>Best Buy hero card surfaces the highest-value pass right now.</li>
-            <li>Per-ride sparkline of price history across the day.</li>
-            <li>Price-drop alerts (Pro) when a watchlist ride hits your threshold.</li>
-          </ul>
-        </div>
-        <div class="app-tour-mock reveal reveal-3">
-          <div class="app-screen" aria-hidden="true">
-            <div class="app-screen-head">
-              <span class="app-screen-tab">Lightning Lane</span>
-              <span class="tiny-pill">12 priced now</span>
-            </div>
-            <div class="app-screen-park">Magic Kingdom</div>
-            <div class="app-screen-meta" style="margin-bottom:0.7rem;">Multi Pass · refreshed 1 min ago</div>
-            <div class="ll-hero">
-              <span class="ll-hero-eyebrow">★ Best buy now</span>
-              <h3 class="ll-hero-title">Space Mountain</h3>
-              <p class="ll-hero-park">Tomorrowland · Multi Pass</p>
-              <div class="ll-hero-stats">
-                <div>
-                  <div class="ll-stat-label">Price</div>
-                  <div class="ll-stat-value ll-stat-value--accent">$19</div>
-                </div>
-                <div>
-                  <div class="ll-stat-label">Saves</div>
-                  <div class="ll-stat-value">~62 min</div>
-                </div>
-              </div>
-              <span class="ll-verdict">Verdict · 31¢ / min saved</span>
-              <svg class="ll-sparkline" viewBox="0 0 200 38" preserveAspectRatio="none">
-                <path class="fill" d="M0 28 L20 26 L40 22 L60 24 L80 18 L100 14 L120 16 L140 12 L160 10 L180 8 L200 6 L200 38 L0 38 Z"/>
-                <path d="M0 28 L20 26 L40 22 L60 24 L80 18 L100 14 L120 16 L140 12 L160 10 L180 8 L200 6"/>
-              </svg>
-            </div>
+          <h3>Privacy first</h3>
+          <p>Your watchlist and preferences stay on-device. No account required.</p>
+        </article>
+        <article class="reveal reveal-3">
+          <div class="trust-icon" aria-hidden="true">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
           </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- 04 · Apple Watch -->
-    <section class="section section-alt app-tour">
-      <div class="container app-tour-grid app-tour-grid--reverse">
-        <div class="app-tour-copy">
-          <p class="app-tour-eyebrow"><span class="num">04</span> Apple Watch</p>
-          <h2>The whole park, on your wrist.</h2>
-          <p>The standalone watchOS app shows your park's crowd level, hours, and top watchlist ride wait at a glance. Complications surface the same data on supported watch faces, and reachability indicators tell you when the iPhone is connected.</p>
-          <ul class="app-tour-feature-bullets">
-            <li>Auto-syncs from the iPhone in seconds via WatchConnectivity.</li>
-            <li>Modular complications for Modular and Infograph faces.</li>
-            <li>Long-press a ride to open it on your iPhone instantly.</li>
-          </ul>
-        </div>
-        <div class="app-tour-mock reveal reveal-3">
-          <div class="watch-stage">
-            <div class="watch-frame" aria-hidden="true">
-              <div class="watch-screen">
-                <div class="watch-park">Magic Kingdom</div>
-                <div class="watch-crowd">
-                  <span class="watch-crowd-num">42%</span>
-                  <span class="watch-crowd-label">Crowd</span>
-                </div>
-                <div class="watch-divider"></div>
-                <div class="watch-row"><span class="name">Peter Pan</span><span class="wait">12m</span></div>
-                <div class="watch-row"><span class="name">Big Thunder</span><span class="wait" style="color: var(--wait-med);">28m</span></div>
-                <div class="watch-row"><span class="name">Haunted Mansion</span><span class="wait" style="color: var(--wait-med);">35m</span></div>
-                <div class="watch-row"><span class="name">Pirates</span><span class="wait" style="color: var(--wait-med);">40m</span></div>
-                <div class="watch-divider"></div>
-                <div class="watch-row" style="font-size: 0.55rem; color: var(--muted);"><span class="name">9 AM – 10 PM</span><span class="wait" style="color: var(--muted);">Open</span></div>
-              </div>
-            </div>
-            <div class="watch-complication" aria-hidden="true">
-              <div class="watch-complication-eyebrow">Complication · Modular</div>
-              <div class="watch-complication-park">Peter Pan's Flight</div>
-              <div class="watch-complication-wait">
-                <span class="num">12</span><span class="unit">min</span>
-              </div>
-              <div style="margin-top:0.35rem; font-size: 0.6rem; color: var(--muted);">Watchlist · Live</div>
-            </div>
+          <h3>Global coverage</h3>
+          <p>Walt Disney World, Disneyland, Tokyo Disney Resort, and Disneyland Paris in one app.</p>
+        </article>
+        <article class="reveal reveal-4">
+          <div class="trust-icon" aria-hidden="true">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
           </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- 05 · Trip Recap -->
-    <section class="section app-tour">
-      <div class="container app-tour-grid">
-        <div class="app-tour-copy">
-          <p class="app-tour-eyebrow"><span class="num">05</span> Trip recap</p>
-          <h2>End every visit with proof you crushed it.</h2>
-          <p>After the park's gates close, the trip recap pulls together your day: shortest wait you scored, biggest queue drop you caught, rides you marked, and how much time you saved over the optimizer's prediction. Shareable as an image card.</p>
-          <ul class="app-tour-feature-bullets">
-            <li>Auto-detected the moment you leave the park geofence.</li>
-            <li>Markdown-formatted text variant for Slack / iMessage / Discord.</li>
-            <li>Saved to your trip history — compare visits over time.</li>
-          </ul>
-        </div>
-        <div class="app-tour-mock reveal reveal-3">
-          <div class="trip-recap-mock" aria-hidden="true">
-            <div class="trip-recap-mock-eyebrow">
-              <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><path d="M11.39 1.13a.7.7 0 0 1 1.22 0l1.43 2.86a3 3 0 0 0 1.97 1.59l3.13.7a.7.7 0 0 1 .38 1.16l-2.21 2.32a3 3 0 0 0-.81 2.34l.34 3.18a.7.7 0 0 1-1 .73l-2.85-1.4a3 3 0 0 0-2.5 0l-2.85 1.4a.7.7 0 0 1-1-.73l.34-3.18a3 3 0 0 0-.81-2.34L3.5 7.44a.7.7 0 0 1 .38-1.16l3.13-.7a3 3 0 0 0 1.97-1.59Z"/></svg>
-              Trip Recap
-            </div>
-            <div class="trip-recap-mock-park">Magic Kingdom</div>
-            <div class="trip-recap-mock-duration">8h 14m at the park · 11 rides tracked</div>
-            <div class="trip-recap-mock-hero">
-              <span class="trip-recap-mock-num">11</span>
-              <span class="trip-recap-mock-num-label">
-                <span class="lab">Rides tracked</span>
-                <span class="hint">Honest count — only when wait samples were posted</span>
-              </span>
-            </div>
-            <div class="trip-recap-mock-rows">
-              <div class="trip-recap-mock-row">
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--wait-low);"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-                Shortest wait: <strong style="color:var(--text);margin-left:4px">Peter Pan's Flight at 12 min</strong>
-              </div>
-              <div class="trip-recap-mock-row">
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent-light);"><polyline points="6 9 12 15 18 9"/></svg>
-                Biggest drop: <strong style="color:var(--text);margin-left:4px">Big Thunder 65 → 28 min</strong>
-              </div>
-              <div class="trip-recap-mock-row">
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--wait-med);"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-                Marked: <strong style="color:var(--text);margin-left:4px">Splash, Pirates, Mansion</strong>
-              </div>
-            </div>
-            <div class="brand-footer" style="margin-top:1rem;">
-              <div class="hairline-dot"><span class="dot"></span></div>
-              <span class="brand-footer-wordmark">
-                <span class="brand-mark"><svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M11.39 1.13a.7.7 0 0 1 1.22 0l1.43 2.86a3 3 0 0 0 1.97 1.59l3.13.7a.7.7 0 0 1 .38 1.16l-2.21 2.32a3 3 0 0 0-.81 2.34l.34 3.18a.7.7 0 0 1-1 .73l-2.85-1.4a3 3 0 0 0-2.5 0l-2.85 1.4a.7.7 0 0 1-1-.73l.34-3.18a3 3 0 0 0-.81-2.34L3.5 7.44a.7.7 0 0 1 .38-1.16l3.13-.7a3 3 0 0 0 1.97-1.59Z"/></svg></span>
-                Magic Pulse
-                <span class="sep">·</span>
-                <span class="url">magicpulse.app</span>
-              </span>
-            </div>
-          </div>
-        </div>
+          <h3>Fast support</h3>
+          <p>Real human responses within 1–2 business days.</p>
+        </article>
       </div>
     </section>
 
     <div class="wave-sep wave-sep--flip" aria-hidden="true"><svg viewBox="0 0 1440 36" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><path d="M0,18 C240,36 480,0 720,18 C960,36 1200,0 1440,18 L1440,36 L0,36 Z" fill="rgba(158,89,255,0.07)"/></svg></div>
 
-    <!-- ============================================================
-         PRICING — utility section, no faux-app theatrics
-         ============================================================ -->
+    <section id="product" class="section">
+      <div class="container">
+        <p class="eyebrow">Product</p>
+        <h2>Purpose-built for in-park planning</h2>
+        <p class="section-copy">Six features do most of the heavy lifting. Park hours, weather, widgets, Live Activity, Siri, and iCloud sync are all included — see the full breakdown in the comparison table below.</p>
+        <div class="cards">
+          <article class="card">
+            <div class="card-icon" aria-hidden="true">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+            </div>
+            <h3>Live wait times</h3>
+            <p>Real-time Disney ride wait times with sorting and filters tuned for quick decisions. Updated every few minutes.</p>
+          </article>
+          <article class="card">
+            <div class="card-icon" aria-hidden="true">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11H5a2 2 0 0 0-2 2v3a2 2 0 0 0 2 2h4"/><path d="M15 11h4a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2h-4"/><path d="M9 6V4a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2"/><line x1="12" y1="11" x2="12" y2="22"/></svg>
+            </div>
+            <h3>My Day planner</h3>
+            <p>Build a day plan with rides, events, meals, and custom items. Auto-optimize reorders for shortest total wait. Share it via iCloud and the whole party stays in sync — see check-offs and Lightning Lane spend in real time.</p>
+          </article>
+          <article class="card">
+            <div class="card-icon" aria-hidden="true">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9h6.5a2 2 0 0 1 1.4.6l2.6 2.6a2 2 0 0 0 1.4.6H22"/><path d="M2 15h6.5a2 2 0 0 1 1.4.6l2.6 2.6a2 2 0 0 0 1.4.6H22"/><circle cx="22" cy="9" r="1.5"/><circle cx="22" cy="18.8" r="1.5"/></svg>
+            </div>
+            <h3>Lightning Lane tracker</h3>
+            <p>Live posted Lightning Lane prices, a "Best Buy" recommendation that weighs standby wait against historical price patterns, and a per-ride price history so you know what's actually a deal.</p>
+          </article>
+          <article class="card">
+            <div class="card-icon" aria-hidden="true">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="2" width="12" height="20" rx="2" ry="2"/><circle cx="12" cy="12" r="3"/><line x1="12" y1="6" x2="12" y2="6.01"/><line x1="12" y1="18" x2="12" y2="18.01"/></svg>
+            </div>
+            <h3>Apple Watch glance</h3>
+            <p>Standalone watchOS app showing your park's crowd level, hours, and top watchlist ride wait at a glance — plus complications for supported faces. Auto-syncs from your iPhone in seconds.</p>
+          </article>
+          <article class="card card-pro">
+            <div class="card-icon" aria-hidden="true">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+            </div>
+            <span class="pro-badge">Pro</span>
+            <h3>Smart alerts</h3>
+            <p>Drop alerts when a watchlist ride dips below your threshold, Lightning Lane price drops, park-opening reminders, day-plan reminders, and severe-weather safety notifications.</p>
+          </article>
+          <article class="card">
+            <div class="card-icon" aria-hidden="true">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/><circle cx="12" cy="12" r="10"/></svg>
+            </div>
+            <h3>Trip recap</h3>
+            <p>After your visit: shortest wait you scored, biggest queue drop you caught, rides you marked, and how much time you saved over the optimizer's prediction. Shareable as a card.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="how" class="section section-alt">
+      <div class="container">
+        <p class="eyebrow">How it works</p>
+        <h2>From data to decision in seconds</h2>
+        <ol class="steps">
+          <li>
+            <span>01</span>
+            <h3>Plan the night before</h3>
+            <p>Build a list of rides, events, and meals. Auto-optimize reorders for shortest total wait. Share the plan via iCloud so the whole party stays in sync.</p>
+          </li>
+          <li>
+            <span>02</span>
+            <h3>See what's happening, live</h3>
+            <p>Magic Pulse pulls live wait times, hours, weather, and Lightning Lane prices every few minutes — and surfaces what's most actionable on your Now card.</p>
+          </li>
+          <li>
+            <span>03</span>
+            <h3>Act, then look back</h3>
+            <p>Smart drop alerts and Apple Watch glances tell you when to move. After the visit, your trip recap shows what you saved — shareable as a card.</p>
+          </li>
+        </ol>
+      </div>
+    </section>
+
     <section id="pricing" class="section">
       <div class="container">
         <p class="eyebrow">Pricing</p>
         <h2>Start free, upgrade when needed</h2>
-        <p class="section-copy">Try the full live wait times experience for free. Upgrade to Pro for alerts, widgets, Siri, shared day plans, and no ads.</p>
+        <p class="section-copy">Try the full live wait times experience for free. Upgrade to Pro for alerts, widgets, Siri, and no ads.</p>
         <div class="pricing">
           <article class="price">
             <h3>Free</h3>
             <p class="price-value">$0 <span class="price-period">forever</span></p>
             <ul>
               <li>Live Disney wait times</li>
-              <li>My Day planner (single device)</li>
-              <li>Lightning Lane price tracker</li>
-              <li>Apple Watch glance</li>
-              <li>Trip recap</li>
-              <li>iCloud settings sync</li>
+              <li>Park hours and status</li>
+              <li>Weather context</li>
+              <li>Core planning tools</li>
             </ul>
           </article>
           <article class="price featured">
@@ -570,9 +455,6 @@
 
     <div class="wave-sep" aria-hidden="true"><svg viewBox="0 0 1440 36" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><path d="M0,18 C360,0 720,36 1080,18 C1260,9 1380,27 1440,18 L1440,36 L0,36 Z" fill="rgba(158,89,255,0.07)"/></svg></div>
 
-    <!-- ============================================================
-         FAQ — utility section, kept clean
-         ============================================================ -->
     <section id="faq" class="section section-alt">
       <div class="container">
         <p class="eyebrow">FAQ</p>
@@ -600,7 +482,7 @@
           </details>
           <details class="faq-details">
             <summary>Where does wait data come from?</summary>
-            <p class="faq-answer">Wait times and park hours come from ThemeParks Wiki. This site's hero loads waits straight from their public API; the iOS app can use the Magic Pulse API when configured.</p>
+            <p class="faq-answer">Wait times and park hours come from ThemeParks Wiki. This site’s hero loads waits straight from their public API; the iOS app can use the Magic Pulse API when configured.</p>
           </details>
           <details class="faq-details faq-details--more">
             <summary>More questions</summary>
@@ -623,9 +505,6 @@
       </div>
     </section>
 
-    <!-- ============================================================
-         DOWNLOAD CTA
-         ============================================================ -->
     <section id="download" class="section cta">
       <div class="container">
         <p class="eyebrow">Get started free</p>
