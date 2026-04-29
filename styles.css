@@ -2098,3 +2098,606 @@ h3 {
   .cards { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 }
 
+
+/* =====================================================================
+   Direction B — App-tour components
+   Each major feature on the homepage is paired with a "screenshot-
+   equivalent" mockup that mirrors the iOS app's actual chrome — same
+   glass surfaces, same wait-pill colors, same rounded type. Built as
+   pure CSS + inline SVG so there are no PNG dependencies, but the
+   mockups still feel authentically Magic Pulse. Real screenshots can
+   drop into the same containers later without restyling.
+   ===================================================================== */
+
+/* ---- Section pattern: copy on one side, app-mockup on the other ---- */
+.app-tour {
+  padding: 4.2rem 0;
+  position: relative;
+}
+.app-tour-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 3rem;
+  align-items: center;
+}
+.app-tour-grid--reverse .app-tour-mock {
+  order: -1;
+}
+.app-tour h2 {
+  margin: 0.55rem 0 0.4rem;
+  font-size: clamp(1.55rem, 1rem + 1.2vw, 2.2rem);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+}
+.app-tour-copy p {
+  color: var(--muted);
+  font-size: 1rem;
+  line-height: 1.6;
+  max-width: 38ch;
+}
+.app-tour-feature-bullets {
+  list-style: none;
+  margin: 1rem 0 0;
+  padding: 0;
+  display: grid;
+  gap: 0.5rem;
+}
+.app-tour-feature-bullets li {
+  display: flex;
+  gap: 0.55rem;
+  align-items: flex-start;
+  font-size: 0.92rem;
+  color: var(--muted-strong);
+}
+.app-tour-feature-bullets li::before {
+  content: "";
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--accent);
+  margin-top: 0.6rem;
+  flex: 0 0 auto;
+  box-shadow: 0 0 6px rgba(158, 89, 255, 0.55);
+}
+
+@media (max-width: 880px) {
+  .app-tour { padding: 2.6rem 0; }
+  .app-tour-grid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1.6rem;
+  }
+  .app-tour-grid--reverse .app-tour-mock {
+    order: 0; /* re-stack normally on mobile */
+  }
+}
+
+/* ---- App-screen wrapper: emulates the iOS app's content surface ---- */
+.app-screen {
+  position: relative;
+  border-radius: 26px;
+  padding: 1.1rem 1.05rem 1.2rem;
+  background:
+    radial-gradient(120% 90% at 0% 0%, rgba(158, 89, 255, 0.22), transparent 55%),
+    linear-gradient(180deg, rgba(20, 12, 48, 0.85), rgba(12, 8, 28, 0.78));
+  border: 1px solid var(--glass-stroke-strong);
+  box-shadow:
+    var(--shadow-strong),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  isolation: isolate;
+  overflow: hidden;
+}
+.app-screen::before {
+  /* extra accent halo bottom-trailing — mirrors the iOS AppBackground stack */
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(110% 80% at 100% 100%, rgba(158, 89, 255, 0.18), transparent 60%);
+  pointer-events: none;
+  z-index: -1;
+}
+.app-screen-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.6rem;
+  margin-bottom: 0.6rem;
+}
+.app-screen-tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.22rem 0.55rem;
+  font: 700 0.62rem/1 Outfit, Inter, sans-serif;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--accent-light);
+  background: rgba(158, 89, 255, 0.16);
+  border: 1px solid rgba(158, 89, 255, 0.32);
+  border-radius: 999px;
+}
+.app-screen-park {
+  font: 700 1.05rem/1.2 Outfit, Inter, sans-serif;
+  color: var(--text);
+  letter-spacing: -0.01em;
+}
+.app-screen-meta {
+  font-size: 0.74rem;
+  color: var(--muted);
+  font-feature-settings: "tnum";
+}
+
+/* ---- Plan item row (My Day mock) ---- */
+.plan-item {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.65rem 0.55rem;
+  border-radius: 11px;
+  border: 1px solid transparent;
+  transition: background 0.18s ease, border-color 0.18s ease;
+}
+.plan-item + .plan-item {
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 0;
+}
+.plan-item--done {
+  opacity: 0.55;
+}
+.plan-checkbox {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(255, 255, 255, 0.32);
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--accent);
+}
+.plan-item--done .plan-checkbox {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--bg);
+}
+.plan-icon {
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  background: rgba(158, 89, 255, 0.18);
+  color: var(--accent-light);
+}
+.plan-icon--meal { background: rgba(74, 222, 128, 0.18); color: #4ade80; }
+.plan-icon--event { background: rgba(96, 165, 250, 0.18); color: #93c5fd; }
+.plan-body {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+.plan-title {
+  display: block;
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.plan-sub {
+  display: block;
+  margin-top: 2px;
+  font-size: 0.74rem;
+  color: var(--muted);
+  font-feature-settings: "tnum";
+}
+.plan-trail {
+  font-size: 0.78rem;
+  color: var(--muted-strong);
+  font-weight: 600;
+  font-feature-settings: "tnum";
+  flex: 0 0 auto;
+}
+.plan-walking-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  margin-left: 0.5rem;
+  padding: 0.12rem 0.45rem;
+  font-size: 0.65rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: var(--muted);
+}
+.plan-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 0.65rem;
+  padding-top: 0.6rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  gap: 0.5rem;
+}
+.plan-progress {
+  flex: 1 1 auto;
+  height: 6px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.06);
+  overflow: hidden;
+  position: relative;
+}
+.plan-progress::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  width: var(--p, 50%);
+  background: linear-gradient(90deg, var(--accent), var(--accent-light));
+}
+.plan-optimize-btn {
+  flex: 0 0 auto;
+  padding: 0.28rem 0.65rem;
+  font: 600 0.74rem/1 Inter, sans-serif;
+  border-radius: 999px;
+  background: rgba(158, 89, 255, 0.22);
+  color: var(--accent-light);
+  border: 1px solid rgba(158, 89, 255, 0.42);
+}
+
+/* ---- Lightning Lane "Best Buy" hero card ---- */
+.ll-hero {
+  position: relative;
+  padding: 1rem;
+  border-radius: 16px;
+  background:
+    radial-gradient(140% 100% at 0% 0%, rgba(255, 211, 130, 0.22), transparent 55%),
+    linear-gradient(180deg, rgba(255, 200, 100, 0.12), rgba(20, 12, 48, 0.6));
+  border: 1px solid rgba(255, 211, 130, 0.32);
+  box-shadow: 0 0 0 1px rgba(255, 211, 130, 0.18), 0 18px 40px rgba(5, 3, 20, 0.45);
+}
+.ll-hero-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.18rem 0.5rem;
+  font: 700 0.62rem/1 Outfit, Inter, sans-serif;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #ffd58a;
+  background: rgba(255, 211, 130, 0.16);
+  border: 1px solid rgba(255, 211, 130, 0.36);
+  border-radius: 999px;
+}
+.ll-hero-title {
+  margin: 0.55rem 0 0.15rem;
+  font: 700 1.18rem/1.2 Outfit, Inter, sans-serif;
+  color: var(--text);
+}
+.ll-hero-park {
+  font-size: 0.82rem;
+  color: var(--muted);
+  margin: 0;
+}
+.ll-hero-stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.85rem;
+  margin-top: 0.85rem;
+}
+.ll-stat-label {
+  font: 700 0.58rem/1 Outfit, Inter, sans-serif;
+  letter-spacing: 0.14em;
+  color: var(--muted);
+  text-transform: uppercase;
+}
+.ll-stat-value {
+  margin-top: 0.18rem;
+  font: 700 1.5rem/1 Outfit, Inter, sans-serif;
+  font-feature-settings: "tnum";
+  color: var(--text);
+}
+.ll-stat-value--accent {
+  color: #ffd58a;
+}
+.ll-verdict {
+  display: inline-flex;
+  margin-top: 0.6rem;
+  padding: 0.32rem 0.7rem;
+  font: 600 0.78rem/1 Inter, sans-serif;
+  border-radius: 999px;
+  background: rgba(74, 222, 128, 0.2);
+  color: #86efac;
+  border: 1px solid rgba(74, 222, 128, 0.42);
+}
+.ll-sparkline {
+  margin-top: 0.7rem;
+  height: 38px;
+  display: block;
+}
+.ll-sparkline path {
+  stroke: #ffd58a;
+  stroke-width: 1.6;
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.ll-sparkline path.fill {
+  fill: rgba(255, 211, 130, 0.18);
+  stroke: none;
+}
+
+/* ---- Apple Watch device frame ---- */
+.watch-stage {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+.watch-frame {
+  position: relative;
+  width: 184px;
+  height: 224px;
+  background:
+    linear-gradient(180deg, #1a1430, #0d0820);
+  border-radius: 38px;
+  padding: 22px 18px;
+  box-shadow:
+    0 0 0 6px #2a2148,           /* watch case ring */
+    0 0 0 8px #110b26,           /* tiny gap */
+    0 0 0 9px #463972,           /* outer bezel highlight */
+    0 28px 60px rgba(5, 3, 20, 0.65);
+}
+.watch-frame::before {
+  /* digital crown */
+  content: "";
+  position: absolute;
+  right: -10px;
+  top: 70px;
+  width: 6px;
+  height: 24px;
+  border-radius: 3px;
+  background: linear-gradient(180deg, #4a3e7a, #2a2148);
+}
+.watch-frame::after {
+  /* side button */
+  content: "";
+  position: absolute;
+  right: -6px;
+  top: 110px;
+  width: 4px;
+  height: 30px;
+  border-radius: 2px;
+  background: linear-gradient(180deg, #3a3162, #1d1638);
+}
+.watch-screen {
+  width: 100%;
+  height: 100%;
+  border-radius: 22px;
+  background: linear-gradient(180deg, #0a0716, #161024);
+  padding: 8px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  overflow: hidden;
+}
+.watch-park {
+  font: 700 0.62rem/1.1 Outfit, Inter, sans-serif;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.watch-crowd {
+  display: flex;
+  align-items: baseline;
+  gap: 0.25rem;
+  margin-top: 0.15rem;
+}
+.watch-crowd-num {
+  font: 700 1.2rem/1 Outfit, Inter, sans-serif;
+  color: var(--accent-light);
+  font-feature-settings: "tnum";
+}
+.watch-crowd-label {
+  font-size: 0.55rem;
+  color: var(--muted);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.watch-divider {
+  height: 1px;
+  background: rgba(255, 255, 255, 0.1);
+  margin: 4px 0;
+}
+.watch-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 4px;
+  font-size: 0.6rem;
+}
+.watch-row .name {
+  color: var(--text);
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+.watch-row .wait {
+  color: var(--wait-low);
+  font-weight: 700;
+  font-feature-settings: "tnum";
+  flex: 0 0 auto;
+}
+
+/* Modular complication snippet next to the watch */
+.watch-complication {
+  width: 124px;
+  padding: 0.65rem;
+  border-radius: 14px;
+  background: linear-gradient(180deg, #161025, #0c0820);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: var(--shadow-soft);
+}
+.watch-complication-eyebrow {
+  font: 700 0.55rem/1 Outfit, Inter, sans-serif;
+  letter-spacing: 0.14em;
+  color: var(--accent-light);
+  text-transform: uppercase;
+  margin-bottom: 0.3rem;
+}
+.watch-complication-park {
+  font-size: 0.7rem;
+  color: var(--text);
+  font-weight: 600;
+}
+.watch-complication-wait {
+  display: flex;
+  align-items: baseline;
+  gap: 0.2rem;
+  margin-top: 0.35rem;
+}
+.watch-complication-wait .num {
+  font: 700 1.4rem/1 Outfit, Inter, sans-serif;
+  color: var(--wait-low);
+  font-feature-settings: "tnum";
+}
+.watch-complication-wait .unit {
+  font-size: 0.6rem;
+  color: var(--muted);
+}
+
+/* ---- Trip recap mock card ---- */
+.trip-recap-mock {
+  position: relative;
+  padding: 1.2rem 1.1rem 1.3rem;
+  border-radius: 18px;
+  background:
+    radial-gradient(110% 90% at 0% 0%, rgba(158, 89, 255, 0.34), transparent 55%),
+    linear-gradient(180deg, rgba(34, 22, 70, 0.85), rgba(12, 8, 28, 0.95));
+  border: 1px solid var(--glass-stroke-strong);
+  box-shadow: 0 20px 50px rgba(5, 3, 20, 0.55);
+  overflow: hidden;
+}
+.trip-recap-mock-eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font: 700 0.6rem/1 Outfit, Inter, sans-serif;
+  letter-spacing: 0.16em;
+  color: var(--accent-light);
+  text-transform: uppercase;
+  margin-bottom: 0.35rem;
+}
+.trip-recap-mock-park {
+  font: 700 1.15rem/1.2 Outfit, Inter, sans-serif;
+  color: var(--text);
+  letter-spacing: -0.01em;
+}
+.trip-recap-mock-duration {
+  font-size: 0.78rem;
+  color: var(--muted);
+  margin-top: 0.15rem;
+}
+.trip-recap-mock-hero {
+  display: flex;
+  align-items: baseline;
+  gap: 0.8rem;
+  margin-top: 1rem;
+}
+.trip-recap-mock-num {
+  font: 800 3.4rem/1 Outfit, Inter, sans-serif;
+  color: var(--text);
+  font-feature-settings: "tnum";
+  text-shadow: 0 0 22px rgba(158, 89, 255, 0.55);
+}
+.trip-recap-mock-num-label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+.trip-recap-mock-num-label .lab {
+  font: 700 0.62rem/1 Outfit, Inter, sans-serif;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--muted-strong);
+}
+.trip-recap-mock-num-label .hint {
+  font-size: 0.7rem;
+  color: var(--muted);
+}
+.trip-recap-mock-rows {
+  margin-top: 1rem;
+  display: grid;
+  gap: 0.45rem;
+}
+.trip-recap-mock-row {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  font-size: 0.83rem;
+  color: var(--muted-strong);
+}
+.trip-recap-mock-row svg { flex: 0 0 auto; }
+
+/* ---- Now-card hero panel — extends the existing `.hero-panel` with
+       Direction B's "you're looking at the app" framing ---- */
+.hero-panel-tab {
+  position: absolute;
+  top: -10px;
+  left: 16px;
+  background: rgba(158, 89, 255, 0.22);
+  border: 1px solid rgba(158, 89, 255, 0.42);
+  color: var(--accent-light);
+  padding: 0.18rem 0.55rem;
+  font: 700 0.6rem/1 Outfit, Inter, sans-serif;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  border-radius: 999px;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+/* Section eyebrow (for the new app-tour sections) — reuses `.eyebrow` but
+   accepts a small numeric counter on the left, like "01 · LIVE WAITS" */
+.app-tour-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font: 700 0.7rem/1 Outfit, Inter, sans-serif;
+  letter-spacing: 0.16em;
+  color: var(--accent);
+  text-transform: uppercase;
+}
+.app-tour-eyebrow .num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.4rem;
+  height: 1.4rem;
+  border-radius: 50%;
+  border: 1px solid rgba(158, 89, 255, 0.42);
+  background: rgba(158, 89, 255, 0.12);
+  font-size: 0.7rem;
+}
+
+/* Smaller stat pills for the trip recap rows / app screen meta */
+.tiny-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.1rem 0.42rem;
+  font-size: 0.65rem;
+  font-weight: 600;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: var(--muted);
+}
+
