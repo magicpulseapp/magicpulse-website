@@ -732,14 +732,26 @@
   function render(list) {
     if (!rows) return;
     rows.innerHTML = list
-      .map(function (item) {
+      .map(function (item, idx) {
         var wait = item.waitTime != null ? item.waitTime + ' min' : '—';
         var rideAttrs = item.rideId ? ' data-ride-id="' + escapeHtml(item.rideId) + '"' : '';
         var valueClass = 'value' + waitValueClass(item.waitTime);
+        // Top-3 get a hero treatment with a rank chip; rest are compact.
+        // Mirrors the `heroRideRow` / `compactRideRow` split used by the
+        // iOS share cards so the website hero feels like an app screenshot.
+        var isHero = idx < 3;
+        var rowClass = 'waits-row' + (isHero ? ' is-hero' : '');
+        var rankChip = isHero
+          ? '<span class="rank" aria-hidden="true">' + (idx + 1) + '</span>'
+          : '';
         return (
-          '<div class="waits-row"' +
+          '<div class="' +
+          rowClass +
+          '"' +
           rideAttrs +
-          '><span>' +
+          '>' +
+          rankChip +
+          '<span class="name">' +
           escapeHtml(item.name) +
           '</span><span class="' +
           valueClass +

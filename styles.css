@@ -26,6 +26,34 @@
   --radius: 16px;
   --radius-sm: 11px;
   --container: min(1100px, 94vw);
+
+  /* App parity tokens — matches ShareCardChrome / HUDCard / waitColor in iOS.
+     Cards now use backdrop-filter blur over an accent-tinted body background,
+     mirroring the way `.ultraThinMaterial` blurs `AppBackground`'s radial halos
+     on iOS. Wait colors mirror the in-app pill colors so the live snapshot
+     panel reads identically to a screenshot of the rides list. */
+  --glass-blur: blur(22px) saturate(1.2);
+  --glass-fill: rgba(255, 255, 255, 0.05);
+  --glass-fill-strong: rgba(255, 255, 255, 0.08);
+  --glass-stroke: rgba(255, 255, 255, 0.14);
+  --glass-stroke-strong: rgba(255, 255, 255, 0.22);
+
+  /* Wait band colors — keep saturated so they pop against the glass.
+     `*-bg` is the pill's background (~25% alpha), `*-border` is the hairline
+     stroke (~45% alpha). Matches the `.waitBandColor` ladder in the iOS app. */
+  --wait-low: #4ade80;          /* < 20 min — green  */
+  --wait-low-bg: rgba(74, 222, 128, 0.22);
+  --wait-low-border: rgba(74, 222, 128, 0.42);
+  --wait-med: #fbbf24;          /* 20–45 min — amber */
+  --wait-med-bg: rgba(251, 191, 36, 0.22);
+  --wait-med-border: rgba(251, 191, 36, 0.42);
+  --wait-high: #fb7185;         /* > 45 min — coral  */
+  --wait-high-bg: rgba(251, 113, 133, 0.22);
+  --wait-high-border: rgba(251, 113, 133, 0.42);
+
+  /* Hairline-with-accent-dot divider — used in the brand footer block, the
+     panel head, and section transitions. Mirrors `ShareBrandFooter`. */
+  --hairline: rgba(255, 255, 255, 0.16);
 }
 
 /* Self-hosted Outfit + Inter (latin + latin-ext), SIL Open Font License — sourced from Google Fonts */
@@ -742,18 +770,20 @@ h3 {
 }
 
 .trust-grid article {
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.038));
-  border: 1px solid var(--card-border);
+  background: var(--glass-fill);
+  border: 1px solid var(--glass-stroke);
   border-radius: var(--radius-sm);
   padding: 1rem;
   box-shadow: var(--shadow-soft);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
   transition: transform 0.22s ease, border-color 0.22s ease, box-shadow 0.22s ease, background 0.22s ease;
 }
 
 .trust-grid article:hover {
   transform: translateY(-3px);
-  border-color: rgba(158, 89, 255, 0.35);
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.045));
+  border-color: rgba(158, 89, 255, 0.4);
+  background: var(--glass-fill-strong);
   box-shadow: var(--shadow-elevated);
 }
 
@@ -853,19 +883,36 @@ h3 {
 }
 
 .card {
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.09), rgba(255, 255, 255, 0.038));
-  border: 1px solid var(--card-border);
+  position: relative;
+  background: var(--glass-fill);
+  border: 1px solid var(--glass-stroke);
   border-radius: var(--radius-sm);
   padding: 1.15rem 1.2rem;
   box-shadow: var(--shadow-soft);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  /* Subtle accent radial sitting *inside* the card behind content — mirrors
+     the in-app `ShareCardChrome.gradientColors` accent wash without making
+     the whole card colored. Renders as ::before so it sits under content. */
+  isolation: isolate;
+  overflow: hidden;
   transition: transform 0.24s ease, border-color 0.24s ease, box-shadow 0.24s ease, background 0.24s ease;
+}
+
+.card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(120% 100% at 0% 0%, rgba(158, 89, 255, 0.18), transparent 55%);
+  pointer-events: none;
+  z-index: -1;
 }
 
 .card:hover {
   transform: translateY(-4px);
   border-color: rgba(158, 89, 255, 0.48);
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.11), rgba(255, 255, 255, 0.048));
-  box-shadow: var(--shadow-elevated), 0 0 0 1px rgba(158, 89, 255, 0.18);
+  background: var(--glass-fill-strong);
+  box-shadow: var(--shadow-elevated), 0 0 0 1px rgba(158, 89, 255, 0.22);
 }
 
 .card p {
@@ -884,17 +931,19 @@ h3 {
 }
 
 .steps li {
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.032));
-  border: 1px solid var(--card-border);
+  background: var(--glass-fill);
+  border: 1px solid var(--glass-stroke);
   border-radius: var(--radius-sm);
   padding: 1.1rem;
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
   transition: transform 0.22s ease, border-color 0.22s ease, box-shadow 0.22s ease, background 0.22s ease;
 }
 
 .steps li:hover {
   transform: translateY(-3px);
-  border-color: rgba(158, 89, 255, 0.35);
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.04));
+  border-color: rgba(158, 89, 255, 0.4);
+  background: var(--glass-fill-strong);
   box-shadow: var(--shadow-soft);
 }
 
@@ -921,18 +970,20 @@ h3 {
 }
 
 .price {
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.03));
-  border: 1px solid var(--card-border);
+  background: var(--glass-fill);
+  border: 1px solid var(--glass-stroke);
   border-radius: var(--radius-sm);
   padding: 1.1rem;
   box-shadow: var(--shadow-soft);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
   transition: transform 0.22s ease, border-color 0.22s ease, box-shadow 0.22s ease, background 0.22s ease;
 }
 
 .price:hover {
   transform: translateY(-3px);
-  border-color: var(--card-border-strong);
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.038));
+  border-color: var(--glass-stroke-strong);
+  background: var(--glass-fill-strong);
   box-shadow: var(--shadow-elevated);
 }
 
@@ -1849,3 +1900,201 @@ h3 {
     transition: none;
   }
 }
+
+/* =====================================================================
+   App-parity components
+   Brings the website's visual language in line with the iOS app's share
+   cards, rides list, and brand footer. Tokens defined in :root above.
+   ===================================================================== */
+
+/* --- Wait pills (live snapshot) — mirrors `RideRow` color pills in the
+       app where wait values are shown in colored capsules. */
+.waits-row .value {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 64px;
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum";
+  font-weight: 700;
+  padding: 0.18rem 0.55rem;
+  border-radius: 999px;
+  border: 1px solid transparent;
+  background: rgba(158, 89, 255, 0.16); /* default — neutral accent if class missing */
+  border-color: rgba(158, 89, 255, 0.32);
+}
+.waits-row .value--low {
+  color: var(--wait-low);
+  background: var(--wait-low-bg);
+  border-color: var(--wait-low-border);
+}
+.waits-row .value--med {
+  color: var(--wait-med);
+  background: var(--wait-med-bg);
+  border-color: var(--wait-med-border);
+}
+.waits-row .value--high {
+  color: var(--wait-high);
+  background: var(--wait-high-bg);
+  border-color: var(--wait-high-border);
+}
+
+/* Rank chip on the top 3 rows — mirrors the ranked hero rows on the
+   ShareSnapshotCardView portrait/square cards. */
+.waits-row .rank {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.35rem;
+  height: 1.35rem;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  color: var(--muted-strong);
+  font-size: 0.72rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  margin-right: 0.5rem;
+}
+.waits-row.is-hero .rank {
+  background: rgba(158, 89, 255, 0.22);
+  border-color: rgba(158, 89, 255, 0.42);
+  color: var(--accent-light);
+}
+.waits-row .name {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.waits-row.is-hero {
+  padding: 0.55rem 0.25rem;
+}
+.waits-row.is-hero .name {
+  font-weight: 600;
+  font-size: 0.93rem;
+}
+
+/* --- Hairline divider with a centered accent dot. Used in the brand
+       footer block and as a panel separator. Matches the in-app
+       `ShareBrandFooter` rule + accent dot. */
+.hairline-dot {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  margin: 0.4rem auto;
+  width: 100%;
+  max-width: 18rem;
+}
+.hairline-dot::before,
+.hairline-dot::after {
+  content: "";
+  flex: 1 1 auto;
+  height: 1px;
+  background: var(--hairline);
+}
+.hairline-dot .dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 8px rgba(158, 89, 255, 0.55);
+  flex: 0 0 auto;
+}
+
+/* --- Brand mark (sparkles glyph). Used in nav, footer, hero panel.
+       The mark is an inline SVG so it inherits `currentColor`; this
+       replaces the previous `.brand-pulse` dot, but we keep both
+       selectors so older markup keeps animating during the transition. */
+.brand-mark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.05rem;
+  height: 1.05rem;
+  color: var(--accent);
+  flex: 0 0 auto;
+}
+.brand-mark svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* --- Premium brand footer block (hairline-dot + sparkles + wordmark + url).
+       Mirrors `ShareBrandFooter` from the iOS share cards token-for-token. */
+.brand-footer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.4rem;
+  margin-top: 0.9rem;
+}
+.brand-footer .hairline-dot {
+  margin: 0;
+}
+.brand-footer-wordmark {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  font: 700 0.86rem/1 Outfit, Inter, sans-serif;
+  letter-spacing: 0.04em;
+  color: var(--text);
+}
+.brand-footer-wordmark .sep {
+  color: var(--muted);
+  font-weight: 700;
+  margin: 0 0.1rem;
+}
+.brand-footer-wordmark .url {
+  font: 500 0.78rem/1 Inter, sans-serif;
+  letter-spacing: 0.01em;
+  color: var(--muted);
+  text-transform: lowercase;
+  text-decoration: none;
+}
+.brand-footer-wordmark .url:hover {
+  color: var(--accent-light);
+}
+
+/* --- Pricing panel halo + featured polish — make `.featured` feel
+       like the highlighted "Best Buy" hero card in the iOS LL tab. */
+.price.featured::before {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(135deg, rgba(174, 112, 255, 0.85), rgba(158, 89, 255, 0.18));
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+  z-index: 0;
+}
+.price.featured {
+  position: relative;
+  isolation: isolate;
+}
+.price.featured > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* Live waits panel — slightly stronger glass + section divider above
+   the rows, matches the in-app rides list card. */
+.live-waits {
+  border-top: 0;
+  padding-top: 0.4rem;
+}
+.live-waits-divider {
+  margin: 0.55rem 0 0.45rem;
+}
+
+/* Trim long card grids: cap at 3 columns even at wide viewports so the
+   eye doesn't have to scan a 4-up wall of features. */
+@media (min-width: 1100px) {
+  .cards { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+
