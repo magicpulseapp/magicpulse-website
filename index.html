@@ -553,7 +553,11 @@
   </div>
 
   <script>
+    // Live park data is pulled from the MagicPulse API at api.magicpulse.app.
+    // If the API is ever unreachable (network blip, deploy, etc.), script.js
+    // transparently falls back to ThemeParks Wiki so the hero panel keeps rendering.
     window.MAGICPULSE_API_BASE = 'https://api.magicpulse.app';
+    window.MAGICPULSE_SNAPSHOT_SOURCE = 'magicpulse';
     // window.MAGICPULSE_PARK_ID = 6;
     // window.MAGICPULSE_LIVE_REFRESH_MS = 180000; // 3 min (min 60s, max 10m)
   </script>

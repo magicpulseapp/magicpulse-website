@@ -810,9 +810,26 @@
     liveFetchInFlight = true;
     if (isRefresh) waitsRoot.classList.add('is-refreshing');
 
-    var loadChain = SNAPSHOT_SOURCE_MAGICPULSE
-      ? resolveSnapshotWithFallback(MAGICPULSE_PARK_ID)
-      : resolveThemeParksWithFallback(MAGICPULSE_PARK_ID);
+    function isUsableResult(result) {
+      return !!(result && result.snapshot && Array.isArray(result.snapshot.rides) && result.snapshot.rides.length);
+    }
+
+    var loadChain;
+    if (SNAPSHOT_SOURCE_MAGICPULSE) {
+      // Primary: MagicPulse API. If it's unreachable or returns nothing usable
+      // (e.g. local API not running), transparently fall back to ThemeParks Wiki
+      // so the hero panel still has live data.
+      loadChain = resolveSnapshotWithFallback(MAGICPULSE_PARK_ID)
+        .then(function (result) {
+          if (isUsableResult(result)) return result;
+          return resolveThemeParksWithFallback(MAGICPULSE_PARK_ID);
+        })
+        .catch(function () {
+          return resolveThemeParksWithFallback(MAGICPULSE_PARK_ID);
+        });
+    } else {
+      loadChain = resolveThemeParksWithFallback(MAGICPULSE_PARK_ID);
+    }
 
     return loadChain
       .then(function (result) {
