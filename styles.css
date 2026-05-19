@@ -194,6 +194,13 @@
 
 html {
   scroll-behavior: smooth;
+  /* Site header is sticky + 72px tall; without this, in-page anchors land
+     with their heading visually clipped behind the header. */
+  scroll-padding-top: 88px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
 }
 
 .skip-link {
@@ -275,9 +282,21 @@ a:focus-visible {
   align-self: stretch;
   backdrop-filter: blur(16px) saturate(1.15);
   -webkit-backdrop-filter: blur(16px) saturate(1.15);
-  background: linear-gradient(180deg, rgba(18, 14, 40, 0.92), rgba(12, 8, 28, 0.82));
-  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
-  box-shadow: 0 1px 0 rgba(158, 89, 255, 0.06);
+  background: linear-gradient(180deg, rgba(18, 14, 40, 0.78), rgba(12, 8, 28, 0.66));
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 1px 0 rgba(158, 89, 255, 0.04);
+  transition:
+    background 0.28s cubic-bezier(0.22, 0.61, 0.36, 1),
+    border-color 0.28s cubic-bezier(0.22, 0.61, 0.36, 1),
+    box-shadow 0.28s cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+.site-header.is-scrolled .site-header-backdrop {
+  background: linear-gradient(180deg, rgba(18, 14, 40, 0.94), rgba(12, 8, 28, 0.88));
+  border-bottom-color: rgba(255, 255, 255, 0.14);
+  box-shadow:
+    0 6px 24px -8px rgba(5, 3, 16, 0.55),
+    0 1px 0 rgba(158, 89, 255, 0.1);
 }
 
 .site-header-main {
@@ -1580,18 +1599,8 @@ h3 {
   transition: opacity 0.25s ease;
 }
 
-.cta {
-  text-align: center;
-}
-
-.cta .section-copy {
-  margin-left: auto;
-  margin-right: auto;
-}
-
-.cta .hero-actions {
-  justify-content: center;
-}
+/* `.cta` styles are defined in the Restyle layer below (`.section.cta`).
+   Keeping this slot reserved as a no-op for clarity. */
 
 .site-footer {
   border-top: 1px solid rgba(255, 255, 255, 0.1);
@@ -1854,17 +1863,10 @@ h3 {
     font-size: clamp(1.75rem, 8.7vw, 2.5rem);
   }
 
-  .trust-grid {
-    grid-template-columns: 1fr;
-    gap: 0.9rem;
-  }
-
   .mobile-cta-bar {
     display: block;
   }
-}
 
-@media (max-width: 900px) and (min-width: 1px) {
   body.has-mobile-cta {
     padding-bottom: 80px;
   }
@@ -2167,6 +2169,11 @@ h3 {
   letter-spacing: -0.035em;
   margin: 0.65rem 0 1.05rem;
   font-weight: 700;
+  /* The base h1 rule sets `min-height: 2.85em` to soften webfont swap CLS. At
+     this clamp() that's ~14rem of empty vertical space below the headline.
+     Use `text-wrap: balance` for the visual goal and drop the reservation. */
+  min-height: 0;
+  text-wrap: balance;
 }
 .hero .eyebrow {
   font-size: 0.78rem;
@@ -2421,5 +2428,118 @@ h3 {
   letter-spacing: 0.06em;
   color: var(--muted);
   text-transform: uppercase;
+}
+
+/* ---- 404 page — centered hero with oversized gradient digits ---- */
+.not-found {
+  min-height: calc(100vh - 72px - 240px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+.not-found .container {
+  max-width: 640px;
+  position: relative;
+  z-index: 1;
+}
+.not-found h2 {
+  margin-top: 0.4rem;
+}
+.not-found .hero-actions {
+  justify-content: center;
+  margin-top: 1.5rem;
+}
+.not-found-code {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  margin: 0.5rem 0 0.8rem;
+  font-family: Outfit, Inter, sans-serif;
+  font-size: clamp(5rem, 18vw, 9rem);
+  font-weight: 800;
+  line-height: 0.95;
+  letter-spacing: -0.04em;
+  background: linear-gradient(120deg, var(--accent-light) 0%, var(--accent) 50%, #7dd3fc 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-shadow: 0 8px 60px rgba(158, 89, 255, 0.25);
+}
+.not-found-pulse {
+  width: clamp(2.4rem, 8.5vw, 4rem);
+  height: clamp(2.4rem, 8.5vw, 4rem);
+  border-radius: 50%;
+  background: radial-gradient(circle at center, var(--accent-light) 0%, var(--accent) 55%, transparent 78%);
+  box-shadow:
+    0 0 0 6px rgba(158, 89, 255, 0.12),
+    0 0 60px rgba(158, 89, 255, 0.55);
+  animation: not-found-pulse 2.4s ease-in-out infinite;
+  flex: 0 0 auto;
+}
+@keyframes not-found-pulse {
+  0%, 100% { transform: scale(1);    opacity: 0.95; }
+  50%      { transform: scale(1.08); opacity: 1;    }
+}
+@media (prefers-reduced-motion: reduce) {
+  .not-found-pulse { animation: none; }
+}
+
+/* ---- Compare table on narrow phones — stack each row as a labeled
+       card instead of forcing a horizontal scroll. The body cells carry
+       data-label="Free" / "Pro" so we can render the column label inline. */
+@media (max-width: 560px) {
+  .compare-table {
+    overflow: visible;
+  }
+  .compare-table table,
+  .compare-table thead,
+  .compare-table tbody,
+  .compare-table tr,
+  .compare-table th,
+  .compare-table td {
+    display: block;
+    width: 100%;
+  }
+  .compare-table thead {
+    /* sr-only — the visible labels come from data-label on each cell */
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+  }
+  .compare-table tbody tr {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+    padding: 0.6rem 0;
+  }
+  .compare-table tbody tr:last-child {
+    border-bottom: none;
+  }
+  .compare-table tbody td {
+    border: none;
+    padding: 0.3rem 1rem;
+    text-align: left;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+  }
+  .compare-table tbody td:first-child {
+    font-weight: 600;
+    color: var(--text);
+    padding-bottom: 0.1rem;
+  }
+  .compare-table tbody td[data-label]::before {
+    content: attr(data-label);
+    flex: 0 0 auto;
+    color: var(--muted);
+    font-size: 0.74rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+  }
 }
 

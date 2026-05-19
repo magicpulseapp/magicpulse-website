@@ -13,10 +13,13 @@
     revealAllNow();
   } else {
     var revealObserver = new IntersectionObserver(
-      function (entries) {
+      function (entries, observer) {
         entries.forEach(function (entry) {
           if (entry.isIntersecting) {
             entry.target.classList.add('revealed');
+            // One-shot: once revealed, stop observing so the callback isn't
+            // re-invoked on every subsequent scroll.
+            observer.unobserve(entry.target);
           }
         });
       },
@@ -26,9 +29,7 @@
       revealObserver.observe(el);
     });
 
-    window.setTimeout(function () {
-      revealAllNow();
-    }, 4000);
+    window.setTimeout(revealAllNow, 4000);
   }
 
   var menuBtn = document.querySelector('.menu-btn');
@@ -73,43 +74,66 @@
     });
   }
 
-  // Sticky mobile CTA bar — show after hero, hide near download section
+  // One rAF-throttled scroll handler shared by header-elevation + sticky CTA bar.
+  // Native scroll fires up to once per frame on macOS/iOS, so the unthrottled
+  // version was running getBoundingClientRect on every wheel tick.
   (function () {
+    var header = document.querySelector('.site-header');
     var ctaBar = document.getElementById('mobile-cta-bar');
     var downloadSection = document.getElementById('download');
-    if (!ctaBar) return;
+    if (!header && !ctaBar) return;
 
-    var shown = false;
+    var ctaLink = ctaBar && ctaBar.querySelector('a');
+    var ctaShown = false;
+    var headerElevated = false;
+    var ticking = false;
 
-    function updateCtaBar() {
+    function update() {
+      ticking = false;
       var scrollY = window.scrollY || window.pageYOffset;
-      var heroHeight = 320;
-      var nearBottom = false;
 
-      if (downloadSection) {
-        var rect = downloadSection.getBoundingClientRect();
-        nearBottom = rect.top < window.innerHeight * 0.85;
+      if (header) {
+        var shouldElevate = scrollY > 8;
+        if (shouldElevate !== headerElevated) {
+          headerElevated = shouldElevate;
+          header.classList.toggle('is-scrolled', headerElevated);
+        }
       }
 
-      var shouldShow = scrollY > heroHeight && !nearBottom;
+      if (ctaBar) {
+        var heroHeight = 320;
+        var nearBottom = false;
+        if (downloadSection) {
+          var rect = downloadSection.getBoundingClientRect();
+          nearBottom = rect.top < window.innerHeight * 0.85;
+        }
+        var shouldShow = scrollY > heroHeight && !nearBottom;
 
-      if (shouldShow && !shown) {
-        shown = true;
-        ctaBar.classList.add('is-visible');
-        ctaBar.removeAttribute('aria-hidden');
-        ctaBar.querySelector('a').removeAttribute('tabindex');
-        document.body.classList.add('has-mobile-cta');
-      } else if (!shouldShow && shown) {
-        shown = false;
-        ctaBar.classList.remove('is-visible');
-        ctaBar.setAttribute('aria-hidden', 'true');
-        ctaBar.querySelector('a').setAttribute('tabindex', '-1');
-        document.body.classList.remove('has-mobile-cta');
+        if (shouldShow && !ctaShown) {
+          ctaShown = true;
+          ctaBar.classList.add('is-visible');
+          ctaBar.removeAttribute('aria-hidden');
+          if (ctaLink) ctaLink.removeAttribute('tabindex');
+          document.body.classList.add('has-mobile-cta');
+        } else if (!shouldShow && ctaShown) {
+          ctaShown = false;
+          ctaBar.classList.remove('is-visible');
+          ctaBar.setAttribute('aria-hidden', 'true');
+          if (ctaLink) ctaLink.setAttribute('tabindex', '-1');
+          document.body.classList.remove('has-mobile-cta');
+        }
       }
     }
 
-    window.addEventListener('scroll', updateCtaBar, { passive: true });
-    updateCtaBar();
+    function onScroll() {
+      if (ticking) return;
+      ticking = true;
+      window.requestAnimationFrame(update);
+    }
+
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll, { passive: true });
+    update();
   }());
 
   var waitsRoot = document.getElementById('live-waits');
@@ -847,13 +871,31 @@
 
   loadLiveWaits({ refresh: false });
 
-  window.setInterval(function () {
-    loadLiveWaits({ refresh: true });
-  }, LIVE_REFRESH_MS);
+  // Only poll while the tab is in view — saves battery and trims a 3 min/tab
+  // baseline of API calls from inactive background pages.
+  var refreshTimerId = null;
+
+  function startRefreshTimer() {
+    if (refreshTimerId != null) return;
+    refreshTimerId = window.setInterval(function () {
+      loadLiveWaits({ refresh: true });
+    }, LIVE_REFRESH_MS);
+  }
+
+  function stopRefreshTimer() {
+    if (refreshTimerId == null) return;
+    window.clearInterval(refreshTimerId);
+    refreshTimerId = null;
+  }
+
+  if (document.visibilityState === 'visible') startRefreshTimer();
 
   document.addEventListener('visibilitychange', function () {
     if (document.visibilityState === 'visible') {
       loadLiveWaits({ refresh: true });
+      startRefreshTimer();
+    } else {
+      stopRefreshTimer();
     }
   });
 })();

@@ -26,6 +26,8 @@
   <meta name="twitter:description" content="Contact Magic Pulse for product questions, billing, and troubleshooting." />
   <meta name="twitter:image" content="https://www.magicpulse.app/og-image.jpg" />
 
+  <link rel="preload" href="fonts/inter-400-latin.woff2" as="font" type="font/woff2" crossorigin="anonymous" />
+  <link rel="preload" href="fonts/outfit-700-latin.woff2" as="font" type="font/woff2" crossorigin="anonymous" />
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
@@ -40,7 +42,7 @@
         <a href="index.html#pricing">Pricing</a>
         <a href="index.html#faq">FAQ</a>
         <a href="support.html">Support</a>
-        <a href="index.html#download" class="btn btn-nav">Get App</a>
+        <a href="index.html#download" class="btn btn-nav">Get the app</a>
       </nav>
       <button class="menu-btn" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="site-navigation">
         <span></span><span></span><span></span>
@@ -182,7 +184,7 @@
         })
           .then(function (res) {
             if (!res.ok) throw new Error('failed');
-            status.textContent = 'Thanks — your message has been sent. We'll get back to you soon.';
+            status.textContent = 'Thanks — your message has been sent. We’ll get back to you soon.';
             status.className = 'form-status form-status--success';
             form.reset();
           })
