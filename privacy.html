@@ -50,64 +50,126 @@
     </div>
   </header>
 
-  <main id="main-content" class="section">
-    <article class="container card legal-page">
-      <p class="eyebrow">Legal</p>
-      <h1>Privacy Policy</h1>
-      <p class="micro"><strong>Last updated:</strong> April 29, 2026</p>
+  <main id="main-content" class="privacy-main">
+    <section class="privacy-hero">
+      <div class="container privacy-hero-grid">
+        <div class="privacy-hero-copy">
+          <p class="eyebrow">Legal</p>
+          <h1>Privacy Policy</h1>
+          <p class="section-copy">A plain-language look at what Magic Pulse uses, what stays on your device, and which services help power live park planning.</p>
+          <div class="privacy-meta" aria-label="Privacy policy summary">
+            <span class="privacy-pill"><strong>Updated</strong> Apr 29, 2026</span>
+            <span class="privacy-pill"><strong>No account</strong> required</span>
+            <span class="privacy-pill"><strong>Pro</strong> removes ads</span>
+          </div>
+        </div>
 
-      <h2>Overview</h2>
-      <p class="section-copy">Magic Pulse (“we”, “our”) provides live theme park planning information. This policy describes what data is involved in the <strong>iOS app</strong>, the <strong>Apple Watch app</strong>, the optional <strong>Magic Pulse API</strong>, and this <strong>website</strong>.</p>
+        <aside class="privacy-summary-card" aria-label="Privacy snapshot">
+          <p class="privacy-card-label">Privacy snapshot</p>
+          <ul>
+            <li><span>Location</span><strong>Optional</strong></li>
+            <li><span>Watchlist</span><strong>On device</strong></li>
+            <li><span>Shared plans</span><strong>iCloud</strong></li>
+            <li><span>Personal data sale</span><strong>Never</strong></li>
+          </ul>
+        </aside>
+      </div>
+    </section>
 
-      <h2>Data used in the iOS app</h2>
-      <ul class="legal-list">
-        <li><strong>Location (optional):</strong> Used to suggest nearby parks and to deliver location-based alerts you enable. We do not sell your location.</li>
-        <li><strong>Notifications:</strong> Used only for alerts you opt into — including drop alerts, Lightning Lane price alerts, day-plan reminders, park-opening alerts, and severe-weather notifications. You can turn them off individually or globally in Settings.</li>
-        <li><strong>On-device preferences:</strong> Watchlist, thresholds, display settings, and similar preferences are stored on your device.</li>
-        <li><strong>iCloud settings sync:</strong> If you’re signed in to iCloud, certain preferences (watchlist, thresholds, notification toggles, accent color, default share format) sync across your own iPhones and iPads via Apple’s Key-Value Store. The data is stored in your private iCloud account; we never see it. You can disable iCloud Drive for Magic Pulse to opt out.</li>
-        <li><strong>Day plans:</strong> Plans (rides, events, meals, custom items, completion checks, captured Lightning Lane prices) are stored locally in Core Data. When you choose to <strong>share a plan</strong>, that plan is mirrored to your private iCloud database via Apple’s CloudKit so invited family members can collaborate. Magic Pulse never holds a copy of your CloudKit data; it lives entirely in your and your collaborators’ iCloud accounts.</li>
-        <li><strong>On-device history (forecasts):</strong> Wait-time history used for trends and on-device forecasts stays on your device unless you use the optional API path below.</li>
-        <li><strong>Optional Magic Pulse API:</strong> If you or the default configuration use our servers (e.g. <code>api.magicpulse.app</code>), the app may send requests authenticated with Apple’s App Attest and an app API key. We process park snapshots and aggregated wait history on our servers to power features such as forecasts, Lightning Lane price history, and crowd insights. We do not use this to build an advertising profile.</li>
-        <li><strong>Advertising (free tier):</strong> The free tier may show banner ads through <strong>Google AdMob</strong>. Google may collect device and usage data as described in <a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer">Google’s Privacy Policy</a>. Magic Pulse Pro removes the in-app banner.</li>
-        <li><strong>Diagnostics:</strong> Lightweight app events may be logged locally on your device for product improvement (not uploaded by default).</li>
-      </ul>
+    <section class="privacy-content">
+      <div class="container privacy-layout">
+        <aside class="privacy-side" aria-label="Privacy sections">
+          <p>Sections</p>
+          <nav>
+            <a href="#overview">Overview</a>
+            <a href="#app-data">App data</a>
+            <a href="#watch">Apple Watch</a>
+            <a href="#services">Services</a>
+            <a href="#choices">Choices</a>
+            <a href="#contact">Contact</a>
+          </nav>
+        </aside>
 
-      <h2>Apple Watch app</h2>
-      <p class="section-copy">The Apple Watch companion is read-only. It receives a snapshot of your selected park’s name, hours, crowd level, and top watchlist ride wait from the iPhone via Apple’s WatchConnectivity framework. No data leaves the watch independently — there’s no network connection, no separate account, and no analytics.</p>
+        <article class="privacy-document legal-page">
+          <section id="overview" class="privacy-section">
+            <h2>Overview</h2>
+            <p class="section-copy">Magic Pulse (“we”, “our”) provides live theme park planning information. This policy describes what data is involved in the <strong>iOS app</strong>, the <strong>Apple Watch app</strong>, the optional <strong>Magic Pulse API</strong>, and this <strong>website</strong>.</p>
+          </section>
 
-      <h2>Data we do not sell</h2>
-      <p class="section-copy">We do not sell your personal information. We do not use your data for third-party behavioral advertising beyond what ad networks apply when ads are shown on the free tier.</p>
+          <section id="app-data" class="privacy-section">
+            <h2>Data used in the iOS app</h2>
+            <ul class="legal-list">
+              <li><strong>Location (optional):</strong> Used to suggest nearby parks and to deliver location-based alerts you enable. We do not sell your location.</li>
+              <li><strong>Notifications:</strong> Used only for alerts you opt into, including drop alerts, Lightning Lane price alerts, day-plan reminders, park-opening alerts, and severe-weather notifications. You can turn them off individually or globally in Settings.</li>
+              <li><strong>On-device preferences:</strong> Watchlist, thresholds, display settings, and similar preferences are stored on your device.</li>
+              <li><strong>iCloud settings sync:</strong> If you’re signed in to iCloud, certain preferences sync across your own iPhones and iPads via Apple’s Key-Value Store. The data is stored in your private iCloud account; we never see it. You can disable iCloud Drive for Magic Pulse to opt out.</li>
+              <li><strong>Day plans:</strong> Plans are stored locally in Core Data. When you choose to <strong>share a plan</strong>, that plan is mirrored to your private iCloud database via Apple’s CloudKit so invited family members can collaborate. Magic Pulse never holds a copy of your CloudKit data.</li>
+              <li><strong>On-device history (forecasts):</strong> Wait-time history used for trends and on-device forecasts stays on your device unless you use the optional API path below.</li>
+              <li><strong>Optional Magic Pulse API:</strong> If you or the default configuration use our servers, the app may send requests authenticated with Apple’s App Attest and an app API key. We process park snapshots and aggregated wait history to power forecasts, Lightning Lane price history, and crowd insights. We do not use this to build an advertising profile.</li>
+              <li><strong>Advertising (free tier):</strong> The free tier may show banner ads through <strong>Google AdMob</strong>. Google may collect device and usage data as described in <a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer">Google’s Privacy Policy</a>. Magic Pulse Pro removes the in-app banner.</li>
+              <li><strong>Diagnostics:</strong> Lightweight app events may be logged locally on your device for product improvement and are not uploaded by default.</li>
+            </ul>
+          </section>
 
-      <h2>Third-party services</h2>
-      <ul class="legal-list">
-        <li>Wait times and park operating data: <a href="https://themeparks.wiki" target="_blank" rel="noopener noreferrer">ThemeParks Wiki</a> (and our API may aggregate the same class of public data).</li>
-        <li>Weather: <a href="https://weather.apple.com" target="_blank" rel="noopener noreferrer">Apple Weather</a> via WeatherKit in the app.</li>
-        <li>Settings sync &amp; shared day plans: Apple iCloud (Key-Value Store + CloudKit). Data lives in your iCloud account; we have no access.</li>
-        <li>Purchases: Apple App Store (subscriptions and one-time purchases).</li>
-        <li>Ads: Google AdMob on the free tier (see above).</li>
-      </ul>
+          <section id="watch" class="privacy-section">
+            <h2>Apple Watch app</h2>
+            <p class="section-copy">The Apple Watch companion is read-only. It receives a snapshot of your selected park’s name, hours, crowd level, and top watchlist ride wait from the iPhone via Apple’s WatchConnectivity framework. No data leaves the watch independently: there’s no network connection, no separate account, and no analytics.</p>
+          </section>
 
-      <h2>This website</h2>
-      <p class="section-copy">The marketing site may load a <strong>read-only</strong> live snapshot from our API; no account is required. Fonts may load from Google Fonts. The <a href="support.html">support form</a> is processed by our form provider (<strong>Formspree</strong>) when you submit it—only the fields you enter are sent.</p>
+          <section id="no-sale" class="privacy-section">
+            <h2>Data we do not sell</h2>
+            <p class="section-copy">We do not sell your personal information. We do not use your data for third-party behavioral advertising beyond what ad networks apply when ads are shown on the free tier.</p>
+          </section>
 
-      <h2>Children</h2>
-      <p class="section-copy">Magic Pulse is not directed at children under 13. We do not knowingly collect personal information from children.</p>
+          <section id="services" class="privacy-section">
+            <h2>Third-party services</h2>
+            <ul class="legal-list legal-list--compact">
+              <li>Wait times and park operating data: <a href="https://themeparks.wiki" target="_blank" rel="noopener noreferrer">ThemeParks Wiki</a> and related public park data.</li>
+              <li>Weather: <a href="https://weather.apple.com" target="_blank" rel="noopener noreferrer">Apple Weather</a> via WeatherKit in the app.</li>
+              <li>Settings sync and shared day plans: Apple iCloud Key-Value Store and CloudKit.</li>
+              <li>Purchases: Apple App Store subscriptions and one-time purchases.</li>
+              <li>Ads: Google AdMob on the free tier.</li>
+            </ul>
+          </section>
 
-      <h2>Your choices (U.S. / general)</h2>
-      <p class="section-copy">You can limit location and notifications in iOS Settings. For ad-related settings, use Apple’s “Tracking” and in-app privacy options where available. California residents may have additional rights under the CPRA; contact us via the support form and we will respond as required.</p>
+          <section id="website" class="privacy-section">
+            <h2>This website</h2>
+            <p class="section-copy">The marketing site may load a <strong>read-only</strong> live snapshot from our API; no account is required. Fonts may load from Google Fonts. The <a href="support.html">support form</a> is processed by our form provider (<strong>Formspree</strong>) when you submit it; only the fields you enter are sent.</p>
+          </section>
 
-      <h2>International users</h2>
-      <p class="section-copy">If you use the app or site from outside the United States, data may be processed in the U.S. or where our service providers operate.</p>
+          <section id="children" class="privacy-section">
+            <h2>Children</h2>
+            <p class="section-copy">Magic Pulse is not directed at children under 13. We do not knowingly collect personal information from children.</p>
+          </section>
 
-      <h2>Retention</h2>
-      <p class="section-copy">Server-side wait samples and snapshots are kept only as long as needed to operate the service and improve reliability (including automatic pruning of old history). Support emails or form submissions are retained only as needed to respond and meet legal obligations.</p>
+          <section id="choices" class="privacy-section">
+            <h2>Your choices</h2>
+            <p class="section-copy">You can limit location and notifications in iOS Settings. For ad-related settings, use Apple’s “Tracking” and in-app privacy options where available. California residents may have additional rights under the CPRA; contact us via the support form and we will respond as required.</p>
+          </section>
 
-      <h2>Policy updates</h2>
-      <p class="section-copy">We may update this policy; the date at the top shows the current version. Material changes will be reflected here (and, where appropriate, in the app).</p>
+          <section id="international" class="privacy-section">
+            <h2>International users</h2>
+            <p class="section-copy">If you use the app or site from outside the United States, data may be processed in the U.S. or where our service providers operate.</p>
+          </section>
 
-      <h2>Contact</h2>
-      <p class="section-copy">Privacy questions: <a href="support.html">support form</a> (topic: Privacy).</p>
-    </article>
+          <section id="retention" class="privacy-section">
+            <h2>Retention</h2>
+            <p class="section-copy">Server-side wait samples and snapshots are kept only as long as needed to operate the service and improve reliability, including automatic pruning of old history. Support emails or form submissions are retained only as needed to respond and meet legal obligations.</p>
+          </section>
+
+          <section id="updates" class="privacy-section">
+            <h2>Policy updates</h2>
+            <p class="section-copy">We may update this policy; the date at the top shows the current version. Material changes will be reflected here and, where appropriate, in the app.</p>
+          </section>
+
+          <section id="contact" class="privacy-section privacy-contact">
+            <h2>Contact</h2>
+            <p class="section-copy">Privacy questions can be sent through the support form. Choose topic: Privacy.</p>
+            <a class="btn btn-primary" href="support.html">Contact support</a>
+          </section>
+        </article>
+      </div>
+    </section>
   </main>
 
   <footer class="site-footer">
