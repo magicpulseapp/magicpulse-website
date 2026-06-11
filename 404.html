@@ -35,18 +35,51 @@
     </div>
   </header>
 
-  <main id="main-content" class="section cta not-found">
-    <div class="aurora" aria-hidden="true"></div>
-    <div class="container">
-      <p class="eyebrow">Error 404</p>
-      <h1 class="not-found-code" aria-label="404"><span aria-hidden="true">4</span><span class="not-found-pulse" aria-hidden="true"></span><span aria-hidden="true">4</span></h1>
-      <h2>This ride is closed for refurbishment.</h2>
-      <p class="section-copy">The page you’re looking for took a detour. Try one of these:</p>
-      <div class="hero-actions">
-        <a class="btn btn-primary" href="/">Back to home</a>
-        <a class="btn btn-ghost" href="/support.html">Contact support</a>
+  <main id="main-content" class="not-found-main">
+    <section class="not-found-hero">
+      <div class="container not-found-grid">
+        <div class="not-found-copy">
+          <p class="eyebrow">Error 404</p>
+          <h1>This page took a detour.</h1>
+          <p class="section-copy">The link you opened does not point to an active Magic Pulse page. Head back to the app overview, check pricing, or contact support if something should be here.</p>
+          <div class="not-found-actions">
+            <a class="btn btn-primary" href="/index.html">Back to home</a>
+            <a class="btn btn-ghost" href="/support.html">Contact support</a>
+          </div>
+        </div>
+
+        <aside class="not-found-card" aria-label="Page status">
+          <p class="privacy-card-label">Page status</p>
+          <div class="not-found-code" aria-label="404">
+            <span aria-hidden="true">4</span>
+            <span class="not-found-pulse" aria-hidden="true"></span>
+            <span aria-hidden="true">4</span>
+          </div>
+          <ul>
+            <li><span>Route</span><strong>Not found</strong></li>
+            <li><span>Best move</span><strong>Return home</strong></li>
+            <li><span>Need help?</span><strong>Support</strong></li>
+          </ul>
+        </aside>
       </div>
-    </div>
+    </section>
+
+    <section class="not-found-links">
+      <div class="container not-found-link-grid">
+        <a href="/index.html#product">
+          <span>Product</span>
+          <strong>See live waits, plans, alerts, and widgets.</strong>
+        </a>
+        <a href="/index.html#pricing">
+          <span>Pricing</span>
+          <strong>Compare Free, Pro Weekly, and Lifetime.</strong>
+        </a>
+        <a href="/privacy.html">
+          <span>Privacy</span>
+          <strong>Review how Magic Pulse handles data.</strong>
+        </a>
+      </div>
+    </section>
   </main>
 
   <footer class="site-footer">
