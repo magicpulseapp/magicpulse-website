@@ -8,7 +8,7 @@
   <meta name="theme-color" content="#0c0820" />
   <link rel="canonical" href="https://www.magicpulse.app/support.html" />
   <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-  <link rel="apple-touch-icon" href="/favicon.svg" />
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
   <title>Support | Magic Pulse</title>
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="Magic Pulse" />
@@ -28,7 +28,7 @@
 
   <link rel="preload" href="fonts/inter-400-latin.woff2" as="font" type="font/woff2" crossorigin="anonymous" />
   <link rel="preload" href="fonts/outfit-700-latin.woff2" as="font" type="font/woff2" crossorigin="anonymous" />
-  <link rel="stylesheet" href="styles.css?v=20260611-contact3" />
+  <link rel="stylesheet" href="styles.css?v=20260612" />
 </head>
 <body>
   <a class="skip-link" href="#main-content">Skip to main content</a>
@@ -86,6 +86,7 @@
 
           <form id="support-form" action="https://formspree.io/f/xjgeljqp" method="POST">
             <input type="hidden" name="_subject" value="Magic Pulse Support Request" />
+            <input type="text" name="_gotcha" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden" />
 
             <div class="contact-field-grid">
               <div class="form-group">
@@ -191,7 +192,7 @@
     </div>
   </footer>
 
-  <script src="script.js" defer></script>
+  <script src="script.js?v=20260612" defer></script>
   <script>
     (function () {
       var form = document.getElementById('support-form');

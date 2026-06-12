@@ -11,6 +11,7 @@ Static landing page for the **Magic Pulse** iOS app (`www.magicpulse.app`). No b
 | `script.js` | Mobile nav (a11y), scroll reveal + fallback, hero live waits + auto-refresh |
 | `fonts/*.woff2` | Self-hosted webfonts (latin + latin-ext); no Google Fonts runtime |
 | `favicon.svg` | Tab icon |
+| `apple-touch-icon.png` | 180×180 home-screen icon (iOS ignores SVG here) |
 | `og-image.jpg` | Open Graph / Twitter card image (1200×630 JPEG) |
 | `_headers` | Cache-Control hints for **Netlify / Cloudflare Pages** (ignored by stock GitHub Pages) |
 | `CNAME` | Custom hostname for GitHub Pages: `www.magicpulse.app` |
@@ -27,9 +28,9 @@ python3 -m http.server 8080
 # http://localhost:8080
 ```
 
-## Hero live snapshot (default: ThemeParks Wiki)
+## Hero live snapshot
 
-By default the hero panel loads **live attraction waits** from the public **ThemeParks Wiki** API (`api.themeparks.wiki`). No API key. Configure **before** `script.js` loads if needed:
+**As shipped, `index.html` sets `MAGICPULSE_SNAPSHOT_SOURCE = 'magicpulse'`**, so the hero loads from the **Magic Pulse API** (`api.magicpulse.app`) first and falls back to ThemeParks Wiki if it's unreachable. Without that config, `script.js` defaults to the public **ThemeParks Wiki** API (`api.themeparks.wiki`) — no API key. Configure **before** `script.js` loads if needed:
 
 ```html
 <script>
@@ -86,6 +87,7 @@ npx --yes lighthouse http://127.0.0.1:8080/ --only-categories=performance,seo,ac
 Upload the folder to **GitHub Pages**, **Netlify**, **Cloudflare Pages**, **Vercel**, S3, etc. Ensure `favicon.svg`, `app-ads.txt`, and font files under `fonts/` are served from the site root (same paths as in `styles.css`).
 
 - **`_headers`:** Applied automatically on **Netlify** and **Cloudflare Pages**. **Stock GitHub Pages does not read `_headers`** — for aggressive cache headers on CSS/JS/fonts, put **Cloudflare** (or similar) in front of the site or use another host that supports header rules.
+- **Cache busting:** `styles.css` and `script.js` are cached as immutable for 1 year, so every HTML page references them with a `?v=YYYYMMDD` query. **Bump the `?v=` value on all four pages whenever you edit either file**, or returning visitors keep the stale copy.
 - If you also serve this site from **MagicPulseAPI** `public/`, copy these files there after changes.
 
 ## App Store Connect (copy-paste)

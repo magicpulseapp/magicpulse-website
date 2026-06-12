@@ -5,12 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="referrer" content="strict-origin-when-cross-origin" />
   <meta name="description" content="Magic Pulse — live Disney wait times, day plans, Lightning Lane price tracking, Apple Watch glances, and weather for Walt Disney World, Disneyland, Tokyo, and Paris. The #1 theme park planning app for iOS." />
-  <meta name="keywords" content="Disney wait times, theme park app, day plan, Lightning Lane tracker, Apple Watch Disney, Walt Disney World waits, Disneyland wait times, Magic Kingdom rides, theme park planning, live ride waits, Disney park hours, shared day plan, trip recap" />
   <meta name="theme-color" content="#0c0820" />
   <meta name="apple-itunes-app" content="app-id=6759612612" />
   <link rel="canonical" href="https://www.magicpulse.app/" />
   <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-  <link rel="apple-touch-icon" href="/favicon.svg" />
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
   <title>Magic Pulse — Live Disney Wait Times & Theme Park Planning App</title>
 
   <meta property="og:type" content="website" />
@@ -30,10 +29,12 @@
   <meta name="twitter:description" content="Live Disney wait times, day plans, Lightning Lane price tracking, and an Apple Watch glance for Walt Disney World, Disneyland, Tokyo, and Paris. Free iOS app." />
   <meta name="twitter:image" content="https://www.magicpulse.app/og-image.jpg" />
 
+  <link rel="preconnect" href="https://api.magicpulse.app" />
+  <link rel="preconnect" href="https://api.themeparks.wiki" />
   <link rel="preload" href="fonts/inter-400-latin.woff2" as="font" type="font/woff2" crossorigin="anonymous" />
   <link rel="preload" href="fonts/outfit-700-latin.woff2" as="font" type="font/woff2" crossorigin="anonymous" />
   <noscript><style>.reveal,.section,.section-alt{opacity:1!important;transform:none!important;transition:none!important}</style></noscript>
-  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="styles.css?v=20260612" />
 
   <script type="application/ld+json">
   {
@@ -111,7 +112,7 @@
         "name": "Where does the Disney wait time data come from?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "Wait times and park hours are sourced from ThemeParks Wiki. This website’s hero panel loads live waits directly from ThemeParks Wiki’s public API; the iOS app may use Magic Pulse API when configured."
+          "text": "Wait times and park hours are sourced from ThemeParks Wiki. This website’s hero panel loads live waits from the Magic Pulse API, falling back to ThemeParks Wiki’s public API if it is unreachable."
         }
       },
       {
@@ -135,7 +136,7 @@
         "name": "Does the website show real Disney wait times?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "Yes. The hero panel loads live attraction waits from ThemeParks Wiki’s public API. If the default park has no usable posted waits, the site tries other parks automatically."
+          "text": "Yes. The hero panel loads live attraction waits from the Magic Pulse API, with ThemeParks Wiki’s public API as a fallback. If the default park has no usable posted waits, the site tries other parks automatically."
         }
       },
       {
@@ -497,7 +498,7 @@
           </details>
           <details class="faq-details">
             <summary>Where does wait data come from?</summary>
-            <p class="faq-answer">Wait times and park hours come from ThemeParks Wiki. This site’s hero loads waits straight from their public API; the iOS app can use the Magic Pulse API when configured.</p>
+            <p class="faq-answer">Wait times and park hours come from ThemeParks Wiki. This site’s hero loads waits from the Magic Pulse API, falling back to ThemeParks Wiki’s public API if it’s unreachable.</p>
           </details>
           <details class="faq-details faq-details--more">
             <summary>More questions</summary>
@@ -512,7 +513,7 @@
               </details>
               <details class="faq-details">
                 <summary>Does the website show real waits?</summary>
-                <p class="faq-answer">The hero panel loads live waits from ThemeParks Wiki's public API. If the default park has no usable posted waits, we try other parks automatically.</p>
+                <p class="faq-answer">The hero panel loads live waits from the Magic Pulse API, with ThemeParks Wiki as a fallback. If the default park has no usable posted waits, we try other parks automatically.</p>
               </details>
             </div>
           </details>
@@ -576,6 +577,6 @@
     // window.MAGICPULSE_PARK_ID = 6;
     // window.MAGICPULSE_LIVE_REFRESH_MS = 180000; // 3 min (min 60s, max 10m)
   </script>
-  <script src="script.js" defer></script>
+  <script src="script.js?v=20260612" defer></script>
 </body>
 </html>

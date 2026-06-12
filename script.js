@@ -458,9 +458,11 @@
   }
 
   function escapeHtml(str) {
+    // innerHTML escaping covers < > & but not quotes, and this is also used
+    // inside double-quoted attributes (data-ride-id).
     var div = document.createElement('div');
     div.textContent = str;
-    return div.innerHTML;
+    return div.innerHTML.replace(/"/g, '&quot;').replace(/'/g, '&#39;');
   }
 
   function normalizedRideName(name) {
