@@ -38,39 +38,90 @@
   if (menuBtn && nav) {
     menuBtn.setAttribute('aria-controls', 'site-navigation');
     menuBtn.setAttribute('aria-expanded', 'false');
+    nav.setAttribute('aria-hidden', 'true');
 
     var overlay = document.createElement('div');
     overlay.className = 'nav-overlay';
     overlay.setAttribute('aria-hidden', 'true');
     document.body.appendChild(overlay);
 
-    function closeMenu() {
+    var navLinks = Array.prototype.slice.call(nav.querySelectorAll('a[href]'));
+    var lastFocusedBeforeMenu = null;
+
+    function menuIsOpen() {
+      return nav.classList.contains('is-open');
+    }
+
+    function visibleFocusableMenuItems() {
+      return [menuBtn].concat(
+        navLinks.filter(function (item) {
+          var style = window.getComputedStyle(item);
+          return style.visibility !== 'hidden' && style.display !== 'none';
+        })
+      );
+    }
+
+    function closeMenu(options) {
+      var shouldRestoreFocus = !options || options.restoreFocus !== false;
       nav.classList.remove('is-open');
       document.body.classList.remove('nav-open');
       menuBtn.setAttribute('aria-expanded', 'false');
       menuBtn.setAttribute('aria-label', 'Open menu');
+      nav.setAttribute('aria-hidden', 'true');
+      if (shouldRestoreFocus && lastFocusedBeforeMenu && document.contains(lastFocusedBeforeMenu)) {
+        lastFocusedBeforeMenu.focus();
+      }
     }
 
     function openMenu() {
+      lastFocusedBeforeMenu = document.activeElement;
       nav.classList.add('is-open');
       document.body.classList.add('nav-open');
       menuBtn.setAttribute('aria-expanded', 'true');
       menuBtn.setAttribute('aria-label', 'Close menu');
+      nav.setAttribute('aria-hidden', 'false');
+      menuBtn.focus();
     }
 
     menuBtn.addEventListener('click', function () {
-      if (nav.classList.contains('is-open')) closeMenu();
+      if (menuIsOpen()) closeMenu({ restoreFocus: false });
       else openMenu();
     });
 
     overlay.addEventListener('click', closeMenu);
 
-    Array.prototype.forEach.call(nav.querySelectorAll('a'), function (link) {
-      link.addEventListener('click', closeMenu);
+    navLinks.forEach(function (link) {
+      link.addEventListener('click', function () {
+        closeMenu({ restoreFocus: false });
+      });
     });
 
     document.addEventListener('keydown', function (event) {
-      if (event.key === 'Escape') closeMenu();
+      if (!menuIsOpen()) return;
+      if (event.key === 'Escape') {
+        closeMenu();
+        return;
+      }
+      if (event.key !== 'Tab') return;
+
+      var focusable = visibleFocusableMenuItems();
+      if (!focusable.length) return;
+      var first = focusable[0];
+      var last = focusable[focusable.length - 1];
+
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === first && focusable.length > 1) {
+        event.preventDefault();
+        focusable[1].focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      } else if (focusable.indexOf(document.activeElement) === -1) {
+        event.preventDefault();
+        first.focus();
+      }
     });
   }
 
@@ -762,14 +813,8 @@
         var wait = item.waitTime != null ? item.waitTime + ' min' : '—';
         var rideAttrs = item.rideId ? ' data-ride-id="' + escapeHtml(item.rideId) + '"' : '';
         var valueClass = 'value' + waitValueClass(item.waitTime);
-        // Top-3 get a hero treatment with a rank chip; rest are compact.
-        // Mirrors the `heroRideRow` / `compactRideRow` split used by the
-        // iOS share cards so the website hero feels like an app screenshot.
-        var isHero = idx < 3;
-        var rowClass = 'waits-row' + (isHero ? ' is-hero' : '');
-        var rankChip = isHero
-          ? '<span class="rank" aria-hidden="true">' + (idx + 1) + '</span>'
-          : '';
+        var rowClass = 'waits-row is-hero';
+        var rankChip = '<span class="rank" aria-hidden="true">' + (idx + 1) + '</span>';
         return (
           '<div class="' +
           rowClass +

@@ -3947,6 +3947,167 @@ body::before {
   }
 }
 
+@media (min-width: 901px) and (max-height: 760px) {
+  .hero {
+    padding-top: 3.35rem;
+    padding-bottom: 2.6rem;
+  }
+
+  .hero h1 {
+    margin-top: 0.75rem;
+    font-size: clamp(3rem, 6.5vw, 4.95rem);
+    line-height: 0.95;
+  }
+
+  .hero-copy {
+    max-width: 620px;
+    margin-top: 0.85rem;
+    margin-bottom: 0;
+    font-size: clamp(0.98rem, 1.45vw, 1.08rem);
+    line-height: 1.52;
+  }
+
+  .hero-status-grid {
+    margin-top: 0.95rem;
+  }
+
+  .hero-status-grid span {
+    min-height: 54px;
+    padding: 0.62rem 0.74rem;
+  }
+
+  .hero-actions {
+    margin-top: 1rem;
+  }
+
+  .micro {
+    margin-top: 0.55rem;
+  }
+
+  .hero-panel {
+    padding: 1.05rem 1.1rem;
+  }
+}
+
+/* Live snapshot mobile rework: make the hero panel a compact status widget
+   instead of a tall share-card inside the page. */
+@media (max-width: 680px) {
+  .hero-panel {
+    padding: 0.9rem;
+    border-radius: 20px;
+    background:
+      linear-gradient(180deg, rgba(158, 89, 255, 0.085), transparent 80px),
+      rgba(13, 17, 24, 0.9);
+  }
+
+  .hero-panel::before {
+    height: 46px;
+    border-radius: 19px 19px 0 0;
+    opacity: 0.75;
+  }
+
+  .panel-head {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 0.6rem;
+    padding: 0;
+  }
+
+  .panel-head h2 {
+    font-size: 0.98rem;
+    line-height: 1.15;
+  }
+
+  .live-badge {
+    padding: 0.28rem 0.52rem;
+    font-size: 0.62rem;
+    letter-spacing: 0.07em;
+  }
+
+  .live-dot {
+    width: 5px;
+    height: 5px;
+  }
+
+  .panel-sub {
+    margin: 0.35rem 0 0;
+    font-size: 0.78rem;
+    line-height: 1.35;
+  }
+
+  .live-waits {
+    margin-top: 0.72rem;
+    padding: 0.34rem;
+    border-radius: 14px;
+  }
+
+  .waits-row {
+    grid-template-columns: 24px minmax(0, 1fr) auto;
+    gap: 0.5rem;
+    min-height: 48px;
+    padding: 0.48rem 0.25rem;
+    border-color: var(--mp-line);
+    border-radius: 11px;
+    background: rgba(255, 255, 255, 0.055);
+  }
+
+  .waits-row.is-hero {
+    padding: 0.48rem 0.25rem;
+  }
+
+  .waits-row + .waits-row {
+    margin-top: 0.24rem;
+  }
+
+  .waits-row .rank {
+    width: 24px;
+    height: 24px;
+    border-radius: 8px;
+    font-size: 0.78rem;
+  }
+
+  .waits-row .name {
+    font-size: 0.86rem;
+    line-height: 1.2;
+  }
+
+  .waits-row .value {
+    min-width: 50px;
+    justify-self: stretch;
+    padding: 0.32rem 0.42rem;
+    border-radius: 9px;
+    font-size: 0.84rem;
+    line-height: 1.05;
+  }
+
+  .hero-panel-insights {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.45rem;
+    margin-top: 0.55rem;
+  }
+
+  .hero-panel-insights div {
+    min-height: 0;
+    padding: 0.55rem 0.6rem;
+    border-radius: 12px;
+  }
+
+  .hero-panel-insights span {
+    font-size: 0.55rem;
+    letter-spacing: 0.08em;
+  }
+
+  .hero-panel-insights strong {
+    margin-top: 0.12rem;
+    font-size: 0.76rem;
+    line-height: 1.15;
+  }
+
+  .hero-panel .brand-footer {
+    display: none;
+  }
+}
+
 /* Privacy page: flatter, scannable legal layout. */
 .privacy-main {
   padding-top: 78px;
