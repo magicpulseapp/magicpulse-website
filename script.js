@@ -1,4 +1,6 @@
 (function () {
+  document.documentElement.classList.add('js');
+
   function revealAllNow() {
     document.querySelectorAll('.reveal, .section, .section-alt').forEach(function (el) {
       el.classList.add('revealed');
@@ -36,9 +38,9 @@
   var nav = document.getElementById('site-navigation') || document.querySelector('.site-nav');
 
   if (menuBtn && nav) {
+    var mobileNavQuery = window.matchMedia('(max-width: 900px)');
     menuBtn.setAttribute('aria-controls', 'site-navigation');
     menuBtn.setAttribute('aria-expanded', 'false');
-    nav.setAttribute('aria-hidden', 'true');
 
     var overlay = document.createElement('div');
     overlay.className = 'nav-overlay';
@@ -50,6 +52,22 @@
 
     function menuIsOpen() {
       return nav.classList.contains('is-open');
+    }
+
+    function syncNavigationAccessibility() {
+      if (mobileNavQuery.matches) {
+        var isHidden = !menuIsOpen();
+        nav.setAttribute('aria-hidden', isHidden ? 'true' : 'false');
+        nav.inert = isHidden;
+        return;
+      }
+
+      nav.classList.remove('is-open');
+      document.body.classList.remove('nav-open');
+      nav.removeAttribute('aria-hidden');
+      nav.inert = false;
+      menuBtn.setAttribute('aria-expanded', 'false');
+      menuBtn.setAttribute('aria-label', 'Open menu');
     }
 
     function visibleFocusableMenuItems() {
@@ -67,7 +85,7 @@
       document.body.classList.remove('nav-open');
       menuBtn.setAttribute('aria-expanded', 'false');
       menuBtn.setAttribute('aria-label', 'Open menu');
-      nav.setAttribute('aria-hidden', 'true');
+      syncNavigationAccessibility();
       if (shouldRestoreFocus && lastFocusedBeforeMenu && document.contains(lastFocusedBeforeMenu)) {
         lastFocusedBeforeMenu.focus();
       }
@@ -80,6 +98,7 @@
       menuBtn.setAttribute('aria-expanded', 'true');
       menuBtn.setAttribute('aria-label', 'Close menu');
       nav.setAttribute('aria-hidden', 'false');
+      nav.inert = false;
       menuBtn.focus();
     }
 
@@ -95,6 +114,13 @@
         closeMenu({ restoreFocus: false });
       });
     });
+
+    if (typeof mobileNavQuery.addEventListener === 'function') {
+      mobileNavQuery.addEventListener('change', syncNavigationAccessibility);
+    } else if (typeof mobileNavQuery.addListener === 'function') {
+      mobileNavQuery.addListener(syncNavigationAccessibility);
+    }
+    syncNavigationAccessibility();
 
     document.addEventListener('keydown', function (event) {
       if (!menuIsOpen()) return;
@@ -187,12 +213,83 @@
     update();
   }());
 
+  (function () {
+    var form = document.getElementById('support-form');
+    var status = document.getElementById('form-status');
+    if (!form || !status) return;
+
+    var SUPPORT_FORM_ENDPOINT = 'https://formspree.io/f/xjgeljqp';
+    var submit = form.querySelector('button[type="submit"]');
+    if (!submit) return;
+
+    var requestedTopic = new URLSearchParams(window.location.search).get('topic');
+    var topicSelect = form.querySelector('#topic');
+    if (
+      requestedTopic &&
+      topicSelect &&
+      Array.prototype.some.call(topicSelect.options, function (option) {
+        return option.value === requestedTopic;
+      })
+    ) {
+      topicSelect.value = requestedTopic;
+    }
+
+    function formEndpointIsAllowed() {
+      try {
+        var endpoint = new URL(form.action, window.location.href);
+        return endpoint.origin === 'https://formspree.io' && endpoint.pathname === '/f/xjgeljqp';
+      } catch (err) {
+        return false;
+      }
+    }
+
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      submit.disabled = true;
+      submit.textContent = 'Sending...';
+      status.hidden = true;
+      status.className = 'form-status';
+
+      if (!formEndpointIsAllowed()) {
+        status.textContent = 'Unable to send right now. Please reload the page and try again.';
+        status.className = 'form-status form-status--error';
+        status.hidden = false;
+        submit.disabled = false;
+        submit.textContent = 'Send message';
+        return;
+      }
+
+      fetch(SUPPORT_FORM_ENDPOINT, {
+        method: 'POST',
+        body: new FormData(form),
+        headers: { Accept: 'application/json' }
+      })
+        .then(function (res) {
+          if (!res.ok) throw new Error('failed');
+          status.textContent = 'Thanks - your message has been sent. We will get back to you soon.';
+          status.className = 'form-status form-status--success';
+          form.reset();
+        })
+        .catch(function () {
+          status.textContent =
+            'Unable to send right now. Please try again in a moment, use a different network, or open the Privacy Policy and use any alternate contact instructions there.';
+          status.className = 'form-status form-status--error';
+        })
+        .finally(function () {
+          status.hidden = false;
+          submit.disabled = false;
+          submit.textContent = 'Send message';
+        });
+    });
+  }());
+
   var waitsRoot = document.getElementById('live-waits');
   if (!waitsRoot) return;
 
   var MAGICPULSE_API_BASE =
-    typeof window.MAGICPULSE_API_BASE === 'string' ? window.MAGICPULSE_API_BASE : '';
-  var MAGICPULSE_API_TOKEN = window.MAGICPULSE_API_TOKEN || '';
+    typeof window.MAGICPULSE_API_BASE === 'string' ? window.MAGICPULSE_API_BASE : 'https://api.magicpulse.app';
+  var MAGICPULSE_SNAPSHOT_SOURCE =
+    typeof window.MAGICPULSE_SNAPSHOT_SOURCE === 'string' ? window.MAGICPULSE_SNAPSHOT_SOURCE : 'magicpulse';
   var MAGICPULSE_PARK_ID = 6;
   if (typeof window.MAGICPULSE_PARK_ID === 'number' && !Number.isNaN(window.MAGICPULSE_PARK_ID)) {
     MAGICPULSE_PARK_ID = window.MAGICPULSE_PARK_ID;
@@ -209,17 +306,17 @@
   var LIVE_FETCH_TIMEOUT_MS =
     typeof window.MAGICPULSE_LIVE_FETCH_TIMEOUT_MS === 'number' && !Number.isNaN(window.MAGICPULSE_LIVE_FETCH_TIMEOUT_MS)
       ? Math.max(3000, Math.min(60000, window.MAGICPULSE_LIVE_FETCH_TIMEOUT_MS))
-      : 8000;
+      : 4500;
 
   var LIVE_SNAPSHOT_BUDGET_MS =
     typeof window.MAGICPULSE_LIVE_SNAPSHOT_BUDGET_MS === 'number' && !Number.isNaN(window.MAGICPULSE_LIVE_SNAPSHOT_BUDGET_MS)
       ? Math.max(4000, Math.min(120000, window.MAGICPULSE_LIVE_SNAPSHOT_BUDGET_MS))
-      : 14000;
+      : 8000;
 
   /** Default hero data: ThemeParks Wiki public API (same source labels as the iOS app). */
   var THEMEPARKS_WIKI_LIVE_BASE = 'https://api.themeparks.wiki/v1/entity';
   var SNAPSHOT_SOURCE_MAGICPULSE =
-    window.MAGICPULSE_SNAPSHOT_SOURCE === 'magicpulse' &&
+    MAGICPULSE_SNAPSHOT_SOURCE === 'magicpulse' &&
     typeof MAGICPULSE_API_BASE === 'string' &&
     MAGICPULSE_API_BASE.replace(/\s/g, '').length > 0;
 
@@ -320,9 +417,7 @@
   var error = waitsRoot.querySelector('.waits-error');
   var apiUrl =
     (MAGICPULSE_API_BASE ? MAGICPULSE_API_BASE.replace(/\/$/, '') : '') +
-    '/api/parks/public/' +
-    MAGICPULSE_PARK_ID +
-    '/snapshot';
+    '/api/parks/public/featured/snapshot';
 
   var liveFetchInFlight = false;
 
@@ -417,6 +512,7 @@
         theme: meta ? meta.theme : ''
       },
       updated: now.toLocaleString(undefined, { dateStyle: 'short', timeStyle: 'short' }),
+      updatedISO: now.toISOString(),
       rides: rides
     };
   }
@@ -450,43 +546,16 @@
       });
   }
 
-  function resolveThemeParksWithFallback(primaryParkId) {
-    var budgetEnd = Date.now() + LIVE_SNAPSHOT_BUDGET_MS;
-    var order = buildFallbackParkOrder(primaryParkId, { parkStatuses: [] });
-    var chain = Promise.resolve(null);
-
-    order.forEach(function (candidateParkId) {
-      chain = chain.then(function (resolved) {
-        if (resolved) return resolved;
-        return fetchThemeParksLive(candidateParkId, budgetEnd)
-          .then(function (payload) {
-            var rides = themeParksPayloadToRides(payload);
-            if (!rides.length) return null;
-            var snapshot = buildSyntheticSnapshot(candidateParkId, rides);
-            var items = selectSnapshotRides(snapshot.rides, candidateParkId);
-            if (items.length > 0) {
-              return { snapshot: snapshot, selectedParkId: candidateParkId };
-            }
-            return null;
-          })
-          .catch(function () {
-            return null;
-          });
-      });
+  function resolveThemeParksSnapshot(parkId, budgetEnd) {
+    return fetchThemeParksLive(parkId, budgetEnd).then(function (payload) {
+      var rides = themeParksPayloadToRides(payload);
+      if (!rides.length) return { snapshot: null, selectedParkId: parkId, source: 'themeparks' };
+      return {
+        snapshot: buildSyntheticSnapshot(parkId, rides),
+        selectedParkId: parkId,
+        source: 'themeparks'
+      };
     });
-
-    return chain.then(function (resolved) {
-      return resolved || { snapshot: null, selectedParkId: primaryParkId };
-    });
-  }
-
-  function apiSnapshotUrl(parkId) {
-    return (
-      (MAGICPULSE_API_BASE ? MAGICPULSE_API_BASE.replace(/\/$/, '') : '') +
-      '/api/parks/public/' +
-      parkId +
-      '/snapshot'
-    );
   }
 
   function getFetchErrorMessage(err) {
@@ -506,14 +575,6 @@
       return 'Could not reach the API. Check that it’s running and reachable, and that CORS is enabled.';
     }
     return msg || 'Could not load live wait times.';
-  }
-
-  function escapeHtml(str) {
-    // innerHTML escaping covers < > & but not quotes, and this is also used
-    // inside double-quoted attributes (data-ride-id).
-    var div = document.createElement('div');
-    div.textContent = str;
-    return div.innerHTML.replace(/"/g, '&quot;').replace(/'/g, '&#39;');
   }
 
   function normalizedRideName(name) {
@@ -609,78 +670,12 @@
     );
   }
 
-  function buildSameResortCandidateIds(snapshot, selectedParkId) {
-    var selectedMeta = parkMetaById(selectedParkId);
-    if (!selectedMeta || !snapshot || !Array.isArray(snapshot.parkStatuses)) return [];
-
-    var openStatuses = snapshot.parkStatuses.filter(function (status) {
-      return status && status.status === 'OPEN';
-    });
-
-    return openStatuses
-      .map(function (status) {
-        var match = PARKS.find(function (park) {
-          return (
-            park.resort === selectedMeta.resort &&
-            ((status.theme && park.theme === status.theme) || (status.name && park.name === status.name))
-          );
-        });
-        return match ? match.id : null;
-      })
-      .filter(function (id) {
-        return id != null && id !== selectedParkId;
-      });
-  }
-
-  function buildFallbackParkOrder(primaryParkId, primarySnapshot) {
-    var selectedMeta = parkMetaById(primaryParkId);
-    var ordered = [];
-    var seen = {};
-
-    function pushParkId(parkId) {
-      if (parkId == null || seen[parkId]) return;
-      seen[parkId] = true;
-      ordered.push(parkId);
-    }
-
-    pushParkId(primaryParkId);
-
-    buildSameResortCandidateIds(primarySnapshot, primaryParkId).forEach(pushParkId);
-
-    if (selectedMeta) {
-      PARKS.filter(function (park) {
-        return park.resort === selectedMeta.resort && park.id !== primaryParkId;
-      }).forEach(function (park) {
-        pushParkId(park.id);
-      });
-    }
-
-    var resortOrder = ['WDW', 'DLR', 'TDR', 'DLP'];
-    resortOrder.forEach(function (resort) {
-      if (selectedMeta && resort === selectedMeta.resort) return;
-      PARKS.filter(function (park) {
-        return park.resort === resort;
-      }).forEach(function (park) {
-        pushParkId(park.id);
-      });
-    });
-
-    return ordered;
-  }
-
   function isSnapshotUsable(snapshot) {
     return snapshot && Array.isArray(snapshot.rides) && snapshot.rides.length > 0;
   }
 
-  function isSnapshotOpen(snapshot) {
-    return !!(snapshot && snapshot.parkHours && snapshot.parkHours.status === 'OPEN');
-  }
-
-  function fetchSnapshotForPark(parkId, budgetEndTs) {
+  function fetchFeaturedSnapshot(budgetEndTs) {
     var opts = { method: 'GET' };
-    if (MAGICPULSE_API_TOKEN) {
-      opts.headers = { Authorization: 'Bearer ' + MAGICPULSE_API_TOKEN };
-    }
     var msLeft =
       typeof budgetEndTs === 'number' ? budgetEndTs - Date.now() : LIVE_FETCH_TIMEOUT_MS;
     if (msLeft < 200) {
@@ -693,66 +688,72 @@
     }, timeoutMs);
     opts.signal = controller.signal;
 
-    return fetch(apiSnapshotUrl(parkId), opts)
+    return fetch(apiUrl, opts)
       .then(function (res) {
         if (!res.ok) throw new Error(res.status === 401 ? 'API token required' : 'Request failed');
         return res.json();
       })
       .then(function (payload) {
-        return payload && payload.snapshot ? payload.snapshot : null;
+        if (!payload || !payload.snapshot) return null;
+        var selectedParkId = parseInt(String(payload.selectedParkId || payload.snapshot.park.id), 10);
+        return {
+          snapshot: payload.snapshot,
+          selectedParkId: Number.isNaN(selectedParkId) ? MAGICPULSE_PARK_ID : selectedParkId,
+          source: 'magicpulse'
+        };
       })
       .finally(function () {
         window.clearTimeout(timerId);
       });
   }
 
-  function resolveSnapshotWithFallback(primaryParkId) {
+  function resolveSnapshot(primaryParkId) {
     var budgetEnd = Date.now() + LIVE_SNAPSHOT_BUDGET_MS;
-    return fetchSnapshotForPark(primaryParkId, budgetEnd).then(function (primarySnapshot) {
-      if (!isSnapshotUsable(primarySnapshot)) {
-        return { snapshot: primarySnapshot, selectedParkId: primaryParkId };
-      }
-      if (isSnapshotOpen(primarySnapshot)) {
-        return { snapshot: primarySnapshot, selectedParkId: primaryParkId };
-      }
+    if (!SNAPSHOT_SOURCE_MAGICPULSE) {
+      return resolveThemeParksSnapshot(primaryParkId, budgetEnd);
+    }
 
-      var candidateIds = buildFallbackParkOrder(primaryParkId, primarySnapshot).slice(1);
-      var chain = Promise.resolve(null);
-
-      candidateIds.forEach(function (candidateParkId) {
-        chain = chain.then(function (resolved) {
-          if (resolved) return resolved;
-          return fetchSnapshotForPark(candidateParkId, budgetEnd)
-            .then(function (candidateSnapshot) {
-              if (isSnapshotUsable(candidateSnapshot) && isSnapshotOpen(candidateSnapshot)) {
-                return { snapshot: candidateSnapshot, selectedParkId: candidateParkId };
-              }
-              return null;
-            })
-            .catch(function () {
-              return null;
-            });
-        });
+    return fetchFeaturedSnapshot(budgetEnd)
+      .then(function (result) {
+        if (result && isSnapshotUsable(result.snapshot)) {
+          return result;
+        }
+        return resolveThemeParksSnapshot(primaryParkId, budgetEnd);
+      })
+      .catch(function () {
+        return resolveThemeParksSnapshot(primaryParkId, budgetEnd);
       });
-
-      return chain.then(function (resolved) {
-        return resolved || { snapshot: primarySnapshot, selectedParkId: primaryParkId };
-      });
-    });
   }
 
-  function setPanelMeta(snapshot) {
+  function snapshotTimestamp(snapshot) {
+    var parsed = snapshot && snapshot.updatedISO ? Date.parse(snapshot.updatedISO) : NaN;
+    return Number.isNaN(parsed) ? Date.now() : parsed;
+  }
+
+  function formatAge(timestamp) {
+    var minutes = Math.max(0, Math.floor((Date.now() - timestamp) / 60000));
+    if (minutes < 1) return 'just now';
+    if (minutes === 1) return '1 min ago';
+    return minutes + ' min ago';
+  }
+
+  function snapshotReportsStale(snapshot) {
+    return !!(
+      snapshot &&
+      snapshot.status &&
+      snapshot.status.rides &&
+      snapshot.status.rides.isStale
+    );
+  }
+
+  function setPanelMeta(snapshot, timestamp) {
     var parkEl = document.getElementById('live-park-name');
     var updatedEl = document.getElementById('live-updated');
     if (parkEl && snapshot && snapshot.park && snapshot.park.name) {
       var icon = snapshot.park.icon ? snapshot.park.icon + ' ' : '';
       parkEl.textContent = icon + snapshot.park.name;
     }
-    if (updatedEl && snapshot && snapshot.updated) {
-      updatedEl.textContent = 'Updated ' + snapshot.updated;
-    } else if (updatedEl) {
-      updatedEl.textContent = 'Updated just now';
-    }
+    if (updatedEl) updatedEl.textContent = 'Updated ' + formatAge(timestamp);
   }
 
   function waitValueClass(waitTime) {
@@ -762,22 +763,65 @@
     return ' value--high';
   }
 
+  function setLiveBadge(label, state) {
+    var badge = document.getElementById('live-badge');
+    if (!badge) return;
+    badge.classList.toggle('live-badge--demo', state === 'demo');
+    badge.classList.toggle('live-badge--stale', state === 'stale');
+    badge.textContent = '';
+    var dot = document.createElement('span');
+    dot.className = state === 'live' ? 'live-dot' : 'live-dot live-dot--muted';
+    dot.setAttribute('aria-hidden', 'true');
+    badge.appendChild(dot);
+    badge.appendChild(document.createTextNode(label));
+  }
+
   var HERO_STATIC_FALLBACK_RIDES = [
     { name: 'Seven Dwarfs Mine Train' },
     { name: 'Space Mountain' },
     { name: 'TRON Lightcycle / Run' },
     { name: "Peter Pan's Flight" }
   ];
+  var lastSuccessfulSnapshotAt = null;
+  var insights = document.getElementById('live-insights');
+  var bestMove = document.getElementById('live-best-move');
+  var dataSignal = document.getElementById('live-data-signal');
+
+  function updateInsights(items, snapshot, timestamp, source) {
+    if (insights) insights.hidden = false;
+    var lowest = items.reduce(function (best, item) {
+      if (item.waitTime == null) return best;
+      return !best || item.waitTime < best.waitTime ? item : best;
+    }, null);
+    if (bestMove) {
+      bestMove.textContent = lowest ? lowest.name + ' · ' + lowest.waitTime + ' min' : 'No posted waits';
+    }
+    if (dataSignal) {
+      var sourceLabel = source === 'themeparks' ? 'ThemeParks Wiki' : 'Magic Pulse';
+      dataSignal.textContent = snapshotReportsStale(snapshot)
+        ? 'Source reports delayed data'
+        : sourceLabel + ' · ' + formatAge(timestamp);
+    }
+  }
+
+  function markLiveDataStale() {
+    waitsRoot.classList.add('live-waits--stale');
+    setLiveBadge('Delayed', 'stale');
+    var updatedEl = document.getElementById('live-updated');
+    if (updatedEl) {
+      updatedEl.textContent = lastSuccessfulSnapshotAt
+        ? 'Last update ' + formatAge(lastSuccessfulSnapshotAt)
+        : 'Live update unavailable';
+    }
+    if (dataSignal) dataSignal.textContent = 'Refresh delayed';
+  }
 
   function clearHeroFallbackState() {
     waitsRoot.classList.remove('live-waits--fallback');
+    waitsRoot.classList.remove('live-waits--stale');
     var note = document.getElementById('live-waits-fallback-note');
     if (note) note.hidden = true;
-    var badge = document.getElementById('live-badge');
-    if (badge) {
-      badge.classList.remove('live-badge--demo');
-      badge.innerHTML = '<span class="live-dot" aria-hidden="true"></span>Live';
-    }
+    if (insights) insights.hidden = false;
   }
 
   function renderHeroStaticFallback() {
@@ -787,17 +831,15 @@
     });
     render(list);
     waitsRoot.classList.add('live-waits--fallback');
-    var badge = document.getElementById('live-badge');
-    if (badge) {
-      badge.classList.add('live-badge--demo');
-      badge.innerHTML = '<span class="live-dot live-dot--muted" aria-hidden="true"></span>Example';
-    }
+    waitsRoot.classList.remove('live-waits--stale');
+    setLiveBadge('Example', 'demo');
     var parkEl = document.getElementById('live-park-name');
     var updatedEl = document.getElementById('live-updated');
     if (parkEl) parkEl.textContent = 'Magic Kingdom (example)';
     if (updatedEl) updatedEl.textContent = 'Illustrative sample';
     var note = document.getElementById('live-waits-fallback-note');
     if (note) note.hidden = false;
+    if (insights) insights.hidden = true;
     if (loading) loading.hidden = true;
     if (error) {
       error.textContent = '';
@@ -808,37 +850,40 @@
 
   function render(list) {
     if (!rows) return;
-    rows.innerHTML = list
-      .map(function (item, idx) {
-        var wait = item.waitTime != null ? item.waitTime + ' min' : '—';
-        var rideAttrs = item.rideId ? ' data-ride-id="' + escapeHtml(item.rideId) + '"' : '';
-        var valueClass = 'value' + waitValueClass(item.waitTime);
-        var rowClass = 'waits-row is-hero';
-        var rankChip = '<span class="rank" aria-hidden="true">' + (idx + 1) + '</span>';
-        return (
-          '<div class="' +
-          rowClass +
-          '"' +
-          rideAttrs +
-          '>' +
-          rankChip +
-          '<span class="name">' +
-          escapeHtml(item.name) +
-          '</span><span class="' +
-          valueClass +
-          '">' +
-          wait +
-          '</span></div>'
-        );
-      })
-      .join('');
+    rows.textContent = '';
+    list.forEach(function (item, idx) {
+      var row = document.createElement('div');
+      row.className = 'waits-row is-hero';
+      if (item.rideId) row.setAttribute('data-ride-id', item.rideId);
+
+      var rank = document.createElement('span');
+      rank.className = 'rank';
+      rank.setAttribute('aria-hidden', 'true');
+      rank.textContent = String(idx + 1);
+
+      var name = document.createElement('span');
+      name.className = 'name';
+      name.textContent = item.name || '';
+
+      var value = document.createElement('span');
+      value.className = 'value' + waitValueClass(item.waitTime);
+      value.textContent = item.waitTime != null ? item.waitTime + ' min' : '-';
+
+      row.appendChild(rank);
+      row.appendChild(name);
+      row.appendChild(value);
+      rows.appendChild(row);
+    });
     rows.hidden = false;
   }
 
   function showError(message, isRefresh) {
-    if (isRefresh) return;
     if (typeof console !== 'undefined' && console.warn) {
       console.warn('[Magic Pulse]', message || 'Live wait snapshot failed');
+    }
+    if (isRefresh && rows && rows.children.length) {
+      markLiveDataStale();
+      return;
     }
     renderHeroStaticFallback();
   }
@@ -867,7 +912,12 @@
     if (loading) loading.hidden = true;
     if (error) error.hidden = true;
     render(items);
-    setPanelMeta(snapshot);
+    lastSuccessfulSnapshotAt = snapshotTimestamp(snapshot);
+    var isStale = snapshotReportsStale(snapshot);
+    setLiveBadge(isStale ? 'Delayed' : 'Live', isStale ? 'stale' : 'live');
+    if (isStale) waitsRoot.classList.add('live-waits--stale');
+    setPanelMeta(snapshot, lastSuccessfulSnapshotAt);
+    updateInsights(items, snapshot, lastSuccessfulSnapshotAt, result.source);
     waitsRoot.setAttribute('aria-busy', 'false');
     waitsRoot.classList.remove('is-refreshing');
   }
@@ -879,39 +929,20 @@
     }
     if (liveFetchInFlight) return Promise.resolve();
     liveFetchInFlight = true;
+    waitsRoot.setAttribute('aria-busy', 'true');
     if (isRefresh) waitsRoot.classList.add('is-refreshing');
 
-    function isUsableResult(result) {
-      return !!(result && result.snapshot && Array.isArray(result.snapshot.rides) && result.snapshot.rides.length);
-    }
-
-    var loadChain;
-    if (SNAPSHOT_SOURCE_MAGICPULSE) {
-      // Primary: MagicPulse API. If it's unreachable or returns nothing usable
-      // (e.g. local API not running), transparently fall back to ThemeParks Wiki
-      // so the hero panel still has live data.
-      loadChain = resolveSnapshotWithFallback(MAGICPULSE_PARK_ID)
-        .then(function (result) {
-          if (isUsableResult(result)) return result;
-          return resolveThemeParksWithFallback(MAGICPULSE_PARK_ID);
-        })
-        .catch(function () {
-          return resolveThemeParksWithFallback(MAGICPULSE_PARK_ID);
-        });
-    } else {
-      loadChain = resolveThemeParksWithFallback(MAGICPULSE_PARK_ID);
-    }
-
-    return loadChain
+    return resolveSnapshot(MAGICPULSE_PARK_ID)
       .then(function (result) {
         applyLiveResult(result, options);
       })
       .catch(function (err) {
-        if (!isRefresh) showError(getFetchErrorMessage(err), false);
+        showError(getFetchErrorMessage(err), isRefresh);
         waitsRoot.classList.remove('is-refreshing');
       })
       .finally(function () {
         liveFetchInFlight = false;
+        waitsRoot.setAttribute('aria-busy', 'false');
         waitsRoot.classList.remove('is-refreshing');
       });
   }

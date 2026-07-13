@@ -13,7 +13,7 @@ Static landing page for the **Magic Pulse** iOS app (`www.magicpulse.app`). No b
 | `favicon.svg` | Tab icon |
 | `apple-touch-icon.png` | 180×180 home-screen icon (iOS ignores SVG here) |
 | `og-image.jpg` | Open Graph / Twitter card image (1200×630 JPEG) |
-| `_headers` | Cache-Control hints for **Netlify / Cloudflare Pages** (ignored by stock GitHub Pages) |
+| `_headers` | Security headers + Cache-Control hints for **Netlify / Cloudflare Pages** (ignored by stock GitHub Pages) |
 | `CNAME` | Custom hostname for GitHub Pages: `www.magicpulse.app` |
 | `app-ads.txt` | AdMob `app-ads.txt` at site root |
 | `privacy.html` / `support.html` | Legal + contact (Formspree) |
@@ -30,39 +30,21 @@ python3 -m http.server 8080
 
 ## Hero live snapshot
 
-**As shipped, `index.html` sets `MAGICPULSE_SNAPSHOT_SOURCE = 'magicpulse'`**, so the hero loads from the **Magic Pulse API** (`api.magicpulse.app`) first and falls back to ThemeParks Wiki if it's unreachable. Without that config, `script.js` defaults to the public **ThemeParks Wiki** API (`api.themeparks.wiki`) — no API key. Configure **before** `script.js` loads if needed:
-
-```html
-<script>
-  // Optional overrides (defaults are usually fine):
-  // window.MAGICPULSE_PARK_ID = 6; // Magic Kingdom; see script.js PARKS list
-  // window.MAGICPULSE_LIVE_REFRESH_MS = 180000; // 3 min (clamped 60s–10m)
-  // window.MAGICPULSE_SNAPSHOT_RIDE_COUNT = 4; // 1–20
-  // window.MAGICPULSE_POPULAR_RIDES = [{ rideId: '…' }, { rideName: '…' }];
-</script>
-```
+As shipped, `script.js` defaults to the **Magic Pulse API** (`api.magicpulse.app`) first and falls back to ThemeParks Wiki if it is unreachable. Keep API configuration in external JavaScript, not inline script blocks, so the site can enforce its Content Security Policy.
 
 Behavior:
 
 - Maps ThemeParks **`live`** payloads into the same ride picker used for the Magic Pulse snapshot shape.
 - Prefers **popular rides** (by `id` or name) when open with a posted standby wait, then fills with **shortest waits**.
-- If the chosen park has **no usable waits**, tries other parks (same resort order, then others).
+- Requests one server-selected featured park; if that route is unavailable, tries the configured park once through ThemeParks Wiki.
+- Caps the full initial request path at 8 seconds and marks retained rows as delayed when a refresh fails.
 - **Auto-refreshes** while the tab is visible; refreshes when you return to the tab.
 
-### Optional: Magic Pulse API instead
+### Live wait snapshot API
 
-To use your **Magic Pulse** public snapshot route instead of ThemeParks Wiki:
+The hero defaults to the **Magic Pulse** public snapshot route and falls back to ThemeParks Wiki if needed.
 
-```html
-<script>
-  window.MAGICPULSE_SNAPSHOT_SOURCE = 'magicpulse';
-  window.MAGICPULSE_API_BASE = 'https://api.magicpulse.app';
-  // window.MAGICPULSE_PARK_ID = 6;
-  // window.MAGICPULSE_LIVE_REFRESH_MS = 180000;
-</script>
-```
-
-Calls: `GET {API_BASE}/api/parks/public/{parkId}/snapshot` (no auth on the public route). **`MAGICPULSE_SNAPSHOT_SOURCE` must be `'magicpulse'`** — setting only `MAGICPULSE_API_BASE` does **not** switch the hero off ThemeParks.
+Calls: `GET https://api.magicpulse.app/api/parks/public/featured/snapshot` (no auth on the public route). The API chooses a usable open park and returns `selectedParkId` with the normal snapshot envelope. Do not put private API tokens in this static site; anything shipped in HTML or JavaScript is public.
 
 Ride rows include `data-ride-id` when the source provides an `id`.
 
@@ -86,8 +68,9 @@ npx --yes lighthouse http://127.0.0.1:8080/ --only-categories=performance,seo,ac
 
 Upload the folder to **GitHub Pages**, **Netlify**, **Cloudflare Pages**, **Vercel**, S3, etc. Ensure `favicon.svg`, `app-ads.txt`, and font files under `fonts/` are served from the site root (same paths as in `styles.css`).
 
-- **`_headers`:** Applied automatically on **Netlify** and **Cloudflare Pages**. **Stock GitHub Pages does not read `_headers`** — for aggressive cache headers on CSS/JS/fonts, put **Cloudflare** (or similar) in front of the site or use another host that supports header rules.
+- **Security headers:** Every HTML page includes a CSP meta fallback. The root **`_headers`** file adds the stronger response-level policy plus HSTS, clickjacking protection, MIME protection, and permissions restrictions on **Netlify** and **Cloudflare Pages**. **Stock GitHub Pages does not read `_headers`**, so configure the response-only headers at Cloudflare when GitHub Pages remains the origin.
 - **Cache busting:** `styles.css` and `script.js` are cached as immutable for 1 year, so every HTML page references them with a `?v=YYYYMMDD` query. **Bump the `?v=` value on all four pages whenever you edit either file**, or returning visitors keep the stale copy.
+- **CSP hashes:** The home page keeps JSON-LD inline for SEO. If you edit those `<script type="application/ld+json">` blocks, recalculate the `sha256-...` hashes in `_headers`.
 - If you also serve this site from **MagicPulseAPI** `public/`, copy these files there after changes.
 
 ## App Store Connect (copy-paste)

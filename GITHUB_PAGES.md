@@ -119,9 +119,18 @@ This repo’s **`CNAME`** file is set to **`www.magicpulse.app`**, and page **`<
 - Prefer sending all traffic to **`https://www.magicpulse.app`**.
 - Configure **apex** `magicpulse.app` → **301 redirect** to `https://www.magicpulse.app` using your registrar’s redirect feature, a **CNAME/ALIAS** apex-to-www pattern, or a CDN (e.g. Cloudflare forwarding rule). If both hostnames point at GitHub Pages without a redirect, search engines may see duplicate URLs.
 
-### `_headers` and caching
+### `_headers`, security headers, and caching
 
-The repo root **`_headers`** file sets **Cache-Control** for fonts, CSS, JS, and HTML. **GitHub Pages does not process `_headers`.** It is honored on **Netlify**, **Cloudflare Pages**, and similar hosts. For long-lived caching on GitHub Pages alone, you typically need **Cloudflare** (or another proxy) in front of the site with matching rules.
+The repo root **`_headers`** file sets browser security headers and **Cache-Control** for fonts, CSS, JS, and HTML. **GitHub Pages does not process `_headers`.** It is honored on **Netlify**, **Cloudflare Pages**, and similar hosts. Each HTML page also carries a CSP meta fallback, but HSTS, frame protection, MIME protection, and Permissions Policy still require real response headers.
+
+For the current GitHub Pages plus Cloudflare setup:
+
+1. In Cloudflare, open **Rules → Transform Rules → Modify Response Header** and create a rule for host `www.magicpulse.app`.
+2. Copy the `Content-Security-Policy`, `X-Content-Type-Options`, `Referrer-Policy`, and `Permissions-Policy` values from **`_headers`** into static response-header actions.
+3. Open **SSL/TLS → Edge Certificates → HTTP Strict Transport Security (HSTS)** and enable a one-year max age, include subdomains, and preload only while every subdomain is HTTPS-ready.
+4. Purge the Cloudflare cache and verify the live response with `curl -I https://www.magicpulse.app/`.
+
+The expected response must include `content-security-policy`, `strict-transport-security`, `x-content-type-options`, `referrer-policy`, and `permissions-policy`.
 
 ---
 
