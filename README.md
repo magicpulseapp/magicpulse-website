@@ -6,7 +6,7 @@ Static landing page for the **Magic Pulse** iOS app (`www.magicpulse.app`). No b
 
 | File | Purpose |
 |------|---------|
-| `index.html` | Home: hero, features, pricing, FAQ (`<details>`), live snapshot panel |
+| `index.html` | Home: selectable live park preview, updates, compatibility, features, pricing, and FAQ |
 | `styles.css` | Dark theme, responsive layout, self-hosted `@font-face` (Outfit + Inter) |
 | `script.js` | Mobile nav (a11y), scroll reveal + fallback, hero live waits + auto-refresh |
 | `fonts/*.woff2` | Self-hosted webfonts (latin + latin-ext); no Google Fonts runtime |
@@ -17,6 +17,7 @@ Static landing page for the **Magic Pulse** iOS app (`www.magicpulse.app`). No b
 | `CNAME` | Custom hostname for GitHub Pages: `www.magicpulse.app` |
 | `app-ads.txt` | AdMob `app-ads.txt` at site root |
 | `privacy.html` / `support.html` | Legal + contact (Formspree) |
+| `android.html` | Email-only Android availability waitlist (Formspree) |
 | `robots.txt` | Crawl rules + `Sitemap` URL |
 | `sitemap.xml` | Index URLs for search engines |
 
@@ -36,7 +37,8 @@ Behavior:
 
 - Maps ThemeParks **`live`** payloads into the same ride picker used for the Magic Pulse snapshot shape.
 - Prefers **popular rides** (by `id` or name) when open with a posted standby wait, then fills with **shortest waits**.
-- Requests one server-selected featured park; if that route is unavailable, tries the configured park once through ThemeParks Wiki.
+- Requests one server-selected featured park on a visitor's first load. The picker then calls the chosen park's public snapshot directly and remembers that selection locally.
+- If a Magic Pulse route is unavailable, tries the selected park once through ThemeParks Wiki.
 - Caps the full initial request path at 8 seconds and marks retained rows as delayed when a refresh fails.
 - **Auto-refreshes** while the tab is visible; refreshes when you return to the tab.
 
@@ -44,17 +46,18 @@ Behavior:
 
 The hero defaults to the **Magic Pulse** public snapshot route and falls back to ThemeParks Wiki if needed.
 
-Calls: `GET https://api.magicpulse.app/api/parks/public/featured/snapshot` (no auth on the public route). The API chooses a usable open park and returns `selectedParkId` with the normal snapshot envelope. Do not put private API tokens in this static site; anything shipped in HTML or JavaScript is public.
+Calls `GET https://api.magicpulse.app/api/parks/public/featured/snapshot` on the first visit, then `GET https://api.magicpulse.app/api/parks/public/:parkId/snapshot` for explicit park selections and refreshes. Both routes are public and require no auth. Do not put private API tokens in this static site; anything shipped in HTML or JavaScript is public.
 
 Ride rows include `data-ride-id` when the source provides an `id`.
 
 ## SEO & sharing
 
 - Canonical URLs assume **`https://www.magicpulse.app/`** (see `CNAME` and each page’s `<link rel="canonical">`). Configure **apex** (`magicpulse.app`) to **301 redirect** to `https://www.magicpulse.app` at your DNS or CDN so one hostname wins.
-- **`robots.txt`** allows all crawlers and references **`sitemap.xml`** (home, support, privacy). Bump **`<lastmod>`** in `sitemap.xml` when you ship meaningful content changes.
+- **`robots.txt`** allows all crawlers and references **`sitemap.xml`** (home, support, privacy, Android waitlist). Bump **`<lastmod>`** in `sitemap.xml` when you ship meaningful content changes.
 - **Open Graph / Twitter** tags are on all public pages; **`og:image:alt`** and matching Twitter fields improve accessibility and previews.
 - **Structured data** on the home page uses JSON-LD **`@graph`**: `WebSite`, `Organization`, and `SoftwareApplication`.
 - **Performance:** Self-hosted fonts with **`preload`** for critical WOFF2 files; **`script.js`** uses **`defer`**. Social image is **`og-image.jpg`** (optimized JPEG).
+- **Release metadata:** The home page's current version, release date, download size, and compatibility copy are editorial snapshots of the App Store listing. Refresh them when a new app version ships.
 
 ### Lighthouse (local)
 
@@ -69,7 +72,7 @@ npx --yes lighthouse http://127.0.0.1:8080/ --only-categories=performance,seo,ac
 Upload the folder to **GitHub Pages**, **Netlify**, **Cloudflare Pages**, **Vercel**, S3, etc. Ensure `favicon.svg`, `app-ads.txt`, and font files under `fonts/` are served from the site root (same paths as in `styles.css`).
 
 - **Security headers:** Every HTML page includes a CSP meta fallback. The root **`_headers`** file adds the stronger response-level policy plus HSTS, clickjacking protection, MIME protection, and permissions restrictions on **Netlify** and **Cloudflare Pages**. **Stock GitHub Pages does not read `_headers`**, so configure the response-only headers at Cloudflare when GitHub Pages remains the origin.
-- **Cache busting:** `styles.css` and `script.js` are cached as immutable for 1 year, so every HTML page references them with a `?v=YYYYMMDD` query. **Bump the `?v=` value on all four pages whenever you edit either file**, or returning visitors keep the stale copy.
+- **Cache busting:** `styles.css` and `script.js` are cached as immutable for 1 year, so every HTML page references them with a `?v=YYYYMMDD` query. **Bump the `?v=` value on every HTML page whenever you edit either file**, or returning visitors keep the stale copy.
 - **CSP hashes:** The home page keeps JSON-LD inline for SEO. If you edit those `<script type="application/ld+json">` blocks, recalculate the `sha256-...` hashes in `_headers`.
 - If you also serve this site from **MagicPulseAPI** `public/`, copy these files there after changes.
 

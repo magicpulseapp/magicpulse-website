@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; object-src 'none'; script-src 'self' 'sha256-YtmEiZ7cLqUeswVYaVkwwZdshJWz7uvIlAG6His8e7Q=' 'sha256-BloqyO4BZ6gsmfMD9I+Usmuavqk0TGku56lapkJOb5k='; style-src 'self'; img-src 'self' https://www.magicpulse.app data:; font-src 'self'; connect-src 'self' https://api.magicpulse.app https://api.themeparks.wiki https://formspree.io; form-action https://formspree.io; frame-src 'none'; worker-src 'self'; media-src 'self'; upgrade-insecure-requests" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; object-src 'none'; script-src 'self' 'sha256-hrbBQu3Z8Jig20Rq6LT1tyYWDOFK9eb72KYVar55QWs=' 'sha256-J1HhyhqsC5o/SYw8rim4BLjsC57xpdkUS7SedWoLdOE='; style-src 'self'; img-src 'self' https://www.magicpulse.app data:; font-src 'self'; connect-src 'self' https://api.magicpulse.app https://api.themeparks.wiki https://formspree.io; form-action https://formspree.io; frame-src 'none'; worker-src 'self'; media-src 'self'; upgrade-insecure-requests" />
   <meta name="referrer" content="strict-origin-when-cross-origin" />
   <meta name="description" content="Magic Pulse offers live Disney wait times, day plans, Lightning Lane price tracking, Apple Watch glances, and weather for Walt Disney World, Disneyland, Tokyo, and Paris." />
   <meta name="theme-color" content="#0c0820" />
@@ -34,7 +34,7 @@
   <link rel="preconnect" href="https://api.themeparks.wiki" />
   <link rel="preload" href="fonts/inter-400-latin.woff2" as="font" type="font/woff2" crossorigin="anonymous" />
   <link rel="preload" href="fonts/outfit-700-latin.woff2" as="font" type="font/woff2" crossorigin="anonymous" />
-  <link rel="stylesheet" href="styles.css?v=20260712a" />
+  <link rel="stylesheet" href="styles.css?v=20260713a" />
 
   <script type="application/ld+json">
   {
@@ -59,7 +59,9 @@
         "@type": "SoftwareApplication",
         "name": "Magic Pulse",
         "applicationCategory": "TravelApplication",
-        "operatingSystem": "iOS",
+        "operatingSystem": "iOS 18.0 or later; watchOS 11.0 or later",
+        "softwareVersion": "1.8.2",
+        "dateModified": "2026-06-28",
         "offers": [
           {
             "@type": "Offer",
@@ -136,7 +138,7 @@
         "name": "Does the website show real Disney wait times?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "Yes. The hero panel loads live attraction waits from the Magic Pulse API, with ThemeParks Wiki’s public API as a fallback. If the default park has no usable posted waits, the site tries other parks automatically."
+          "text": "Yes. The panel starts with a usable park selected by the Magic Pulse API, and visitors can choose any supported park. If the Magic Pulse API is unreachable, the selected park falls back to ThemeParks Wiki’s public API."
         }
       },
       {
@@ -225,14 +227,37 @@
             </a>
             <a class="btn btn-ghost" href="#product">See features</a>
           </div>
-          <p class="micro">Free on iOS <span class="micro-pill">3 free days of Pro</span> <a class="micro-pill micro-pill-link" href="support.html?topic=android">Join Android waitlist</a></p>
+          <p class="micro">Free on iOS <span class="micro-pill">3 free days of Pro</span> <a class="micro-pill micro-pill-link" href="android.html">Join Android waitlist</a></p>
         </div>
         <aside class="hero-panel reveal reveal-5" aria-label="Live wait times">
           <div class="panel-head">
             <h2>Live wait snapshot</h2>
             <span class="live-badge" id="live-badge"><span class="live-dot" aria-hidden="true"></span>Live</span>
           </div>
-          <p class="panel-sub"><span id="live-park-name">Loading…</span> · <span id="live-updated">—</span></p>
+          <div class="live-park-picker">
+            <label for="live-park-select">Preview park</label>
+            <select id="live-park-select" aria-describedby="live-park-selection-status">
+              <optgroup label="Walt Disney World">
+                <option value="6">Magic Kingdom</option>
+                <option value="5">EPCOT</option>
+                <option value="7">Disney's Hollywood Studios</option>
+                <option value="8">Disney's Animal Kingdom</option>
+              </optgroup>
+              <optgroup label="Disneyland Resort">
+                <option value="16">Disneyland Park</option>
+                <option value="17">Disney California Adventure</option>
+              </optgroup>
+              <optgroup label="Tokyo Disney Resort">
+                <option value="274">Tokyo Disneyland</option>
+                <option value="275">Tokyo DisneySea</option>
+              </optgroup>
+              <optgroup label="Disneyland Paris">
+                <option value="4">Disneyland Park (Paris)</option>
+                <option value="28">Disney Adventure World</option>
+              </optgroup>
+            </select>
+          </div>
+          <p class="panel-sub" id="live-park-selection-status"><span id="live-park-name">Loading…</span> · <span id="live-updated">—</span></p>
           <div class="hairline-dot live-waits-divider" aria-hidden="true"><span class="dot"></span></div>
           <div id="live-waits" class="live-waits" aria-live="polite" aria-busy="true">
             <p class="waits-loading">Loading live rides...</p>
@@ -242,7 +267,7 @@
           <p class="live-waits-fallback-note" id="live-waits-fallback-note" hidden>Live data unavailable — example rides shown.</p>
           <div class="hero-panel-insights" id="live-insights" aria-label="Planning summary" aria-live="polite">
             <div>
-              <span>Lowest shown</span>
+              <span id="live-best-label">Lowest shown</span>
               <strong id="live-best-move">Checking current waits...</strong>
             </div>
             <div>
@@ -250,6 +275,17 @@
               <strong id="live-data-signal">Checking freshness...</strong>
             </div>
           </div>
+          <a
+            class="live-open-app"
+            id="live-open-app"
+            href="https://apps.apple.com/us/app/magic-pulse/id6759612612"
+            data-deep-link="magicpulse://park/6"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <span id="live-open-app-label">Open this park in Magic Pulse</span>
+            <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7"/><path d="M7 7h10v10"/></svg>
+          </a>
           <div class="brand-footer" aria-hidden="true">
             <div class="hairline-dot"><span class="dot"></span></div>
             <span class="brand-footer-wordmark">
@@ -319,6 +355,45 @@
       </div>
     </section>
 
+    <section id="updates" class="section release-section">
+      <div class="container release-layout">
+        <div class="release-intro">
+          <p class="eyebrow">What's new</p>
+          <div class="release-meta">
+            <span>Version 1.8.2</span>
+            <time datetime="2026-06-28">June 28, 2026</time>
+          </div>
+          <h2>Reliability first, with a cleaner park view</h2>
+          <p class="section-copy">The latest patch fixes a launch problem reported on some devices. The recent 1.8 update also made the main park experience flatter, clearer, and more dependable.</p>
+          <a class="btn btn-ghost" href="https://apps.apple.com/us/app/magic-pulse/id6759612612" target="_blank" rel="noopener noreferrer">View version history</a>
+        </div>
+
+        <ol class="release-highlights" aria-label="Recent Magic Pulse improvements">
+          <li>
+            <span aria-hidden="true">01</span>
+            <div>
+              <h3>More reliable launches</h3>
+              <p>Version 1.8.2 fixes an issue that prevented the app from opening for some users.</p>
+            </div>
+          </li>
+          <li>
+            <span aria-hidden="true">02</span>
+            <div>
+              <h3>Cleaner park pages</h3>
+              <p>Ride rows, filters, navigation, weather alerts, and planning surfaces now use a calmer flat design.</p>
+            </div>
+          </li>
+          <li>
+            <span aria-hidden="true">03</span>
+            <div>
+              <h3>Stronger live refreshes</h3>
+              <p>Park switching, stale-data handling, and automatic refresh behavior were tightened for fresher results.</p>
+            </div>
+          </li>
+        </ol>
+      </div>
+    </section>
+
     <div class="wave-sep wave-sep--flip" aria-hidden="true"><svg viewBox="0 0 1440 36" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><path d="M0,18 C240,36 480,0 720,18 C960,36 1200,0 1440,18 L1440,36 L0,36 Z" fill="rgba(158,89,255,0.07)"/></svg></div>
 
     <section id="parks" class="section parks-section">
@@ -366,7 +441,7 @@
             </div>
             <ul>
               <li>Disneyland Park</li>
-              <li>Walt Disney Studios Park</li>
+              <li>Disney Adventure World</li>
             </ul>
           </article>
         </div>
@@ -529,6 +604,63 @@
       </div>
     </section>
 
+    <section id="compatibility" class="section compatibility-section">
+      <div class="container">
+        <div class="compatibility-heading">
+          <div>
+            <p class="eyebrow">Before you install</p>
+            <h2>Compatibility and permissions, plainly explained</h2>
+          </div>
+          <p class="section-copy">Live waits and core planning do not require a Magic Pulse account. Optional Apple permissions unlock nearby suggestions, alerts, and sharing.</p>
+        </div>
+
+        <dl class="compatibility-facts">
+          <div>
+            <dt>iPhone</dt>
+            <dd>iOS 18 or later</dd>
+          </div>
+          <div>
+            <dt>Apple Watch</dt>
+            <dd>watchOS 11 or later</dd>
+          </div>
+          <div>
+            <dt>Language</dt>
+            <dd>English</dd>
+          </div>
+          <div>
+            <dt>Download</dt>
+            <dd>About 73 MB <span>varies by version</span></dd>
+          </div>
+        </dl>
+
+        <div class="permission-list" aria-label="Optional app permissions">
+          <div class="permission-row">
+            <span class="permission-state">Optional</span>
+            <div>
+              <h3>Location</h3>
+              <p>Suggests nearby parks and enables arrival or ride-closure alerts. Location stays on your device and is not stored or shared by Magic Pulse.</p>
+            </div>
+          </div>
+          <div class="permission-row">
+            <span class="permission-state">Optional</span>
+            <div>
+              <h3>Notifications</h3>
+              <p>Delivers wait drops, reopenings, reminders, and severe-weather alerts. Live waits and planning still work when notifications are off.</p>
+            </div>
+          </div>
+          <div class="permission-row">
+            <span class="permission-state">Optional</span>
+            <div>
+              <h3>iCloud</h3>
+              <p>Syncs preferences and powers invited shared plans through your Apple ID. No separate Magic Pulse account is required.</p>
+            </div>
+          </div>
+        </div>
+
+        <p class="compatibility-note">An internet connection is needed for fresh waits. When service is spotty, Magic Pulse can show its last available cached snapshot. <a href="privacy.html">Read the Privacy Policy</a>.</p>
+      </div>
+    </section>
+
     <div class="wave-sep" aria-hidden="true"><svg viewBox="0 0 1440 36" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><path d="M0,18 C360,0 720,36 1080,18 C1260,9 1380,27 1440,18 L1440,36 L0,36 Z" fill="rgba(158,89,255,0.07)"/></svg></div>
 
     <section id="faq" class="section section-alt">
@@ -573,7 +705,7 @@
               </details>
               <details class="faq-details">
                 <summary>Does the website show real waits?</summary>
-                <p class="faq-answer">The hero panel loads live waits from the Magic Pulse API, with ThemeParks Wiki as a fallback. If the default park has no usable posted waits, we try other parks automatically.</p>
+                <p class="faq-answer">Yes. The panel starts with a usable park selected by the Magic Pulse API, and you can choose any supported park. If the Magic Pulse API is unreachable, the selected park falls back to ThemeParks Wiki.</p>
               </details>
             </div>
           </details>
@@ -613,7 +745,8 @@
         Weather by <a href="https://weather.apple.com" target="_blank" rel="noopener noreferrer">Apple Weather</a>.
         <a href="privacy.html">Privacy Policy</a> ·
         <a href="https://www.apple.com/legal/internet-services/itunes/dev/stdeula/" target="_blank" rel="noopener noreferrer">Apple Standard EULA</a> ·
-        <a href="support.html">Support</a>
+        <a href="support.html">Support</a> ·
+        <a href="android.html">Android waitlist</a>
       </p>
       <p class="footer-disclaimer">
         Magic Pulse is not affiliated with, endorsed by, or sponsored by The Walt Disney Company, NBCUniversal, Oriental Land Company, or other theme park operators. All park names and trademarks belong to their respective owners.
@@ -628,6 +761,6 @@
     </a>
   </div>
 
-  <script src="script.js?v=20260712a" defer></script>
+  <script src="script.js?v=20260713a" defer></script>
 </body>
 </html>
