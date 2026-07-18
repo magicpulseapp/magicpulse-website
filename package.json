@@ -4,7 +4,7 @@
   "type": "module",
   "scripts": {
     "build": "npm run check && npm run check:release && node scripts/build-site.mjs",
-    "check": "node scripts/check-site.mjs",
+    "check": "node scripts/check-site.mjs && node scripts/check-worker.mjs",
     "check:release": "node scripts/check-release-metadata.mjs",
     "check:release:remote": "node scripts/check-release-metadata.mjs --remote"
   }

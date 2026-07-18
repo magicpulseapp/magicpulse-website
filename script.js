@@ -216,7 +216,9 @@
   var MAGICPULSE_SITE_API_BASE =
     typeof window.MAGICPULSE_SITE_API_BASE === 'string'
       ? window.MAGICPULSE_SITE_API_BASE.replace(/\/$/, '')
-      : 'https://api.magicpulse.app';
+      : (window.location.hostname.endsWith('.chatgpt.site')
+        ? window.location.origin
+        : 'https://api.magicpulse.app');
 
   (function () {
     var allowedEvents = ['app_store_click', 'park_preview_change'];
@@ -259,6 +261,7 @@
       if (!status || !submit || (kind !== 'support' && kind !== 'android-waitlist')) return;
 
       var expectedEndpoint = MAGICPULSE_SITE_API_BASE + '/api/site/forms/' + kind;
+      if (MAGICPULSE_SITE_API_BASE === window.location.origin) form.action = expectedEndpoint;
       var challenge = null;
       var challengeLoadedAt = 0;
       var challengeRequest = null;
