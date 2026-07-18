@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; object-src 'none'; script-src 'self' 'sha256-hrbBQu3Z8Jig20Rq6LT1tyYWDOFK9eb72KYVar55QWs=' 'sha256-J1HhyhqsC5o/SYw8rim4BLjsC57xpdkUS7SedWoLdOE='; style-src 'self'; img-src 'self' https://www.magicpulse.app data:; font-src 'self'; connect-src 'self' https://api.magicpulse.app https://api.themeparks.wiki https://formspree.io; form-action https://formspree.io; frame-src 'none'; worker-src 'self'; media-src 'self'; upgrade-insecure-requests" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; object-src 'none'; script-src 'self' 'sha256-me/ZuRgI+viyzOypJV0yzNaTUFqb+A/3+aThGGToDKc=' 'sha256-J1HhyhqsC5o/SYw8rim4BLjsC57xpdkUS7SedWoLdOE='; style-src 'self'; img-src 'self' https://www.magicpulse.app data:; font-src 'self'; connect-src 'self' https://api.magicpulse.app https://api.themeparks.wiki; form-action https://api.magicpulse.app; frame-src 'none'; worker-src 'self'; media-src 'self'; upgrade-insecure-requests" />
   <meta name="referrer" content="strict-origin-when-cross-origin" />
   <meta name="description" content="Magic Pulse offers live Disney wait times, day plans, Lightning Lane price tracking, Apple Watch glances, and weather for Walt Disney World, Disneyland, Tokyo, and Paris." />
   <meta name="theme-color" content="#0c0820" />
@@ -19,22 +19,23 @@
   <meta property="og:description" content="Live Disney wait times, collaborative day plans, Lightning Lane price tracking, and an Apple Watch glance for Walt Disney World, Disneyland, Tokyo, and Paris. Free iOS app." />
   <meta property="og:url" content="https://www.magicpulse.app/" />
   <meta property="og:locale" content="en_US" />
-  <meta property="og:image" content="https://www.magicpulse.app/og-image.jpg" />
+  <meta property="og:image" content="https://www.magicpulse.app/og-image.png" />
   <meta property="og:image:width" content="1200" />
   <meta property="og:image:height" content="630" />
-  <meta property="og:image:type" content="image/jpeg" />
-  <meta property="og:image:alt" content="Magic Pulse — real-time theme park waits, hours, and weather" />
+  <meta property="og:image:type" content="image/png" />
+  <meta property="og:image:alt" content="Magic Pulse app showing live waits, day planning, and Lightning Lane details" />
 
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="Magic Pulse — Live Disney Wait Times &amp; Theme Park Planning App" />
   <meta name="twitter:description" content="Live Disney wait times, day plans, Lightning Lane price tracking, and an Apple Watch glance for Walt Disney World, Disneyland, Tokyo, and Paris. Free iOS app." />
-  <meta name="twitter:image" content="https://www.magicpulse.app/og-image.jpg" />
+  <meta name="twitter:image" content="https://www.magicpulse.app/og-image.png" />
+  <meta name="twitter:image:alt" content="Magic Pulse app showing live waits, day planning, and Lightning Lane details" />
 
   <link rel="preconnect" href="https://api.magicpulse.app" />
   <link rel="preconnect" href="https://api.themeparks.wiki" />
   <link rel="preload" href="fonts/inter-400-latin.woff2" as="font" type="font/woff2" crossorigin="anonymous" />
   <link rel="preload" href="fonts/outfit-700-latin.woff2" as="font" type="font/woff2" crossorigin="anonymous" />
-  <link rel="stylesheet" href="styles.css?v=20260713a" />
+  <link rel="stylesheet" href="styles.css?v=20260718a" />
 
   <script type="application/ld+json">
   {
@@ -83,10 +84,10 @@
           }
         ],
         "description": "Live Disney wait times, collaborative day plans, Lightning Lane price tracking, an Apple Watch glance, and post-trip recaps for Walt Disney World, Disneyland Resort, Tokyo Disney Resort, and Disneyland Paris. Plan theme park visits with real-time ride waits, smart alerts, Live Activity on Lock Screen, Siri Shortcuts, and an ad-free experience with Pro.",
-        "image": "https://www.magicpulse.app/og-image.jpg",
+        "image": "https://www.magicpulse.app/og-image.png",
         "url": "https://www.magicpulse.app/",
         "downloadUrl": "https://apps.apple.com/us/app/magic-pulse/id6759612612",
-        "screenshot": "https://www.magicpulse.app/og-image.jpg",
+        "screenshot": "https://www.magicpulse.app/assets/app-screens/live-waits.webp",
         "featureList": "Live wait times, Day plan with auto-optimize, Lightning Lane price tracking, Apple Watch glance, Trip recap, Park hours, Weather forecast, Watchlist, iCloud settings sync, CloudKit shared plans (Pro), Smart alerts (Pro), Live Activity (Pro), Home Screen widgets (Pro), Siri Shortcuts (Pro), No ads (Pro)",
         "keywords": "Disney wait times, day plan, Lightning Lane tracker, Apple Watch theme park, theme park, Disneyland, Walt Disney World, Tokyo Disney, ride waits, trip recap",
         "author": { "@id": "https://www.magicpulse.app/#organization" },
@@ -190,7 +191,7 @@
         <a href="#pricing">Pricing</a>
         <a href="#faq">FAQ</a>
         <a href="support.html">Support</a>
-        <a href="#download" class="btn btn-nav">Get the app</a>
+        <a href="https://apps.apple.com/us/app/magic-pulse/id6759612612" class="btn btn-nav" target="_blank" rel="noopener noreferrer" data-event="app_store_click" data-event-context="header">Get the app</a>
       </nav>
       <button class="menu-btn" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="site-navigation">
         <span></span><span></span><span></span>
@@ -200,34 +201,21 @@
 
   <main id="main-content">
     <section class="hero">
-      <div class="aurora" aria-hidden="true"></div>
-      <div class="hero-signal" aria-hidden="true">
-        <div class="hero-orbit"></div>
-        <svg class="hero-wave" viewBox="0 0 720 220" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
-          <path class="hero-wave-base" d="M0 130 L80 130 L110 92 L150 176 L188 58 L228 162 L268 102 L308 130 L370 130 L420 86 L466 168 L512 74 L560 148 L604 126 L720 126" />
-          <path class="hero-wave-glow" d="M0 130 L80 130 L110 92 L150 176 L188 58 L228 162 L268 102 L308 130 L370 130 L420 86 L466 168 L512 74 L560 148 L604 126 L720 126" />
-        </svg>
-      </div>
       <div class="container hero-grid">
         <div>
-          <p class="eyebrow reveal reveal-1">Smarter park days, less time in line.</p>
-          <h1 class="reveal reveal-2">Magic Pulse: live park waits, <span class="gradient-text">in real time.</span></h1>
+          <p class="eyebrow reveal reveal-1">Live waits. Better plans. Less guessing.</p>
+          <h1 class="reveal reveal-2">Magic Pulse for <span class="gradient-text">smarter park days.</span></h1>
           <p class="hero-copy reveal reveal-3">
-            Live wait times, a collaborative day plan, Lightning Lane price tracking, and an Apple Watch glance — for Walt Disney World, Disneyland, Tokyo Disney Resort, and Disneyland Paris.
+            See current ride waits, build your day, follow Lightning Lane prices, and get the right update on iPhone or Apple Watch.
           </p>
-          <div class="hero-status-grid reveal reveal-4" aria-label="Magic Pulse planning highlights">
-            <span><strong>Live</strong> park waits</span>
-            <span><strong>3-day</strong> Pro trial</span>
-            <span><strong>Watch</strong> glance</span>
-          </div>
           <div class="hero-actions reveal reveal-4">
-            <a class="btn btn-appstore" href="https://apps.apple.com/us/app/magic-pulse/id6759612612" target="_blank" rel="noopener noreferrer">
+            <a class="btn btn-appstore" href="https://apps.apple.com/us/app/magic-pulse/id6759612612" target="_blank" rel="noopener noreferrer" data-event="app_store_click" data-event-context="hero">
               <svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
               <span class="appstore-text"><span class="appstore-sub">Download on the</span><span class="appstore-main">App Store</span></span>
             </a>
-            <a class="btn btn-ghost" href="#product">See features</a>
+            <a class="btn btn-ghost" href="#product">See the app</a>
           </div>
-          <p class="micro">Free on iOS <span class="micro-pill">3 free days of Pro</span> <a class="micro-pill micro-pill-link" href="android.html">Join Android waitlist</a></p>
+          <p class="hero-trustline reveal reveal-4"><span>Free on iOS</span><span aria-hidden="true">·</span><span>3 free days of Pro</span><span aria-hidden="true">·</span><a href="android.html">Android waitlist</a></p>
         </div>
         <aside class="hero-panel reveal reveal-5" aria-label="Live wait times">
           <div class="panel-head">
@@ -280,6 +268,8 @@
             id="live-open-app"
             href="https://apps.apple.com/us/app/magic-pulse/id6759612612"
             data-deep-link="magicpulse://park/6"
+            data-event="app_store_click"
+            data-event-context="live_snapshot"
             target="_blank"
             rel="noopener noreferrer"
           >
@@ -299,206 +289,84 @@
       </div>
     </section>
 
-    <div class="wave-sep" aria-hidden="true"><svg viewBox="0 0 1440 36" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><path d="M0,18 C240,36 480,0 720,18 C960,36 1200,0 1440,18 L1440,36 L0,36 Z" fill="rgba(158,89,255,0.09)"/></svg></div>
-
-    <section class="stats-strip">
-      <div class="container stats-row">
-        <div class="stat-item reveal reveal-1">
-          <span class="stat-num">10</span>
-          <span class="stat-label">Disney parks covered</span>
-        </div>
-        <div class="stat-item reveal reveal-2">
-          <span class="stat-num">200+</span>
-          <span class="stat-label">Tracked attractions</span>
-        </div>
-        <div class="stat-item reveal reveal-3">
-          <span class="stat-num">iPhone&nbsp;+&nbsp;Watch</span>
-          <span class="stat-label">Synced glance everywhere</span>
-        </div>
-        <div class="stat-item reveal reveal-4">
-          <span class="stat-num">Free</span>
-          <span class="stat-label">To download on iOS</span>
-        </div>
-      </div>
-    </section>
-
-    <section class="trust">
-      <div class="container trust-grid">
-        <article class="reveal reveal-1">
-          <div class="trust-icon" aria-hidden="true">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-          </div>
-          <h3>Trusted data sources</h3>
-          <p>Wait times and hours from ThemeParks Wiki. Weather powered by Apple WeatherKit.</p>
-        </article>
-        <article class="reveal reveal-2">
-          <div class="trust-icon" aria-hidden="true">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-          </div>
-          <h3>Privacy first</h3>
-          <p>Your watchlist and preferences stay on-device. No account required.</p>
-        </article>
-        <article class="reveal reveal-3">
-          <div class="trust-icon" aria-hidden="true">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
-          </div>
-          <h3>Global coverage</h3>
-          <p>Walt Disney World, Disneyland, Tokyo Disney Resort, and Disneyland Paris in one app.</p>
-        </article>
-        <article class="reveal reveal-4">
-          <div class="trust-icon" aria-hidden="true">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-          </div>
-          <h3>Direct support</h3>
-          <p>Send questions, billing issues, and bug reports through one support form.</p>
-        </article>
-      </div>
-    </section>
-
-    <section id="updates" class="section release-section">
-      <div class="container release-layout">
-        <div class="release-intro">
-          <p class="eyebrow">What's new</p>
-          <div class="release-meta">
-            <span>Version 1.8.2</span>
-            <time datetime="2026-06-28">June 28, 2026</time>
-          </div>
-          <h2>Reliability first, with a cleaner park view</h2>
-          <p class="section-copy">The latest patch fixes a launch problem reported on some devices. The recent 1.8 update also made the main park experience flatter, clearer, and more dependable.</p>
-          <a class="btn btn-ghost" href="https://apps.apple.com/us/app/magic-pulse/id6759612612" target="_blank" rel="noopener noreferrer">View version history</a>
-        </div>
-
-        <ol class="release-highlights" aria-label="Recent Magic Pulse improvements">
-          <li>
-            <span aria-hidden="true">01</span>
-            <div>
-              <h3>More reliable launches</h3>
-              <p>Version 1.8.2 fixes an issue that prevented the app from opening for some users.</p>
-            </div>
-          </li>
-          <li>
-            <span aria-hidden="true">02</span>
-            <div>
-              <h3>Cleaner park pages</h3>
-              <p>Ride rows, filters, navigation, weather alerts, and planning surfaces now use a calmer flat design.</p>
-            </div>
-          </li>
-          <li>
-            <span aria-hidden="true">03</span>
-            <div>
-              <h3>Stronger live refreshes</h3>
-              <p>Park switching, stale-data handling, and automatic refresh behavior were tightened for fresher results.</p>
-            </div>
-          </li>
-        </ol>
-      </div>
-    </section>
-
-    <div class="wave-sep wave-sep--flip" aria-hidden="true"><svg viewBox="0 0 1440 36" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><path d="M0,18 C240,36 480,0 720,18 C960,36 1200,0 1440,18 L1440,36 L0,36 Z" fill="rgba(158,89,255,0.07)"/></svg></div>
-
-    <section id="parks" class="section parks-section">
+    <section id="product" class="section product-showcase">
       <div class="container">
-        <p class="eyebrow">Supported parks</p>
-        <h2>Coverage for every Disney resort</h2>
-        <p class="section-copy">Pick your resort and keep the same live waits, hours, weather, watchlist, and planning flow across all supported Disney parks.</p>
-        <div class="parks-grid" aria-label="Supported Disney parks">
-          <article class="park-card">
-            <div>
-              <span class="park-region">Walt Disney World</span>
-              <h3>Florida</h3>
-            </div>
-            <ul>
-              <li>Magic Kingdom</li>
-              <li>EPCOT</li>
-              <li>Hollywood Studios</li>
-              <li>Animal Kingdom</li>
-            </ul>
-          </article>
-          <article class="park-card">
-            <div>
-              <span class="park-region">Disneyland Resort</span>
-              <h3>California</h3>
-            </div>
-            <ul>
-              <li>Disneyland Park</li>
-              <li>Disney California Adventure</li>
-            </ul>
-          </article>
-          <article class="park-card">
-            <div>
-              <span class="park-region">Tokyo Disney Resort</span>
-              <h3>Japan</h3>
-            </div>
-            <ul>
-              <li>Tokyo Disneyland</li>
-              <li>Tokyo DisneySea</li>
-            </ul>
-          </article>
-          <article class="park-card">
-            <div>
-              <span class="park-region">Disneyland Paris</span>
-              <h3>France</h3>
-            </div>
-            <ul>
-              <li>Disneyland Park</li>
-              <li>Disney Adventure World</li>
-            </ul>
-          </article>
+        <div class="product-intro">
+          <div>
+            <p class="eyebrow">Inside the app</p>
+            <h2>See the decision, then make your move</h2>
+          </div>
+          <p class="section-copy">Magic Pulse turns live park data into a clear next step: compare waits, organize your day, and decide whether Lightning Lane is worth it.</p>
+        </div>
+
+        <div class="product-gallery" aria-label="Magic Pulse app screenshots">
+          <figure class="product-shot product-shot--lead reveal reveal-1">
+            <img src="assets/app-screens/live-waits.webp" width="600" height="1300" alt="Magic Pulse showing live Magic Kingdom ride wait times, crowd level, weather, and a best-move suggestion" decoding="async" />
+            <figcaption><strong>Know what is worth riding</strong><span>Live waits, trends, weather, and a useful next move in one view.</span></figcaption>
+          </figure>
+          <figure class="product-shot reveal reveal-2">
+            <img src="assets/app-screens/my-day.webp" width="600" height="1300" alt="Magic Pulse My Day planner with a date picker, auto-optimize control, and a planned attraction" loading="lazy" decoding="async" />
+            <figcaption><strong>Shape the day around you</strong><span>Plan rides, meals, and events, then optimize the order when conditions change.</span></figcaption>
+          </figure>
+          <figure class="product-shot reveal reveal-3">
+            <img src="assets/app-screens/lightning-lane.webp" width="600" height="1300" alt="Magic Pulse ride detail showing Lightning Lane price, wait forecast, and wait history for TRON Lightcycle Run" loading="lazy" decoding="async" />
+            <figcaption><strong>Judge the price with context</strong><span>Compare standby time, Lightning Lane price, forecasts, and today&apos;s history.</span></figcaption>
+          </figure>
+        </div>
+
+        <div class="capability-rail" aria-label="More Magic Pulse features">
+          <div><strong>Apple Watch</strong><span>See your selected park and top watchlist wait at a glance.</span></div>
+          <div><strong>Smart alerts</strong><span>Know when a watched ride drops, reopens, or needs your attention.</span></div>
+          <div><strong>Trip recap</strong><span>Review the waits and queue drops that shaped your visit.</span></div>
+          <div><strong>No account</strong><span>Use core planning tools without creating another login.</span></div>
         </div>
       </div>
     </section>
 
-    <div class="wave-sep" aria-hidden="true"><svg viewBox="0 0 1440 36" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><path d="M0,18 C360,0 720,36 1080,18 C1260,9 1380,27 1440,18 L1440,36 L0,36 Z" fill="rgba(158,89,255,0.06)"/></svg></div>
-
-    <section id="product" class="section">
+    <section id="parks" class="section coverage-section">
       <div class="container">
-        <p class="eyebrow">Product</p>
-        <h2>Purpose-built for in-park planning</h2>
-        <p class="section-copy">Six features do most of the heavy lifting. Park hours, weather, iCloud settings sync, widgets, Live Activity, and Siri are covered in the full comparison below.</p>
-        <div class="cards">
-          <article class="card">
-            <div class="card-icon" aria-hidden="true">
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-            </div>
-            <h3>Live wait times</h3>
-            <p>Real-time Disney ride wait times with sorting and filters tuned for quick decisions. Updated every few minutes.</p>
+        <div class="coverage-heading">
+          <div>
+            <p class="eyebrow">Park coverage</p>
+            <h2>One familiar view across four resorts</h2>
+          </div>
+          <p class="section-copy">Choose a park and keep the same waits, hours, weather, watchlist, and planning flow wherever the trip takes you.</p>
+        </div>
+
+        <dl class="coverage-metrics" aria-label="Magic Pulse coverage facts">
+          <div><dt>10</dt><dd>Disney parks</dd></div>
+          <div><dt>200+</dt><dd>tracked attractions</dd></div>
+          <div><dt>iPhone + Watch</dt><dd>connected at a glance</dd></div>
+          <div><dt>Free</dt><dd>to download on iOS</dd></div>
+        </dl>
+
+        <div class="resort-list" aria-label="Supported Disney resorts and parks">
+          <article>
+            <span>Florida</span>
+            <h3>Walt Disney World</h3>
+            <p>Magic Kingdom · EPCOT · Hollywood Studios · Animal Kingdom</p>
           </article>
-          <article class="card">
-            <div class="card-icon" aria-hidden="true">
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11H5a2 2 0 0 0-2 2v3a2 2 0 0 0 2 2h4"/><path d="M15 11h4a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2h-4"/><path d="M9 6V4a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2"/><line x1="12" y1="11" x2="12" y2="22"/></svg>
-            </div>
-            <h3>My Day planner</h3>
-            <p>Build a day plan with rides, events, meals, and custom items. Auto-optimize reorders for shortest total wait. With Pro, share it via iCloud so the whole party can stay in sync.</p>
+          <article>
+            <span>California</span>
+            <h3>Disneyland Resort</h3>
+            <p>Disneyland Park · Disney California Adventure</p>
           </article>
-          <article class="card">
-            <div class="card-icon" aria-hidden="true">
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9h6.5a2 2 0 0 1 1.4.6l2.6 2.6a2 2 0 0 0 1.4.6H22"/><path d="M2 15h6.5a2 2 0 0 1 1.4.6l2.6 2.6a2 2 0 0 0 1.4.6H22"/><circle cx="22" cy="9" r="1.5"/><circle cx="22" cy="18.8" r="1.5"/></svg>
-            </div>
-            <h3>Lightning Lane tracker</h3>
-            <p>Live posted Lightning Lane prices, a "Best Buy" recommendation that weighs standby wait against historical price patterns, and a per-ride price history so you know what's actually a deal.</p>
+          <article>
+            <span>Japan</span>
+            <h3>Tokyo Disney Resort</h3>
+            <p>Tokyo Disneyland · Tokyo DisneySea</p>
           </article>
-          <article class="card">
-            <div class="card-icon" aria-hidden="true">
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="2" width="12" height="20" rx="2" ry="2"/><circle cx="12" cy="12" r="3"/><line x1="12" y1="6" x2="12" y2="6.01"/><line x1="12" y1="18" x2="12" y2="18.01"/></svg>
-            </div>
-            <h3>Apple Watch glance</h3>
-            <p>Standalone watchOS app showing your park's crowd level, hours, and top watchlist ride wait at a glance — plus complications for supported faces. Auto-syncs from your iPhone in seconds.</p>
+          <article>
+            <span>France</span>
+            <h3>Disneyland Paris</h3>
+            <p>Disneyland Park · Disney Adventure World</p>
           </article>
-          <article class="card card-pro">
-            <div class="card-icon" aria-hidden="true">
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
-            </div>
-            <span class="pro-badge">Pro</span>
-            <h3>Smart alerts</h3>
-            <p>Drop alerts when a watchlist ride dips below your threshold, Lightning Lane price drops, park-opening reminders, day-plan reminders, and severe-weather safety notifications.</p>
-          </article>
-          <article class="card">
-            <div class="card-icon" aria-hidden="true">
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/><circle cx="12" cy="12" r="10"/></svg>
-            </div>
-            <h3>Trip recap</h3>
-            <p>After your visit: shortest wait you scored, biggest queue drop you caught, rides you marked, and how much time you saved over the optimizer's prediction. Shareable as a card.</p>
-          </article>
+        </div>
+
+        <div class="trust-line" aria-label="Magic Pulse trust information">
+          <p><strong>Clear sources</strong> Waits and hours from ThemeParks Wiki; weather from Apple Weather.</p>
+          <p><strong>Privacy first</strong> No Magic Pulse account is required for core planning.</p>
+          <p><strong>Direct support</strong> Questions and privacy requests go to one support form.</p>
         </div>
       </div>
     </section>
@@ -543,7 +411,7 @@
               <li>Weather context</li>
               <li>Core planning tools</li>
             </ul>
-            <a class="btn btn-ghost price-cta" href="https://apps.apple.com/us/app/magic-pulse/id6759612612" target="_blank" rel="noopener noreferrer">Start free</a>
+            <a class="btn btn-ghost price-cta" href="https://apps.apple.com/us/app/magic-pulse/id6759612612" target="_blank" rel="noopener noreferrer" data-event="app_store_click" data-event-context="pricing_free">Start free</a>
           </article>
           <article class="price featured">
             <span class="featured-badge">Most popular</span>
@@ -558,7 +426,7 @@
               <li>Shared day plans (iCloud)</li>
               <li>Siri &amp; Shortcuts</li>
             </ul>
-            <a class="btn btn-primary price-cta" href="https://apps.apple.com/us/app/magic-pulse/id6759612612" target="_blank" rel="noopener noreferrer">Get Pro</a>
+            <a class="btn btn-primary price-cta" href="https://apps.apple.com/us/app/magic-pulse/id6759612612" target="_blank" rel="noopener noreferrer" data-event="app_store_click" data-event-context="pricing_weekly">Get Pro</a>
           </article>
           <article class="price">
             <span class="featured-badge featured-badge--alt">Best value</span>
@@ -570,15 +438,16 @@
               <li>All future Pro updates</li>
               <li>No recurring charge</li>
             </ul>
-            <a class="btn btn-ghost price-cta" href="https://apps.apple.com/us/app/magic-pulse/id6759612612" target="_blank" rel="noopener noreferrer">Get lifetime</a>
+            <a class="btn btn-ghost price-cta" href="https://apps.apple.com/us/app/magic-pulse/id6759612612" target="_blank" rel="noopener noreferrer" data-event="app_store_click" data-event-context="pricing_lifetime">Get lifetime</a>
           </article>
         </div>
 
         <p class="pricing-legal">Prices shown are for the United States App Store and may vary by region or over time. Pro purchases are billed through your Apple ID.</p>
 
-        <div class="compare-table">
-          <p class="compare-table-label">Full feature comparison</p>
-          <table>
+        <details class="compare-disclosure">
+          <summary><span>Compare Free and Pro features</span><span aria-hidden="true">+</span></summary>
+          <div class="compare-table">
+            <table>
             <thead>
               <tr>
                 <th>Feature</th>
@@ -599,8 +468,9 @@
               <tr><td>Siri &amp; Shortcuts</td><td class="dash" data-label="Free" aria-label="Not included in Free">—</td><td class="check" data-label="Pro" aria-label="Included in Pro">✓</td></tr>
               <tr><td>All future Pro updates</td><td class="dash" data-label="Free" aria-label="Not included in Free">—</td><td class="check" data-label="Pro" aria-label="Included in Pro">✓</td></tr>
             </tbody>
-          </table>
-        </div>
+            </table>
+          </div>
+        </details>
       </div>
     </section>
 
@@ -617,7 +487,7 @@
         <dl class="compatibility-facts">
           <div>
             <dt>iPhone</dt>
-            <dd>iOS 18 or later</dd>
+            <dd>iOS 18.0 or later</dd>
           </div>
           <div>
             <dt>Apple Watch</dt>
@@ -629,7 +499,7 @@
           </div>
           <div>
             <dt>Download</dt>
-            <dd>About 73 MB <span>varies by version</span></dd>
+            <dd>72.7 MB <span>varies by version</span></dd>
           </div>
         </dl>
 
@@ -657,11 +527,40 @@
           </div>
         </div>
 
+        <section class="accessibility-panel" aria-labelledby="accessibility-heading">
+          <div>
+            <p class="eyebrow">Accessibility</p>
+            <h3 id="accessibility-heading">Built to follow your iPhone settings</h3>
+            <p>Magic Pulse includes support for common Apple accessibility settings throughout its core park and planning views.</p>
+          </div>
+          <ul>
+            <li><strong>VoiceOver</strong><span>Ride rows, tabs, charts, plans, and key actions include spoken labels and summaries.</span></li>
+            <li><strong>Dynamic Type</strong><span>Core text and symbols scale with your preferred content size.</span></li>
+            <li><strong>Reduce Motion</strong><span>Decorative motion and transitions are reduced when the system setting is on.</span></li>
+            <li><strong>More than color</strong><span>Key ride-detail states can add text and symbols when color alone is not enough.</span></li>
+          </ul>
+        </section>
+
         <p class="compatibility-note">An internet connection is needed for fresh waits. When service is spotty, Magic Pulse can show its last available cached snapshot. <a href="privacy.html">Read the Privacy Policy</a>.</p>
       </div>
     </section>
 
-    <div class="wave-sep" aria-hidden="true"><svg viewBox="0 0 1440 36" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><path d="M0,18 C360,0 720,36 1080,18 C1260,9 1380,27 1440,18 L1440,36 L0,36 Z" fill="rgba(158,89,255,0.07)"/></svg></div>
+    <section id="updates" class="section release-section release-section--compact">
+      <div class="container release-compact">
+        <div>
+          <p class="eyebrow">What's new</p>
+          <div class="release-meta">
+            <span>Version 1.8.2</span>
+            <time datetime="2026-06-28">June 28, 2026</time>
+          </div>
+          <h2>More dependable from the first tap</h2>
+        </div>
+        <div class="release-copy">
+          <p>The latest patch fixes an issue that prevented the app from opening for some users. Version 1.8 also brought cleaner park pages and stronger live refresh behavior.</p>
+          <a class="text-link" href="https://apps.apple.com/us/app/magic-pulse/id6759612612" target="_blank" rel="noopener noreferrer" data-event="app_store_click" data-event-context="release_notes">Read the App Store version history <span aria-hidden="true">↗</span></a>
+        </div>
+      </div>
+    </section>
 
     <section id="faq" class="section section-alt">
       <div class="container">
@@ -719,7 +618,7 @@
         <h2>Stop guessing. Start riding.</h2>
         <p class="section-copy">Use live Disney wait times and planning tools to make quicker park-day decisions. Free to download on iOS.</p>
         <div class="hero-actions">
-          <a class="btn btn-primary" href="https://apps.apple.com/us/app/magic-pulse/id6759612612" target="_blank" rel="noopener noreferrer">
+          <a class="btn btn-primary" href="https://apps.apple.com/us/app/magic-pulse/id6759612612" target="_blank" rel="noopener noreferrer" data-event="app_store_click" data-event-context="final_cta">
             <svg class="btn-icon" aria-hidden="true" width="17" height="17" viewBox="0 0 24 24" fill="currentColor"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
             Install Magic Pulse
           </a>
@@ -755,12 +654,12 @@
   </footer>
 
   <div class="mobile-cta-bar" id="mobile-cta-bar" aria-hidden="true">
-    <a class="btn btn-primary mobile-cta-btn" href="https://apps.apple.com/us/app/magic-pulse/id6759612612" target="_blank" rel="noopener noreferrer" tabindex="-1">
+    <a class="btn btn-primary mobile-cta-btn" href="https://apps.apple.com/us/app/magic-pulse/id6759612612" target="_blank" rel="noopener noreferrer" tabindex="-1" data-event="app_store_click" data-event-context="mobile_sticky">
       <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
       Get it free — App Store
     </a>
   </div>
 
-  <script src="script.js?v=20260713a" defer></script>
+  <script src="script.js?v=20260718a" defer></script>
 </body>
 </html>

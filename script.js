@@ -213,17 +213,55 @@
     update();
   }());
 
-  (function () {
-    var forms = document.querySelectorAll('[data-formspree-form]');
-    if (!forms.length) return;
+  var MAGICPULSE_SITE_API_BASE =
+    typeof window.MAGICPULSE_SITE_API_BASE === 'string'
+      ? window.MAGICPULSE_SITE_API_BASE.replace(/\/$/, '')
+      : 'https://api.magicpulse.app';
 
-    var ALLOWED_FORM_ENDPOINT = 'https://formspree.io/f/xjgeljqp';
+  (function () {
+    var allowedEvents = ['app_store_click', 'park_preview_change'];
+    var privacyOptOut =
+      window.navigator.doNotTrack === '1' || window.navigator.globalPrivacyControl === true;
+
+    function trackSiteEvent(eventName, context) {
+      if (privacyOptOut || allowedEvents.indexOf(eventName) === -1) return;
+      var safeContext = String(context || 'none').slice(0, 40);
+      fetch(MAGICPULSE_SITE_API_BASE + '/api/site/events', {
+        method: 'POST',
+        mode: 'cors',
+        credentials: 'omit',
+        keepalive: true,
+        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+        body: JSON.stringify({ event: eventName, context: safeContext })
+      }).catch(function () {
+        // Measurement must never interrupt navigation or the live preview.
+      });
+    }
+
+    window.magicPulseTrack = trackSiteEvent;
+    document.addEventListener('click', function (event) {
+      var target = event.target && event.target.closest
+        ? event.target.closest('[data-event]')
+        : null;
+      if (!target) return;
+      trackSiteEvent(target.getAttribute('data-event'), target.getAttribute('data-event-context'));
+    });
+  }());
+
+  (function () {
+    var forms = document.querySelectorAll('[data-site-form]');
+    if (!forms.length) return;
 
     Array.prototype.forEach.call(forms, function (form) {
       var status = form.querySelector('[data-form-status]') || form.querySelector('.form-status');
       var submit = form.querySelector('button[type="submit"]');
-      if (!status || !submit) return;
+      var kind = form.getAttribute('data-form-kind');
+      if (!status || !submit || (kind !== 'support' && kind !== 'android-waitlist')) return;
 
+      var expectedEndpoint = MAGICPULSE_SITE_API_BASE + '/api/site/forms/' + kind;
+      var challenge = null;
+      var challengeLoadedAt = 0;
+      var challengeRequest = null;
       var idleLabel = form.getAttribute('data-submit-label') || submit.textContent.trim();
       var sendingLabel = form.getAttribute('data-submitting-label') || 'Sending...';
       var successMessage =
@@ -232,6 +270,7 @@
       var errorMessage =
         form.getAttribute('data-error-message') ||
         'Unable to send right now. Please try again in a moment or use a different network.';
+      var cooldownKey = 'magicpulse.formSent.' + kind;
 
       var requestedTopic = new URLSearchParams(window.location.search).get('topic');
       var topicSelect = form.querySelector('#topic');
@@ -245,14 +284,67 @@
         topicSelect.value = requestedTopic;
       }
 
+      function fieldValue(name) {
+        var field = form.elements.namedItem(name);
+        return field && typeof field.value === 'string' ? field.value.trim() : '';
+      }
+
       function formEndpointIsAllowed() {
         try {
-          var endpoint = new URL(form.action, window.location.href);
-          return endpoint.href === ALLOWED_FORM_ENDPOINT;
+          return new URL(form.action, window.location.href).href === expectedEndpoint;
         } catch (_err) {
           return false;
         }
       }
+
+      function loadChallenge(force) {
+        if (!force && challenge && Date.now() - challengeLoadedAt < 90 * 60 * 1000) {
+          return Promise.resolve(challenge);
+        }
+        if (challengeRequest) return challengeRequest;
+        challengeRequest = fetch(MAGICPULSE_SITE_API_BASE + '/api/site/form-token', {
+          method: 'GET',
+          mode: 'cors',
+          credentials: 'omit',
+          cache: 'no-store',
+          headers: { Accept: 'application/json' }
+        })
+          .then(function (res) {
+            if (!res.ok) throw new Error('challenge');
+            return res.json();
+          })
+          .then(function (body) {
+            if (!body || typeof body.challenge !== 'string') throw new Error('challenge');
+            challenge = body.challenge;
+            challengeLoadedAt = Date.now();
+            return challenge;
+          })
+          .finally(function () {
+            challengeRequest = null;
+          });
+        return challengeRequest;
+      }
+
+      function recentSuccessfulSubmit() {
+        try {
+          var sentAt = Number(window.localStorage.getItem(cooldownKey));
+          return Number.isFinite(sentAt) && Date.now() - sentAt < 30 * 1000;
+        } catch (_err) {
+          return false;
+        }
+      }
+
+      function rememberSuccessfulSubmit() {
+        try {
+          window.localStorage.setItem(cooldownKey, String(Date.now()));
+        } catch (_err) {
+          // Server-side limits still protect the endpoint when storage is blocked.
+        }
+      }
+
+      loadChallenge(false).catch(function () {
+        // A fresh attempt is made when the visitor submits.
+      });
 
       form.addEventListener('submit', function (event) {
         event.preventDefault();
@@ -270,19 +362,63 @@
           return;
         }
 
-        fetch(ALLOWED_FORM_ENDPOINT, {
-          method: 'POST',
-          body: new FormData(form),
-          headers: { Accept: 'application/json' }
-        })
+        if (recentSuccessfulSubmit()) {
+          status.textContent = 'That was already sent. Please wait a moment before sending another.';
+          status.className = 'form-status form-status--error';
+          status.hidden = false;
+          submit.disabled = false;
+          submit.textContent = idleLabel;
+          return;
+        }
+
+        loadChallenge(false)
+          .then(function (formChallenge) {
+            var elapsed = Date.now() - challengeLoadedAt;
+            var waitMs = Math.max(0, 3200 - elapsed);
+            return new Promise(function (resolve) {
+              window.setTimeout(function () { resolve(formChallenge); }, waitMs);
+            });
+          })
+          .then(function (formChallenge) {
+            var payload = {
+              challenge: formChallenge,
+              honeypot: fieldValue('_gotcha'),
+              email: fieldValue('email')
+            };
+            if (kind === 'support') {
+              payload.name = fieldValue('name');
+              payload.topic = fieldValue('topic');
+              payload.message = fieldValue('message');
+            }
+            return fetch(expectedEndpoint, {
+              method: 'POST',
+              mode: 'cors',
+              credentials: 'omit',
+              headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+              body: JSON.stringify(payload)
+            });
+          })
           .then(function (res) {
-            if (!res.ok) throw new Error('failed');
+            if (res.ok) return null;
+            return res.json().catch(function () { return null; }).then(function (body) {
+              var message = body && typeof body.error === 'string' ? body.error : errorMessage;
+              var failure = new Error(message);
+              failure.status = res.status;
+              throw failure;
+            });
+          })
+          .then(function () {
+            rememberSuccessfulSubmit();
             status.textContent = successMessage;
             status.className = 'form-status form-status--success';
             form.reset();
+            challenge = null;
+            loadChallenge(true).catch(function () {});
           })
-          .catch(function () {
-            status.textContent = errorMessage;
+          .catch(function (err) {
+            status.textContent = err && err.status === 429
+              ? 'Too many attempts from this network. Please wait a few minutes and try again.'
+              : (err && err.message && err.message !== 'challenge' ? err.message : errorMessage);
             status.className = 'form-status form-status--error';
           })
           .finally(function () {
@@ -504,6 +640,9 @@
       if (Number.isNaN(nextParkId) || !parkMetaById(nextParkId)) return;
       activeLiveParkId = nextParkId;
       saveLiveParkId(nextParkId);
+      if (typeof window.magicPulseTrack === 'function') {
+        window.magicPulseTrack('park_preview_change', String(nextParkId));
+      }
       syncLiveParkControls(nextParkId);
       prepareLiveParkLoad(nextParkId);
       loadLiveWaits({ refresh: false, parkId: nextParkId, useFeatured: false });

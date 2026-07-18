@@ -21,7 +21,7 @@ Good if you want a dedicated repo for the website (e.g. `magicpulse-website`).
    ```bash
    cd /path/to/magicpulse-website
    git init
-   git add .   # includes 404.html, app-ads.txt, og-image.jpg, _headers, fonts/, apple-touch-icon.png
+   git add .   # includes 404.html, app-ads.txt, og-image.png, _headers, fonts/, apple-touch-icon.png
    git commit -m "Add MagicPulse landing page"
    git branch -M main
    git remote add origin https://github.com/YOUR_USERNAME/magicpulse-website.git

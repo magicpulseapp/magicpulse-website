@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; object-src 'none'; script-src 'self' 'sha256-hrbBQu3Z8Jig20Rq6LT1tyYWDOFK9eb72KYVar55QWs=' 'sha256-J1HhyhqsC5o/SYw8rim4BLjsC57xpdkUS7SedWoLdOE='; style-src 'self'; img-src 'self' https://www.magicpulse.app data:; font-src 'self'; connect-src 'self' https://api.magicpulse.app https://api.themeparks.wiki https://formspree.io; form-action https://formspree.io; frame-src 'none'; worker-src 'self'; media-src 'self'; upgrade-insecure-requests" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; object-src 'none'; script-src 'self' 'sha256-me/ZuRgI+viyzOypJV0yzNaTUFqb+A/3+aThGGToDKc=' 'sha256-J1HhyhqsC5o/SYw8rim4BLjsC57xpdkUS7SedWoLdOE='; style-src 'self'; img-src 'self' https://www.magicpulse.app data:; font-src 'self'; connect-src 'self' https://api.magicpulse.app https://api.themeparks.wiki; form-action https://api.magicpulse.app; frame-src 'none'; worker-src 'self'; media-src 'self'; upgrade-insecure-requests" />
   <meta name="referrer" content="strict-origin-when-cross-origin" />
   <meta name="description" content="Magic Pulse privacy policy — how we handle data in the app and on this site." />
   <meta name="theme-color" content="#0c0820" />
@@ -17,19 +17,20 @@
   <meta property="og:description" content="How Magic Pulse handles data in the iOS app and on this website." />
   <meta property="og:url" content="https://www.magicpulse.app/privacy.html" />
   <meta property="og:locale" content="en_US" />
-  <meta property="og:image" content="https://www.magicpulse.app/og-image.jpg" />
+  <meta property="og:image" content="https://www.magicpulse.app/og-image.png" />
   <meta property="og:image:width" content="1200" />
   <meta property="og:image:height" content="630" />
-  <meta property="og:image:type" content="image/jpeg" />
-  <meta property="og:image:alt" content="Magic Pulse" />
+  <meta property="og:image:type" content="image/png" />
+  <meta property="og:image:alt" content="Magic Pulse app showing live waits, day planning, and Lightning Lane details" />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="Privacy Policy | Magic Pulse" />
   <meta name="twitter:description" content="How Magic Pulse handles data in the iOS app and on this website." />
-  <meta name="twitter:image" content="https://www.magicpulse.app/og-image.jpg" />
+  <meta name="twitter:image" content="https://www.magicpulse.app/og-image.png" />
+  <meta name="twitter:image:alt" content="Magic Pulse app showing live waits, day planning, and Lightning Lane details" />
 
   <link rel="preload" href="fonts/inter-400-latin.woff2" as="font" type="font/woff2" crossorigin="anonymous" />
   <link rel="preload" href="fonts/outfit-700-latin.woff2" as="font" type="font/woff2" crossorigin="anonymous" />
-  <link rel="stylesheet" href="styles.css?v=20260713a" />
+  <link rel="stylesheet" href="styles.css?v=20260718a" />
 </head>
 <body>
   <a class="skip-link" href="#main-content">Skip to main content</a>
@@ -60,9 +61,9 @@
           <h1>Privacy Policy</h1>
           <p class="section-copy">A plain-language look at what Magic Pulse uses, what stays on your device, and which services help power live park planning.</p>
           <div class="privacy-meta" aria-label="Privacy policy summary">
-            <span class="privacy-pill"><strong>Updated</strong> Jul 13, 2026</span>
+            <span class="privacy-pill"><strong>Updated</strong> Jul 18, 2026</span>
             <span class="privacy-pill"><strong>No account</strong> required</span>
-            <span class="privacy-pill"><strong>Pro</strong> removes ads</span>
+            <span class="privacy-pill"><strong>No cookies</strong> on this site</span>
           </div>
         </div>
 
@@ -136,7 +137,9 @@
 
           <section id="website" class="privacy-section">
             <h2>This website</h2>
-            <p class="section-copy">The marketing site may load a <strong>read-only</strong> live snapshot from our API or from ThemeParks Wiki; no account is required. Fonts are self-hosted — the site makes no requests to Google Fonts. The <a href="support.html">support form</a> and <a href="android.html">Android waitlist</a> are processed by our form provider (<strong>Formspree</strong>) when you submit them; only the fields you enter and the form’s purpose labels are sent. Android waitlist emails are used only for meaningful Android testing or availability updates.</p>
+            <p class="section-copy">The marketing site may load a <strong>read-only</strong> live snapshot from our API or ThemeParks Wiki; no account is required. Fonts are self-hosted, and the site does not use advertising cookies or cross-site trackers.</p>
+            <p class="section-copy"><strong>Anonymous measurement:</strong> The site can count App Store button clicks, park-preview changes, and completed Android waitlist signups. It sends only an allowlisted event name and a short context such as the button location or selected park. The API stores these as daily totals, without a visitor ID, device ID, cookie, email, or IP address in the measurement table. Browser Do Not Track and Global Privacy Control signals disable these client-side events. Aggregate counters are automatically removed after 18 months.</p>
+            <p class="section-copy"><strong>Forms:</strong> The <a href="support.html">support form</a> and <a href="android.html">Android waitlist</a> first pass through the Magic Pulse API for field validation, a signed form challenge, and rate limiting. The relay keeps a network-based rate-limit bucket briefly in memory and does not add it to the submission. Accepted fields are then sent to <strong>Formspree</strong> for delivery; Magic Pulse does not write form contents to its website database. Android waitlist emails are used only for meaningful Android testing or availability updates.</p>
           </section>
 
           <section id="children" class="privacy-section">
@@ -156,7 +159,7 @@
 
           <section id="retention" class="privacy-section">
             <h2>Retention</h2>
-            <p class="section-copy">Server-side wait samples and snapshots are kept only as long as needed to operate the service and improve reliability, including automatic pruning of old history. Support emails or form submissions are retained only as needed to respond and meet legal obligations. Android waitlist addresses are retained until the list’s purpose ends or you ask us to remove your address.</p>
+            <p class="section-copy">Server-side wait samples and snapshots are kept only as long as needed to operate the service and improve reliability, including automatic pruning of old history. Anonymous website event totals are kept for up to 18 months. Support emails or form submissions are retained only as needed to respond and meet legal obligations. Android waitlist addresses are retained until the list’s purpose ends or you ask us to remove your address.</p>
           </section>
 
           <section id="updates" class="privacy-section">
@@ -196,6 +199,6 @@
     </div>
   </footer>
 
-  <script src="script.js?v=20260713a" defer></script>
+  <script src="script.js?v=20260718a" defer></script>
 </body>
 </html>

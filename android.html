@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; object-src 'none'; script-src 'self' 'sha256-hrbBQu3Z8Jig20Rq6LT1tyYWDOFK9eb72KYVar55QWs=' 'sha256-J1HhyhqsC5o/SYw8rim4BLjsC57xpdkUS7SedWoLdOE='; style-src 'self'; img-src 'self' https://www.magicpulse.app data:; font-src 'self'; connect-src 'self' https://api.magicpulse.app https://api.themeparks.wiki https://formspree.io; form-action https://formspree.io; frame-src 'none'; worker-src 'self'; media-src 'self'; upgrade-insecure-requests" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; object-src 'none'; script-src 'self' 'sha256-me/ZuRgI+viyzOypJV0yzNaTUFqb+A/3+aThGGToDKc=' 'sha256-J1HhyhqsC5o/SYw8rim4BLjsC57xpdkUS7SedWoLdOE='; style-src 'self'; img-src 'self' https://www.magicpulse.app data:; font-src 'self'; connect-src 'self' https://api.magicpulse.app https://api.themeparks.wiki; form-action https://api.magicpulse.app; frame-src 'none'; worker-src 'self'; media-src 'self'; upgrade-insecure-requests" />
   <meta name="referrer" content="strict-origin-when-cross-origin" />
   <meta name="description" content="Join the Magic Pulse Android waitlist with your email and receive meaningful Android availability updates." />
   <meta name="theme-color" content="#0c0820" />
@@ -17,19 +17,20 @@
   <meta property="og:description" content="Join the Magic Pulse Android waitlist with one email field." />
   <meta property="og:url" content="https://www.magicpulse.app/android.html" />
   <meta property="og:locale" content="en_US" />
-  <meta property="og:image" content="https://www.magicpulse.app/og-image.jpg" />
+  <meta property="og:image" content="https://www.magicpulse.app/og-image.png" />
   <meta property="og:image:width" content="1200" />
   <meta property="og:image:height" content="630" />
-  <meta property="og:image:type" content="image/jpeg" />
-  <meta property="og:image:alt" content="Magic Pulse" />
+  <meta property="og:image:type" content="image/png" />
+  <meta property="og:image:alt" content="Magic Pulse app showing live waits, day planning, and Lightning Lane details" />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="Android Waitlist | Magic Pulse" />
   <meta name="twitter:description" content="Join the Magic Pulse Android waitlist with one email field." />
-  <meta name="twitter:image" content="https://www.magicpulse.app/og-image.jpg" />
+  <meta name="twitter:image" content="https://www.magicpulse.app/og-image.png" />
+  <meta name="twitter:image:alt" content="Magic Pulse app showing live waits, day planning, and Lightning Lane details" />
 
   <link rel="preload" href="fonts/inter-400-latin.woff2" as="font" type="font/woff2" crossorigin="anonymous" />
   <link rel="preload" href="fonts/outfit-700-latin.woff2" as="font" type="font/woff2" crossorigin="anonymous" />
-  <link rel="stylesheet" href="styles.css?v=20260713a" />
+  <link rel="stylesheet" href="styles.css?v=20260718a" />
 </head>
 <body>
   <a class="skip-link" href="#main-content">Skip to main content</a>
@@ -75,9 +76,10 @@
 
           <form
             id="android-waitlist-form"
-            action="https://formspree.io/f/xjgeljqp"
+            action="https://api.magicpulse.app/api/site/forms/android-waitlist"
             method="POST"
-            data-formspree-form
+            data-site-form
+            data-form-kind="android-waitlist"
             data-submit-label="Join Android waitlist"
             data-submitting-label="Joining..."
             data-success-message="You're on the Android waitlist. We'll email you when there is a meaningful availability update."
@@ -86,11 +88,11 @@
             <input type="hidden" name="_subject" value="Magic Pulse Android Waitlist" />
             <input type="hidden" name="form_type" value="android_waitlist" />
             <input type="hidden" name="platform" value="Android" />
-            <input class="form-honeypot" type="text" name="_gotcha" tabindex="-1" autocomplete="off" aria-hidden="true" />
+            <input class="form-honeypot" type="text" name="_gotcha" maxlength="200" tabindex="-1" autocomplete="off" aria-hidden="true" />
 
             <div class="form-group">
               <label class="form-label" for="android-email">Email</label>
-              <input class="form-input" id="android-email" name="email" type="email" placeholder="you@example.com" required autocomplete="email" autocapitalize="none" spellcheck="false" />
+              <input class="form-input" id="android-email" name="email" type="email" placeholder="you@example.com" required maxlength="254" autocomplete="email" autocapitalize="none" spellcheck="false" />
             </div>
 
             <div id="android-form-status" class="form-status" data-form-status hidden aria-live="polite"></div>
@@ -149,6 +151,6 @@
     </div>
   </footer>
 
-  <script src="script.js?v=20260713a" defer></script>
+  <script src="script.js?v=20260718a" defer></script>
 </body>
 </html>
