@@ -891,6 +891,74 @@ body.nav-open .nav-overlay {
   margin-top: 0.75rem;
 }
 
+@media (min-width: 1041px) {
+  .hero {
+    padding: 0.9rem 0 1.1rem;
+  }
+
+  .hero-panel {
+    padding: 0.75rem;
+  }
+
+  .panel-head {
+    margin-bottom: 0.55rem;
+  }
+
+  .live-park-picker select {
+    min-height: 36px;
+  }
+
+  .panel-sub {
+    margin-top: 0.42rem;
+  }
+
+  .live-waits-divider {
+    margin: 0.5rem 0;
+  }
+
+  .live-waits {
+    min-height: 217px;
+  }
+
+  .waits-rows,
+  .waits-loading {
+    gap: 0.35rem;
+  }
+
+  .waits-loading span,
+  .waits-row,
+  .waits-row.is-hero {
+    min-height: 50px;
+  }
+
+  .waits-row,
+  .waits-row.is-hero {
+    padding: 0.34rem 0.5rem;
+  }
+
+  .waits-row .value {
+    min-height: 32px;
+  }
+
+  .hero-panel-insights {
+    margin-top: 0.55rem;
+  }
+
+  .hero-panel-insights > div {
+    padding-block: 0.5rem;
+  }
+
+  .live-open-app {
+    min-height: 38px;
+    margin-top: 0.5rem;
+    padding-block: 0.45rem;
+  }
+
+  .hero-panel .brand-footer {
+    margin-top: 0.5rem;
+  }
+}
+
 .brand-footer-wordmark {
   display: inline-flex;
   align-items: center;
