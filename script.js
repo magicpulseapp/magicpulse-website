@@ -597,6 +597,9 @@
     var overall = root.querySelector('[data-status-overall]');
     var checked = root.querySelector('[data-status-checked]');
     var refresh = root.querySelector('[data-status-refresh]');
+    var historyState = root.querySelector('[data-status-history-state]');
+    var historyList = root.querySelector('[data-status-history-list]');
+    var historyStarted = root.querySelector('[data-status-history-started]');
     var statusRequest = null;
 
     function statusLabel(state) {
@@ -604,6 +607,160 @@
       if (state === 'degraded') return 'Delayed';
       if (state === 'unavailable') return 'Unavailable';
       return 'Unknown';
+    }
+
+    function historyDate(value) {
+      if (typeof value !== 'string' || !value) return null;
+      var dateOnly = /^(\d{4})-(\d{2})-(\d{2})$/.exec(value);
+      if (dateOnly) {
+        return new Date(Number(dateOnly[1]), Number(dateOnly[2]) - 1, Number(dateOnly[3]));
+      }
+      var date = new Date(value);
+      return Number.isFinite(date.getTime()) ? date : null;
+    }
+
+    function formatHistoryDate(value, includeTime) {
+      var date = historyDate(value);
+      if (!date) return 'Date unavailable';
+      return date.toLocaleString(undefined, includeTime
+        ? { dateStyle: 'medium', timeStyle: 'short' }
+        : { dateStyle: 'medium' });
+    }
+
+    function historyStatusLabel(status) {
+      if (status === 'investigating') return 'Investigating';
+      if (status === 'monitoring') return 'Monitoring';
+      if (status === 'resolved') return 'Resolved';
+      if (status === 'completed') return 'Completed';
+      return 'Update';
+    }
+
+    function historyStatusState(status) {
+      if (status === 'investigating') return 'unavailable';
+      if (status === 'monitoring') return 'degraded';
+      if (status === 'resolved' || status === 'completed') return 'operational';
+      return 'unknown';
+    }
+
+    function historyKindLabel(kind) {
+      if (kind === 'incident') return 'Incident';
+      if (kind === 'maintenance') return 'Maintenance';
+      return 'Notice';
+    }
+
+    function renderStatusHistory(payload) {
+      if (!historyState || !historyList) return;
+      var startedAt = payload && typeof payload.historyStartedAt === 'string'
+        ? payload.historyStartedAt
+        : '';
+      var startedDate = historyDate(startedAt);
+      if (historyStarted && startedDate) {
+        historyStarted.setAttribute('datetime', startedAt);
+        historyStarted.textContent = formatHistoryDate(startedAt, false);
+      }
+
+      var entries = payload && Array.isArray(payload.entries)
+        ? payload.entries.filter(function (entry) {
+            return entry && typeof entry.title === 'string' && historyDate(entry.startedAt);
+          })
+        : [];
+      entries.sort(function (a, b) {
+        return historyDate(b.startedAt).getTime() - historyDate(a.startedAt).getTime();
+      });
+
+      historyList.textContent = '';
+      if (!entries.length) {
+        historyList.hidden = true;
+        historyState.hidden = false;
+        historyState.textContent = 'No confirmed incidents or maintenance notices have been posted in this record.';
+        return;
+      }
+
+      entries.forEach(function (entry) {
+        var item = document.createElement('li');
+        item.className = 'status-history-entry';
+        item.setAttribute('data-state', historyStatusState(entry.status));
+
+        var dateBlock = document.createElement('div');
+        dateBlock.className = 'status-history-date';
+        var date = document.createElement('time');
+        date.dateTime = entry.startedAt;
+        date.textContent = formatHistoryDate(entry.startedAt, entry.startedAt.indexOf('T') !== -1);
+        var kind = document.createElement('span');
+        kind.textContent = historyKindLabel(entry.kind);
+        dateBlock.appendChild(date);
+        dateBlock.appendChild(kind);
+
+        var main = document.createElement('div');
+        main.className = 'status-history-entry-main';
+        var title = document.createElement('h3');
+        title.textContent = entry.title;
+        var service = document.createElement('p');
+        service.className = 'status-history-service';
+        service.textContent = typeof entry.service === 'string' && entry.service
+          ? entry.service
+          : 'Magic Pulse';
+        var summary = document.createElement('p');
+        summary.textContent = typeof entry.summary === 'string' ? entry.summary : '';
+        main.appendChild(title);
+        main.appendChild(service);
+        if (summary.textContent) main.appendChild(summary);
+
+        if (Array.isArray(entry.updates) && entry.updates.length) {
+          var updates = document.createElement('div');
+          updates.className = 'status-history-updates';
+          entry.updates.forEach(function (update) {
+            if (!update || typeof update.message !== 'string') return;
+            var updateLine = document.createElement('p');
+            if (historyDate(update.at)) {
+              var updateTime = document.createElement('time');
+              updateTime.dateTime = update.at;
+              updateTime.textContent = formatHistoryDate(update.at, true);
+              updateLine.appendChild(updateTime);
+            }
+            var updateMessage = document.createElement('span');
+            updateMessage.textContent = update.message;
+            updateLine.appendChild(updateMessage);
+            updates.appendChild(updateLine);
+          });
+          if (updates.childNodes.length) main.appendChild(updates);
+        }
+
+        var result = document.createElement('strong');
+        result.className = 'status-history-result';
+        var indicator = document.createElement('span');
+        indicator.className = 'status-indicator';
+        indicator.setAttribute('aria-hidden', 'true');
+        result.appendChild(indicator);
+        result.appendChild(document.createTextNode(historyStatusLabel(entry.status)));
+
+        item.appendChild(dateBlock);
+        item.appendChild(main);
+        item.appendChild(result);
+        historyList.appendChild(item);
+      });
+
+      historyState.hidden = true;
+      historyList.hidden = false;
+    }
+
+    function loadStatusHistory() {
+      if (!historyState || !historyList) return Promise.resolve();
+      return fetch('status-history.json', {
+        cache: 'no-store',
+        credentials: 'same-origin',
+        headers: { Accept: 'application/json' }
+      })
+        .then(function (res) {
+          if (!res.ok) throw new Error('history');
+          return res.json();
+        })
+        .then(renderStatusHistory)
+        .catch(function () {
+          historyList.hidden = true;
+          historyState.hidden = false;
+          historyState.textContent = 'Incident history is temporarily unavailable. Current service checks above are unaffected.';
+        });
     }
 
     function ingestionLooksDelayed(ingestion) {
@@ -724,6 +881,7 @@
 
     if (refresh) refresh.addEventListener('click', loadStatus);
     loadStatus();
+    loadStatusHistory();
   }());
 
   (function () {

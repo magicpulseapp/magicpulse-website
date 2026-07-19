@@ -34,10 +34,34 @@ for (const field of ["app_version", "device_model", "os_version", "park", "steps
   assert.match(support, new RegExp(`name="${field}"`), `Support: missing optional field ${field}`);
 }
 assert.match(support, /data-support-diagnostics/, "Support: technical details disclosure is required");
+assert.match(support, /<option value="accessibility">Accessibility<\/option>/, "Support: accessibility topic is required");
+
+const accessibility = await readFile(path.join(root, "accessibility.html"), "utf8");
+for (const feature of ["VoiceOver", "Dynamic Type", "Reduce Motion", "More than color"]) {
+  assert.match(accessibility, new RegExp(feature), `Accessibility: missing ${feature}`);
+}
+assert.match(accessibility, /support\.html\?topic=accessibility/, "Accessibility: dedicated support route is required");
+assert.equal((accessibility.match(/class="accessibility-feature-row"/g) || []).length, 4, "Accessibility: four verified support rows are required");
 
 const status = await readFile(path.join(root, "status.html"), "utf8");
 assert.match(status, /data-status-page/, "Status: status controller hook is required");
 assert.equal((status.match(/data-status-service=/g) || []).length, 3, "Status: three service checks are required");
+assert.match(status, /data-status-history-list/, "Status: incident history list is required");
+assert.match(status, /data-status-history-state/, "Status: incident history state is required");
+
+const statusHistory = JSON.parse(await readFile(path.join(root, "status-history.json"), "utf8"));
+assert.match(statusHistory.historyStartedAt, /^\d{4}-\d{2}-\d{2}$/, "Status history: valid start date is required");
+assert.ok(Array.isArray(statusHistory.entries), "Status history: entries must be an array");
+const historyIds = new Set();
+for (const entry of statusHistory.entries) {
+  assert.equal(typeof entry.id, "string", "Status history: every entry needs an id");
+  assert.ok(!historyIds.has(entry.id), `Status history: duplicate id ${entry.id}`);
+  historyIds.add(entry.id);
+  assert.ok(["incident", "maintenance", "notice"].includes(entry.kind), `Status history: unsupported kind ${entry.kind}`);
+  assert.ok(["investigating", "monitoring", "resolved", "completed"].includes(entry.status), `Status history: unsupported status ${entry.status}`);
+  assert.equal(typeof entry.title, "string", "Status history: every entry needs a title");
+  assert.ok(Number.isFinite(Date.parse(entry.startedAt)), `Status history: invalid date for ${entry.id}`);
+}
 
 const insights = await readFile(path.join(root, "insights.html"), "utf8");
 assert.match(insights, /noindex, nofollow, noarchive/, "Insights: private report must be noindex");
@@ -51,10 +75,10 @@ for (const page of publicPages) {
 
 const css = await readFile(path.join(root, "styles.css"), "utf8");
 const cssLines = css.split(/\r?\n/).length;
-assert.ok(cssLines < 3200, `CSS: expected consolidated stylesheet, found ${cssLines} lines`);
+assert.ok(cssLines < 3600, `CSS: expected consolidated stylesheet, found ${cssLines} lines`);
 assert.equal((css.match(/{/g) || []).length, (css.match(/}/g) || []).length, "CSS: unbalanced braces");
 assert.doesNotMatch(css, /letter-spacing:\s*-/, "CSS: negative letter spacing is not allowed");
-for (const selector of [".gallery-controls", ".ride-trend", ".connection-banner", ".status-service", ".insights-panel"]) {
+for (const selector of [".gallery-controls", ".ride-trend", ".connection-banner", ".status-service", ".status-history-entry", ".accessibility-feature-row", ".insights-panel"]) {
   assert.ok(css.includes(selector), `CSS: missing ${selector}`);
 }
 

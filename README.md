@@ -8,7 +8,8 @@ Static landing page for the **Magic Pulse** iOS app (`www.magicpulse.app`). The 
 |------|---------|
 | `index.html` | Home: selectable live park preview, product gallery, compatibility, pricing, and FAQ |
 | `live-waits.html` / `day-planner.html` / `lightning-lane.html` | Search-friendly product guides backed by real app screenshots |
-| `status.html` | Current website, API, and live-data availability checks |
+| `status.html` / `status-history.json` | Current availability checks and the dated public incident record |
+| `accessibility.html` | Current app accessibility support, scope, and issue-reporting route |
 | `insights.html` | Private, authenticated aggregate website report (`noindex`) |
 | `styles.css` | Consolidated responsive design system and page styles |
 | `script.js` | Navigation, galleries, forms, status, aggregate insights, resilient live waits, and offline state |
@@ -106,6 +107,7 @@ Use the **custom domain** URLs in [App Store Connect](https://appstoreconnect.ap
 |--------|-----|
 | Privacy Policy URL | `https://www.magicpulse.app/privacy.html` |
 | Support URL | `https://www.magicpulse.app/support.html` |
+| Accessibility URL | `https://www.magicpulse.app/accessibility.html` |
 
 Must match the iOS target’s **`PrivacyPolicyURL`** in `Info.plist` (see Magic Pulse Xcode project).
 

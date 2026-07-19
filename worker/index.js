@@ -18,6 +18,7 @@ const CONTENT_SECURITY_POLICY = [
 const PAGE_ROUTES = new Map([
   ["/", "index.page"],
   ["/index.html", "index.page"],
+  ["/accessibility.html", "accessibility.page"],
   ["/android.html", "android.page"],
   ["/day-planner.html", "day-planner.page"],
   ["/insights.html", "insights.page"],
@@ -38,6 +39,7 @@ const SUPPORT_TOPICS = new Set([
   "android",
   "billing",
   "privacy",
+  "accessibility",
   "other",
 ]);
 const SITE_EVENTS = new Set([
@@ -419,6 +421,7 @@ function cachePolicy(url, response, isPage) {
   if (isPage) return "public, max-age=0, must-revalidate";
   const type = response.headers.get("content-type") ?? "";
   if (type.includes("text/html")) return "public, max-age=0, must-revalidate";
+  if (url.pathname === "/status-history.json") return "public, max-age=60, must-revalidate";
   if (/\.(?:woff2?|ttf)$/i.test(url.pathname)) return "public, max-age=31536000, immutable";
   if (/\.(?:css|js)$/i.test(url.pathname) && url.searchParams.has("v")) {
     return "public, max-age=31536000, immutable";

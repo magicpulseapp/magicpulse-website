@@ -1,0 +1,15 @@
+{
+  "historyStartedAt": "2026-07-18",
+  "entries": [
+    {
+      "id": "public-status-history-started",
+      "kind": "notice",
+      "status": "completed",
+      "service": "Status page",
+      "title": "Public status history started",
+      "summary": "Magic Pulse began publishing confirmed incidents and planned maintenance notices here. This entry marks the start of the record and does not make a claim about earlier uptime.",
+      "startedAt": "2026-07-18",
+      "updates": []
+    }
+  ]
+}

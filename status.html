@@ -29,7 +29,7 @@
   <meta name="twitter:image:alt" content="Magic Pulse app showing live waits, day planning, and Lightning Lane details" />
   <link rel="preload" href="fonts/inter-400-latin.woff2" as="font" type="font/woff2" crossorigin="anonymous" />
   <link rel="preload" href="fonts/outfit-700-latin.woff2" as="font" type="font/woff2" crossorigin="anonymous" />
-  <link rel="stylesheet" href="styles.css?v=20260718c" />
+  <link rel="stylesheet" href="styles.css?v=20260718d" />
 </head>
 <body>
   <a class="skip-link" href="#main-content">Skip to main content</a>
@@ -67,10 +67,25 @@
       </div>
     </section>
 
+    <section class="status-history" aria-labelledby="status-history-heading">
+      <div class="container">
+        <div class="status-history-heading">
+          <div>
+            <p class="eyebrow">Service record</p>
+            <h2 id="status-history-heading">Incident history</h2>
+          </div>
+          <p>Confirmed incidents and planned maintenance notices are listed from <time data-status-history-started datetime="2026-07-18">July 18, 2026</time> onward.</p>
+        </div>
+        <p class="status-history-state" data-status-history-state aria-live="polite">Loading service history...</p>
+        <ol class="status-history-list" data-status-history-list hidden></ol>
+        <noscript><p class="status-history-state">Turn on JavaScript to load the public service record.</p></noscript>
+      </div>
+    </section>
+
     <section class="status-help"><div class="container"><div><p class="eyebrow">Still having trouble?</p><h2>Send the exact feature and park</h2><p>Service checks can be healthy while one device or one park still has a problem. The support form now accepts app version, device, OS, park, and reproduction steps.</p></div><a class="btn btn-primary" href="support.html?topic=bug">Report an issue</a></div></section>
   </main>
 
-  <footer class="site-footer"><div class="container footer-grid"><div class="brand-footer"><span class="brand-footer-wordmark"><img class="brand-mark" src="favicon.svg" width="28" height="28" alt="" />Magic Pulse <span class="sep">·</span> <a class="url" href="https://www.magicpulse.app/">magicpulse.app</a></span></div><p><a href="privacy.html">Privacy Policy</a> · <a href="support.html">Support</a> · <a href="status.html">Status</a> · <a href="android.html">Android waitlist</a></p><p class="footer-disclaimer">Magic Pulse is not affiliated with theme park operators. Trademarks belong to their respective owners.</p></div></footer>
-  <script src="script.js?v=20260718c" defer></script>
+  <footer class="site-footer"><div class="container footer-grid"><div class="brand-footer"><span class="brand-footer-wordmark"><img class="brand-mark" src="favicon.svg" width="28" height="28" alt="" />Magic Pulse <span class="sep">·</span> <a class="url" href="https://www.magicpulse.app/">magicpulse.app</a></span></div><p><a href="privacy.html">Privacy Policy</a> · <a href="accessibility.html">Accessibility</a> · <a href="support.html">Support</a> · <a href="status.html">Status</a> · <a href="android.html">Android waitlist</a></p><p class="footer-disclaimer">Magic Pulse is not affiliated with theme park operators. Trademarks belong to their respective owners.</p></div></footer>
+  <script src="script.js?v=20260718d" defer></script>
 </body>
 </html>

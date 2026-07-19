@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; object-src 'none'; script-src 'self' 'sha256-me/ZuRgI+viyzOypJV0yzNaTUFqb+A/3+aThGGToDKc=' 'sha256-J1HhyhqsC5o/SYw8rim4BLjsC57xpdkUS7SedWoLdOE='; style-src 'self'; img-src 'self' https://www.magicpulse.app data:; font-src 'self'; connect-src 'self' https://api.magicpulse.app https://api.themeparks.wiki; form-action 'self' https://api.magicpulse.app; frame-src 'none'; worker-src 'self'; media-src 'self'; upgrade-insecure-requests" />
+  <meta name="referrer" content="strict-origin-when-cross-origin" />
+  <meta name="description" content="Learn how Magic Pulse supports VoiceOver, Dynamic Type, Reduce Motion, and interface states that do not rely on color alone." />
+  <meta name="theme-color" content="#0c0820" />
+  <link rel="canonical" href="https://www.magicpulse.app/accessibility.html" />
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+  <title>Accessibility | Magic Pulse</title>
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Magic Pulse" />
+  <meta property="og:title" content="Accessibility | Magic Pulse" />
+  <meta property="og:description" content="Accessibility support across the core Magic Pulse park and planning experience." />
+  <meta property="og:url" content="https://www.magicpulse.app/accessibility.html" />
+  <meta property="og:locale" content="en_US" />
+  <meta property="og:image" content="https://www.magicpulse.app/og-image.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:type" content="image/png" />
+  <meta property="og:image:alt" content="Magic Pulse app showing live waits, day planning, and Lightning Lane details" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Accessibility | Magic Pulse" />
+  <meta name="twitter:description" content="Accessibility support across the core Magic Pulse park and planning experience." />
+  <meta name="twitter:image" content="https://www.magicpulse.app/og-image.png" />
+  <meta name="twitter:image:alt" content="Magic Pulse app showing live waits, day planning, and Lightning Lane details" />
+  <link rel="preload" href="fonts/inter-400-latin.woff2" as="font" type="font/woff2" crossorigin="anonymous" />
+  <link rel="preload" href="fonts/outfit-700-latin.woff2" as="font" type="font/woff2" crossorigin="anonymous" />
+  <link rel="stylesheet" href="styles.css?v=20260718d" />
+</head>
+<body>
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+  <header class="site-header">
+    <div class="site-header-backdrop" aria-hidden="true"></div>
+    <div class="container nav-row site-header-main">
+      <a href="index.html" class="brand"><img class="brand-mark" src="favicon.svg" width="32" height="32" alt="" />Magic Pulse</a>
+      <nav id="site-navigation" class="site-nav" aria-label="Primary">
+        <a href="index.html#product">Product</a>
+        <a href="index.html#parks">Parks</a>
+        <a href="index.html#pricing">Pricing</a>
+        <a href="index.html#faq">FAQ</a>
+        <a href="status.html">Status</a>
+        <a href="support.html">Support</a>
+        <a href="https://apps.apple.com/us/app/magic-pulse/id6759612612" class="btn btn-nav" target="_blank" rel="noopener noreferrer" data-event="app_store_click" data-event-context="accessibility_header">Get the app</a>
+      </nav>
+      <button class="menu-btn" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="site-navigation"><span></span><span></span><span></span></button>
+    </div>
+  </header>
+
+  <main id="main-content" class="accessibility-main">
+    <section class="accessibility-hero">
+      <div class="container accessibility-hero-grid">
+        <div>
+          <p class="eyebrow">Accessibility</p>
+          <h1>Built to work with the settings you rely on</h1>
+          <p class="section-copy">Magic Pulse supports common Apple accessibility preferences across its core park, ride, and planning views.</p>
+          <div class="accessibility-actions">
+            <a class="btn btn-primary" href="support.html?topic=accessibility">Report an accessibility issue</a>
+            <a class="btn btn-ghost" href="https://apps.apple.com/us/app/magic-pulse/id6759612612" target="_blank" rel="noopener noreferrer" data-event="app_store_click" data-event-context="accessibility_hero">Get Magic Pulse</a>
+          </div>
+        </div>
+        <dl class="accessibility-meta" aria-label="Accessibility statement details">
+          <div><dt>Applies to</dt><dd>Magic Pulse 1.8.2</dd></div>
+          <div><dt>Devices</dt><dd>iPhone and Apple Watch</dd></div>
+          <div><dt>Updated</dt><dd><time datetime="2026-07-18">July 18, 2026</time></dd></div>
+        </dl>
+      </div>
+    </section>
+
+    <section class="accessibility-support" aria-labelledby="accessibility-support-heading">
+      <div class="container">
+        <div class="accessibility-section-head">
+          <div>
+            <p class="eyebrow">Support you can expect</p>
+            <h2 id="accessibility-support-heading">Core views follow your preferences</h2>
+          </div>
+          <p class="section-copy">These statements describe the current app behavior we maintain. They are not a claim that every screen or third-party service is free of barriers.</p>
+        </div>
+
+        <div class="accessibility-feature-list">
+          <article class="accessibility-feature-row">
+            <span class="accessibility-feature-number" aria-hidden="true">01</span>
+            <div><h3>VoiceOver</h3><p>Ride rows, tabs, charts, plans, and key actions include spoken labels and summaries.</p></div>
+            <strong><span class="status-indicator" aria-hidden="true"></span>Supported</strong>
+          </article>
+          <article class="accessibility-feature-row">
+            <span class="accessibility-feature-number" aria-hidden="true">02</span>
+            <div><h3>Dynamic Type</h3><p>Core text and symbols scale with your preferred content size.</p></div>
+            <strong><span class="status-indicator" aria-hidden="true"></span>Supported</strong>
+          </article>
+          <article class="accessibility-feature-row">
+            <span class="accessibility-feature-number" aria-hidden="true">03</span>
+            <div><h3>Reduce Motion</h3><p>Decorative motion and transitions are reduced when the system setting is on.</p></div>
+            <strong><span class="status-indicator" aria-hidden="true"></span>Supported</strong>
+          </article>
+          <article class="accessibility-feature-row">
+            <span class="accessibility-feature-number" aria-hidden="true">04</span>
+            <div><h3>More than color</h3><p>Key ride-detail states can add text and symbols when color alone is not enough.</p></div>
+            <strong><span class="status-indicator" aria-hidden="true"></span>Supported</strong>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="accessibility-scope" aria-labelledby="accessibility-scope-heading">
+      <div class="container accessibility-scope-grid">
+        <div>
+          <p class="eyebrow">Scope and transparency</p>
+          <h2 id="accessibility-scope-heading">What this statement covers</h2>
+          <p class="section-copy">Accessibility can vary by app and operating-system version. This statement covers Magic Pulse-owned interfaces in the current release.</p>
+        </div>
+        <ul class="accessibility-scope-list">
+          <li><strong>Magic Pulse interface</strong><span>Core park, ride, planning, alerts, settings, and Apple Watch views are included.</span></li>
+          <li><strong>Apple system screens</strong><span>Purchases, permissions, notifications, and sharing can move into interfaces controlled by Apple.</span></li>
+          <li><strong>Live park information</strong><span>Third-party sources may change names or wording, while Magic Pulse controls how that information is labeled and presented.</span></li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="status-help accessibility-help">
+      <div class="container">
+        <div><p class="eyebrow">Found a barrier?</p><h2>Tell us where access broke down</h2><p>Include the screen, task, device, operating-system version, app version, and assistive setting you were using. That gives us a useful place to start.</p></div>
+        <a class="btn btn-primary" href="support.html?topic=accessibility">Report an accessibility issue</a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer"><div class="container footer-grid"><div class="brand-footer"><span class="brand-footer-wordmark"><img class="brand-mark" src="favicon.svg" width="28" height="28" alt="" />Magic Pulse <span class="sep">·</span> <a class="url" href="https://www.magicpulse.app/">magicpulse.app</a></span></div><p><a href="privacy.html">Privacy Policy</a> · <a href="accessibility.html" aria-current="page">Accessibility</a> · <a href="support.html">Support</a> · <a href="status.html">Status</a> · <a href="android.html">Android waitlist</a></p><p class="footer-disclaimer">Magic Pulse is not affiliated with theme park operators. Trademarks belong to their respective owners.</p></div></footer>
+  <script src="script.js?v=20260718d" defer></script>
+</body>
+</html>

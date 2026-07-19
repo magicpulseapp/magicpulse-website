@@ -25,6 +25,7 @@ Use this list immediately before the redesigned site replaces the current public
 - [ ] Confirm App Store price, version, release date, download size, minimum iOS version, and screenshots are still current.
 - [ ] Set App Store Connect Privacy Policy URL to `https://www.magicpulse.app/privacy.html`.
 - [ ] Set App Store Connect Support URL to `https://www.magicpulse.app/support.html`.
+- [ ] Set App Store Connect Accessibility URL to `https://www.magicpulse.app/accessibility.html`.
 - [ ] Declare the verified VoiceOver, Dynamic Type, Reduce Motion, and Differentiate Without Color accessibility support in App Store Connect.
 - [ ] Check the Open Graph image in iMessage, Slack, and another link-preview tester.
 - [ ] Submit the sitemap to the chosen search console after the custom domain is live.

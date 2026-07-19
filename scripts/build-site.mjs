@@ -17,11 +17,13 @@ const files = [
   "robots.txt",
   "script.js",
   "sitemap.xml",
+  "status-history.json",
   "styles.css",
   "_headers",
 ];
 const pageFiles = [
   "404.html",
+  "accessibility.html",
   "android.html",
   "day-planner.html",
   "index.html",

@@ -102,7 +102,7 @@ try {
         honeypot: "",
         name: "Test User",
         email: "test@example.com",
-        topic: "bug",
+        topic: "accessibility",
         message: "This is a valid support request for the worker test.",
       }),
     }),
@@ -170,6 +170,32 @@ try {
   );
   assert.equal(featurePage.status, 200);
   assert.match(await featurePage.text(), /Know what is worth riding now/);
+
+  const accessibilityPage = await worker.fetch(
+    new Request("https://preview.example/accessibility.html"),
+    env,
+    {},
+  );
+  assert.equal(accessibilityPage.status, 200);
+  assert.match(await accessibilityPage.text(), /Built to work with the settings you rely on/);
+
+  const historyResponse = await worker.fetch(
+    new Request("https://preview.example/status-history.json"),
+    {
+      ...env,
+      ASSETS: {
+        async fetch() {
+          return new Response(await readFile(new URL("../status-history.json", import.meta.url)), {
+            headers: { "Content-Type": "application/json" },
+          });
+        },
+      },
+    },
+    {},
+  );
+  assert.equal(historyResponse.status, 200);
+  assert.equal(historyResponse.headers.get("cache-control"), "public, max-age=60, must-revalidate");
+  assert.equal((await historyResponse.json()).entries.length, 1);
 
   const foreignOrigin = await worker.fetch(
     new Request("https://preview.example/api/site/events", {
