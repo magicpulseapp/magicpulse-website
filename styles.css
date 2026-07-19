@@ -503,7 +503,7 @@ body.nav-open .nav-overlay {
 }
 
 #product {
-  padding-top: 2.8rem;
+  padding-top: 2rem;
 }
 
 .hero::after {
@@ -929,6 +929,10 @@ body.nav-open .nav-overlay {
   .waits-row,
   .waits-row.is-hero {
     min-height: 50px;
+  }
+
+  .waits-loading span {
+    height: 50px;
   }
 
   .waits-row,
