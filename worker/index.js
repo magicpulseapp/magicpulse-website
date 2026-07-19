@@ -19,7 +19,12 @@ const PAGE_ROUTES = new Map([
   ["/", "index.page"],
   ["/index.html", "index.page"],
   ["/android.html", "android.page"],
+  ["/day-planner.html", "day-planner.page"],
+  ["/insights.html", "insights.page"],
+  ["/lightning-lane.html", "lightning-lane.page"],
+  ["/live-waits.html", "live-waits.page"],
   ["/privacy.html", "privacy.page"],
+  ["/status.html", "status.page"],
   ["/support.html", "support.page"],
 ]);
 
@@ -35,10 +40,19 @@ const SUPPORT_TOPICS = new Set([
   "privacy",
   "other",
 ]);
-const SITE_EVENTS = new Set(["app_store_click", "park_preview_change"]);
+const SITE_EVENTS = new Set([
+  "app_store_click",
+  "park_preview_change",
+  "gallery_navigate",
+  "feature_open",
+  "status_check",
+  "support_start",
+]);
 const rateBuckets = new Map();
 const FORM_CHALLENGE_MAX_AGE_MS = 2 * 60 * 60_000;
 const FORM_CHALLENGE_MIN_AGE_MS = 3_000;
+const SITE_EVENT_RETENTION_DAYS = 550;
+let cachedServiceStatus = null;
 
 function base64UrlEncode(bytes) {
   let binary = "";
@@ -142,6 +156,119 @@ function hasOnlyKeys(value, allowedKeys) {
     Object.keys(value).every((key) => allowedKeys.has(key));
 }
 
+function safeEventContext(value) {
+  const normalized = String(value ?? "none").trim().toLowerCase().replace(/[^a-z0-9_.-]+/g, "_");
+  return (normalized || "none").slice(0, 40);
+}
+
+async function recordSiteEvent(env, event, context) {
+  if (!env.DB) return false;
+  const day = new Date().toISOString().slice(0, 10);
+  await env.DB.prepare(`
+    INSERT INTO site_event_daily (day, event, context, count)
+    VALUES (?1, ?2, ?3, 1)
+    ON CONFLICT(day, event, context)
+    DO UPDATE SET count = count + 1
+  `).bind(day, event, safeEventContext(context)).run();
+  await env.DB.prepare(
+    "DELETE FROM site_event_daily WHERE day < date('now', ?1)",
+  ).bind(`-${SITE_EVENT_RETENTION_DAYS} days`).run();
+  return true;
+}
+
+async function readSiteReport(env, days) {
+  if (!env.DB) return { totals: {}, rows: [] };
+  const since = `-${Math.max(1, Math.min(90, days)) - 1} days`;
+  const result = await env.DB.prepare(`
+    SELECT day, event, context, count
+    FROM site_event_daily
+    WHERE day >= date('now', ?1)
+    ORDER BY day DESC, count DESC, event ASC, context ASC
+  `).bind(since).all();
+  const rows = Array.isArray(result?.results) ? result.results : [];
+  const totals = {};
+  for (const row of rows) {
+    totals[row.event] = (totals[row.event] ?? 0) + Number(row.count ?? 0);
+  }
+  return { totals, rows };
+}
+
+function reportAccessAllowed(request, env) {
+  const email = request.headers.get("oai-authenticated-user-email");
+  if (!email) return false;
+  const allowedEmail = String(env.SITE_REPORT_EMAIL ?? "").trim().toLowerCase();
+  return !allowedEmail || email.trim().toLowerCase() === allowedEmail;
+}
+
+function createRequestId() {
+  const bytes = new Uint8Array(4);
+  crypto.getRandomValues(bytes);
+  return `MP-${Array.from(bytes, (byte) => byte.toString(16).padStart(2, "0")).join("").toUpperCase()}`;
+}
+
+async function fetchWithTimeout(url, timeoutMs = 4_000) {
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), timeoutMs);
+  try {
+    return await fetch(url, {
+      headers: { Accept: "application/json" },
+      signal: controller.signal,
+    });
+  } finally {
+    clearTimeout(timeout);
+  }
+}
+
+function ingestionLooksDelayed(ingestion) {
+  if (!ingestion || ingestion.ok !== false) return false;
+  const startedAt = Date.parse(ingestion.startedAt ?? "");
+  const isRecent = Number.isFinite(startedAt) && Date.now() - startedAt < 10 * 60 * 1000;
+  const isActiveRefresh = !ingestion.completedAt && /progress|refresh|running/i.test(String(ingestion.message ?? ""));
+  return !(isRecent && isActiveRefresh);
+}
+
+async function currentServiceStatus() {
+  const now = Date.now();
+  if (cachedServiceStatus && now - cachedServiceStatus.cachedAt < 30_000) {
+    return cachedServiceStatus.payload;
+  }
+
+  const [apiResult, sourceResult] = await Promise.allSettled([
+    fetchWithTimeout("https://api.magicpulse.app/api/health"),
+    fetchWithTimeout("https://api.themeparks.wiki/v1/entity/75ea578a-adc8-4116-a54d-dccb60765ef9/live"),
+  ]);
+  let apiState = "unavailable";
+  let liveDataState = "unavailable";
+
+  if (apiResult.status === "fulfilled" && apiResult.value.ok) {
+    apiState = "operational";
+    try {
+      const health = await apiResult.value.json();
+      if (ingestionLooksDelayed(health?.ingestion)) liveDataState = "degraded";
+    } catch {
+      apiState = "degraded";
+    }
+  }
+  if (sourceResult.status === "fulfilled" && sourceResult.value.ok) {
+    liveDataState = liveDataState === "degraded" ? "degraded" : "operational";
+  }
+
+  const overall = apiState === "operational" && liveDataState === "operational"
+    ? "operational"
+    : (apiState === "unavailable" && liveDataState === "unavailable" ? "unavailable" : "degraded");
+  const payload = {
+    overall,
+    checkedAt: new Date(now).toISOString(),
+    services: {
+      website: { state: "operational" },
+      api: { state: apiState },
+      liveData: { state: liveDataState },
+    },
+  };
+  cachedServiceStatus = { cachedAt: now, payload };
+  return payload;
+}
+
 async function forwardForm(fields, env) {
   const payload = new FormData();
   for (const [key, value] of Object.entries(fields)) payload.append(key, value);
@@ -185,17 +312,36 @@ async function handleSiteApi(request, env, context, url) {
       if (!hasOnlyKeys(event, new Set(["event", "context"])) || !SITE_EVENTS.has(event.event)) {
         return jsonResponse({ error: "Invalid request" }, 400);
       }
-      const body = JSON.stringify({ event: event.event, context: String(event.context ?? "none").slice(0, 40) });
-      const upstream = fetch("https://api.magicpulse.app/api/site/events", {
-        method: "POST",
-        headers: { "Content-Type": "application/json", Accept: "application/json" },
-        body,
-      }).catch(() => null);
-      if (context?.waitUntil) context.waitUntil(upstream);
-      else await upstream;
+      const recording = recordSiteEvent(env, event.event, event.context).catch(() => false);
+      if (context?.waitUntil) context.waitUntil(recording);
+      else await recording;
       return new Response(null, { status: 204, headers: { "Cache-Control": "no-store" } });
     } catch (error) {
       return jsonResponse({ error: error?.message === "payload-too-large" ? "Request too large" : "Invalid request" }, error?.message === "payload-too-large" ? 413 : 400);
+    }
+  }
+
+  if (url.pathname === "/api/site/status" && request.method === "GET") {
+    const retryAfter = rateLimit(request, "site-status", 60, 60_000);
+    if (retryAfter) return jsonResponse({ error: "Rate limit exceeded" }, 429, { "Retry-After": String(retryAfter) });
+    try {
+      return jsonResponse(await currentServiceStatus(), 200, { "Cache-Control": "public, max-age=30" });
+    } catch {
+      return jsonResponse({ error: "Status check unavailable" }, 503);
+    }
+  }
+
+  if (url.pathname === "/api/site/report" && request.method === "GET") {
+    if (!reportAccessAllowed(request, env)) return jsonResponse({ error: "Not found" }, 404);
+    const retryAfter = rateLimit(request, "site-report", 30, 60_000);
+    if (retryAfter) return jsonResponse({ error: "Rate limit exceeded" }, 429, { "Retry-After": String(retryAfter) });
+    const requestedDays = Number(url.searchParams.get("days") ?? 30);
+    const days = Number.isFinite(requestedDays) ? Math.max(1, Math.min(90, Math.round(requestedDays))) : 30;
+    try {
+      const report = await readSiteReport(env, days);
+      return jsonResponse({ days, generatedAt: new Date().toISOString(), ...report });
+    } catch {
+      return jsonResponse({ error: "Report unavailable" }, 503);
     }
   }
 
@@ -221,6 +367,7 @@ async function handleSiteApi(request, env, context, url) {
       }
 
       let fields;
+      let requestId = null;
       if (kind === "support") {
         if (
           typeof body.name !== "string" || body.name.trim().length < 1 || body.name.length > 80 ||
@@ -229,9 +376,11 @@ async function handleSiteApi(request, env, context, url) {
         ) {
           return jsonResponse({ error: "Please check the form fields and try again." }, 400);
         }
+        requestId = createRequestId();
         fields = {
           form_type: "website_support",
-          _subject: `Magic Pulse website support: ${body.topic}`,
+          _subject: `Magic Pulse website support [${requestId}]: ${body.topic}`,
+          reference: requestId,
           name: body.name.trim(),
           email: body.email.trim(),
           topic: body.topic,
@@ -249,7 +398,14 @@ async function handleSiteApi(request, env, context, url) {
       if (!(await forwardForm(fields, env))) {
         return jsonResponse({ error: "Unable to send right now. Please try again in a moment." }, 502);
       }
-      return jsonResponse({ ok: true }, 202);
+      const metric = recordSiteEvent(
+        env,
+        kind === "support" ? "support_submit" : "android_signup",
+        kind === "support" ? body.topic : "android",
+      ).catch(() => false);
+      if (context?.waitUntil) context.waitUntil(metric);
+      else await metric;
+      return jsonResponse({ ok: true, ...(requestId ? { requestId } : {}) }, 202);
     } catch (error) {
       return jsonResponse({ error: error?.message === "payload-too-large" ? "Request too large" : "Invalid request" }, error?.message === "payload-too-large" ? 413 : 400);
     }
@@ -297,6 +453,19 @@ export default {
     const url = new URL(request.url);
     if (url.pathname.startsWith("/api/site/")) {
       return withSecurityHeaders(await handleSiteApi(request, env, context, url), url);
+    }
+    if (
+      url.pathname === "/insights.html" &&
+      (request.method === "GET" || request.method === "HEAD") &&
+      !reportAccessAllowed(request, env)
+    ) {
+      const notFoundUrl = new URL("/_site-pages/404.page", request.url);
+      const notFound = await env.ASSETS.fetch(new Request(notFoundUrl, request));
+      return withSecurityHeaders(new Response(notFound.body, {
+        status: 404,
+        statusText: "Not Found",
+        headers: notFound.headers,
+      }), url, true);
     }
     const pageName = PAGE_ROUTES.get(url.pathname);
     const servesPage = Boolean(pageName) && (request.method === "GET" || request.method === "HEAD");

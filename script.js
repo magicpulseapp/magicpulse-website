@@ -213,20 +213,74 @@
     update();
   }());
 
+  var siteHostname = window.location.hostname.toLowerCase();
+  var siteRunsOnWorker =
+    siteHostname.endsWith('.chatgpt.site') ||
+    siteHostname === 'www.magicpulse.app' ||
+    siteHostname === 'magicpulse.app';
+  var hasExplicitSiteApiBase = typeof window.MAGICPULSE_SITE_API_BASE === 'string';
   var MAGICPULSE_SITE_API_BASE =
-    typeof window.MAGICPULSE_SITE_API_BASE === 'string'
+    hasExplicitSiteApiBase
       ? window.MAGICPULSE_SITE_API_BASE.replace(/\/$/, '')
-      : (window.location.hostname.endsWith('.chatgpt.site')
-        ? window.location.origin
-        : 'https://api.magicpulse.app');
+      : (siteRunsOnWorker ? window.location.origin : 'https://api.magicpulse.app');
+  var siteEventTrackingEnabled = siteRunsOnWorker || hasExplicitSiteApiBase;
 
   (function () {
-    var allowedEvents = ['app_store_click', 'park_preview_change'];
+    var banner = document.createElement('div');
+    banner.className = 'connection-banner';
+    banner.hidden = true;
+    banner.setAttribute('role', 'status');
+    banner.setAttribute('aria-live', 'polite');
+
+    var message = document.createElement('span');
+    message.textContent = 'You are offline. Live data and forms may be unavailable.';
+    var retry = document.createElement('button');
+    retry.type = 'button';
+    retry.textContent = 'Check again';
+    retry.addEventListener('click', function () {
+      if (window.navigator.onLine) {
+        banner.hidden = true;
+        document.body.classList.remove('is-offline');
+      } else {
+        message.textContent = 'Still offline. Your connection has not returned yet.';
+      }
+    });
+    banner.appendChild(message);
+    banner.appendChild(retry);
+    document.body.appendChild(banner);
+
+    function updateConnectionState() {
+      var offline = window.navigator.onLine === false;
+      banner.hidden = !offline;
+      document.body.classList.toggle('is-offline', offline);
+      if (offline) message.textContent = 'You are offline. Live data and forms may be unavailable.';
+    }
+
+    window.addEventListener('online', updateConnectionState);
+    window.addEventListener('offline', updateConnectionState);
+    updateConnectionState();
+
+    document.querySelectorAll('img').forEach(function (img) {
+      function markLoaded() { img.classList.add('is-loaded'); }
+      if (img.complete) markLoaded();
+      else img.addEventListener('load', markLoaded, { once: true });
+    });
+  }());
+
+  (function () {
+    var allowedEvents = [
+      'app_store_click',
+      'park_preview_change',
+      'gallery_navigate',
+      'feature_open',
+      'status_check',
+      'support_start'
+    ];
     var privacyOptOut =
       window.navigator.doNotTrack === '1' || window.navigator.globalPrivacyControl === true;
 
     function trackSiteEvent(eventName, context) {
-      if (privacyOptOut || allowedEvents.indexOf(eventName) === -1) return;
+      if (!siteEventTrackingEnabled || privacyOptOut || allowedEvents.indexOf(eventName) === -1) return;
       var safeContext = String(context || 'none').slice(0, 40);
       fetch(MAGICPULSE_SITE_API_BASE + '/api/site/events', {
         method: 'POST',
@@ -248,6 +302,73 @@
       if (!target) return;
       trackSiteEvent(target.getAttribute('data-event'), target.getAttribute('data-event-context'));
     });
+  }());
+
+  (function () {
+    var gallery = document.getElementById('product-gallery');
+    var controls = document.querySelector('[data-gallery-controls]');
+    if (!gallery || !controls) return;
+
+    var slides = Array.prototype.slice.call(gallery.querySelectorAll('[data-gallery-slide]'));
+    var previous = controls.querySelector('[data-gallery-previous]');
+    var next = controls.querySelector('[data-gallery-next]');
+    var counter = controls.querySelector('[data-gallery-counter]');
+    if (!slides.length || !previous || !next || !counter) return;
+
+    var activeIndex = 0;
+    var scrollFrame = null;
+
+    function updateControls(index, announce) {
+      var safeIndex = Math.max(0, Math.min(slides.length - 1, index));
+      if (safeIndex === activeIndex && !announce) return;
+      activeIndex = safeIndex;
+      counter.textContent = String(activeIndex + 1) + ' of ' + String(slides.length);
+      previous.disabled = activeIndex === 0;
+      next.disabled = activeIndex === slides.length - 1;
+      if (announce && typeof window.magicPulseTrack === 'function') {
+        window.magicPulseTrack('gallery_navigate', 'slide_' + String(activeIndex + 1));
+      }
+    }
+
+    function closestSlideIndex() {
+      var galleryLeft = gallery.getBoundingClientRect().left;
+      var bestIndex = 0;
+      var bestDistance = Infinity;
+      slides.forEach(function (slide, index) {
+        var distance = Math.abs(slide.getBoundingClientRect().left - galleryLeft);
+        if (distance < bestDistance) {
+          bestDistance = distance;
+          bestIndex = index;
+        }
+      });
+      return bestIndex;
+    }
+
+    function goTo(index) {
+      var safeIndex = Math.max(0, Math.min(slides.length - 1, index));
+      var galleryRect = gallery.getBoundingClientRect();
+      var slideRect = slides[safeIndex].getBoundingClientRect();
+      var left = gallery.scrollLeft + slideRect.left - galleryRect.left;
+      gallery.scrollTo({ left: left, behavior: prefersReducedMotion ? 'auto' : 'smooth' });
+      updateControls(safeIndex, true);
+    }
+
+    previous.addEventListener('click', function () { goTo(activeIndex - 1); });
+    next.addEventListener('click', function () { goTo(activeIndex + 1); });
+    gallery.addEventListener('keydown', function (event) {
+      if (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight') return;
+      event.preventDefault();
+      goTo(activeIndex + (event.key === 'ArrowRight' ? 1 : -1));
+    });
+    gallery.addEventListener('scroll', function () {
+      if (scrollFrame != null) return;
+      scrollFrame = window.requestAnimationFrame(function () {
+        scrollFrame = null;
+        updateControls(closestSlideIndex(), false);
+      });
+    }, { passive: true });
+
+    updateControls(0, false);
   }());
 
   (function () {
@@ -290,6 +411,21 @@
       function fieldValue(name) {
         var field = form.elements.namedItem(name);
         return field && typeof field.value === 'string' ? field.value.trim() : '';
+      }
+
+      function supportMessage() {
+        var message = fieldValue('message');
+        if (kind !== 'support') return message;
+        var labels = [
+          ['App version', fieldValue('app_version')],
+          ['Device', fieldValue('device_model')],
+          ['OS version', fieldValue('os_version')],
+          ['Park', fieldValue('park')],
+          ['Steps to reproduce', fieldValue('steps')]
+        ].filter(function (item) { return item[1]; });
+        if (!labels.length) return message;
+        var details = labels.map(function (item) { return item[0] + ': ' + item[1]; }).join('\n');
+        return (message + '\n\nTechnical details supplied by the visitor:\n' + details).slice(0, 5000);
       }
 
       function formEndpointIsAllowed() {
@@ -345,9 +481,26 @@
         }
       }
 
-      loadChallenge(false).catch(function () {
-        // A fresh attempt is made when the visitor submits.
+      if (siteRunsOnWorker || hasExplicitSiteApiBase) {
+        loadChallenge(false).catch(function () {
+          // A fresh attempt is made when the visitor submits.
+        });
+      }
+
+      var supportInteractionTracked = false;
+      form.addEventListener('focusin', function () {
+        if (supportInteractionTracked || typeof window.magicPulseTrack !== 'function') return;
+        supportInteractionTracked = true;
+        window.magicPulseTrack('support_start', kind);
       });
+
+      var diagnostics = form.querySelector('[data-support-diagnostics]');
+      if (topicSelect && diagnostics) {
+        if (topicSelect.value === 'bug') diagnostics.open = true;
+        topicSelect.addEventListener('change', function () {
+          if (topicSelect.value === 'bug') diagnostics.open = true;
+        });
+      }
 
       form.addEventListener('submit', function (event) {
         event.preventDefault();
@@ -391,7 +544,7 @@
             if (kind === 'support') {
               payload.name = fieldValue('name');
               payload.topic = fieldValue('topic');
-              payload.message = fieldValue('message');
+              payload.message = supportMessage();
             }
             return fetch(expectedEndpoint, {
               method: 'POST',
@@ -402,7 +555,7 @@
             });
           })
           .then(function (res) {
-            if (res.ok) return null;
+            if (res.ok) return res.json().catch(function () { return {}; });
             return res.json().catch(function () { return null; }).then(function (body) {
               var message = body && typeof body.error === 'string' ? body.error : errorMessage;
               var failure = new Error(message);
@@ -410,9 +563,13 @@
               throw failure;
             });
           })
-          .then(function () {
+          .then(function (body) {
             rememberSuccessfulSubmit();
-            status.textContent = successMessage;
+            status.textContent = successMessage + (
+              body && typeof body.requestId === 'string'
+                ? ' Reference: ' + body.requestId + '.'
+                : ''
+            );
             status.className = 'form-status form-status--success';
             form.reset();
             challenge = null;
@@ -431,6 +588,273 @@
           });
       });
     });
+  }());
+
+  (function () {
+    var root = document.querySelector('[data-status-page]');
+    if (!root) return;
+
+    var overall = root.querySelector('[data-status-overall]');
+    var checked = root.querySelector('[data-status-checked]');
+    var refresh = root.querySelector('[data-status-refresh]');
+    var statusRequest = null;
+
+    function statusLabel(state) {
+      if (state === 'operational') return 'Operational';
+      if (state === 'degraded') return 'Delayed';
+      if (state === 'unavailable') return 'Unavailable';
+      return 'Unknown';
+    }
+
+    function ingestionLooksDelayed(ingestion) {
+      if (!ingestion || ingestion.ok !== false) return false;
+      var startedAt = Date.parse(ingestion.startedAt || '');
+      var isRecent = Number.isFinite(startedAt) && Date.now() - startedAt < 10 * 60 * 1000;
+      var isActiveRefresh = !ingestion.completedAt && /progress|refresh|running/i.test(String(ingestion.message || ''));
+      return !(isRecent && isActiveRefresh);
+    }
+
+    function serviceFallback() {
+      var apiCheck = fetch('https://api.magicpulse.app/api/health', {
+        cache: 'no-store',
+        headers: { Accept: 'application/json' }
+      }).then(function (res) {
+        if (!res.ok) throw new Error('api');
+        return res.json();
+      });
+      var sourceCheck = fetch(
+        'https://api.themeparks.wiki/v1/entity/75ea578a-adc8-4116-a54d-dccb60765ef9/live',
+        { cache: 'no-store', headers: { Accept: 'application/json' } }
+      ).then(function (res) {
+        if (!res.ok) throw new Error('source');
+        return res.json();
+      });
+
+      return Promise.allSettled([apiCheck, sourceCheck]).then(function (results) {
+        var apiState = results[0].status === 'fulfilled' ? 'operational' : 'unavailable';
+        var apiValue = results[0].status === 'fulfilled' ? results[0].value : null;
+        var liveState = results[1].status === 'fulfilled' ? 'operational' : 'unavailable';
+        if (apiValue && ingestionLooksDelayed(apiValue.ingestion)) liveState = 'degraded';
+        return {
+          overall: apiState === 'operational' && liveState === 'operational' ? 'operational' : 'degraded',
+          checkedAt: new Date().toISOString(),
+          services: {
+            website: { state: 'operational' },
+            api: { state: apiState },
+            liveData: { state: liveState }
+          }
+        };
+      });
+    }
+
+    function updateStatus(payload) {
+      var services = payload && payload.services ? payload.services : {};
+      ['website', 'api', 'liveData'].forEach(function (key) {
+        var row = root.querySelector('[data-status-service="' + key + '"]');
+        if (!row) return;
+        var state = services[key] && services[key].state ? services[key].state : 'unknown';
+        row.setAttribute('data-state', state);
+        var value = row.querySelector('[data-status-value]');
+        if (value) value.textContent = statusLabel(state);
+      });
+      var overallState = payload && payload.overall ? payload.overall : 'unknown';
+      if (overall) {
+        overall.setAttribute('data-state', overallState);
+        var overallValue = overall.querySelector('strong');
+        if (overallValue) {
+          overallValue.textContent = overallState === 'operational'
+            ? 'All checked services are operational'
+            : overallState === 'degraded'
+              ? 'One or more services are delayed'
+              : 'One or more services are unavailable';
+        }
+      }
+      var checkedAt = payload && payload.checkedAt ? new Date(payload.checkedAt) : new Date();
+      if (checked) {
+        checked.textContent = checkedAt.toLocaleString(undefined, {
+          dateStyle: 'medium',
+          timeStyle: 'short'
+        });
+      }
+      if (typeof window.magicPulseTrack === 'function') {
+        window.magicPulseTrack('status_check', overallState);
+      }
+    }
+
+    function loadStatus() {
+      if (statusRequest) return statusRequest;
+      if (refresh) {
+        refresh.disabled = true;
+        refresh.textContent = 'Checking...';
+      }
+      var primaryStatus = siteRunsOnWorker
+        ? fetch(window.location.origin + '/api/site/status', {
+            cache: 'no-store',
+            credentials: 'same-origin',
+            headers: { Accept: 'application/json' }
+          })
+        : Promise.reject(new Error('site-status-route-unavailable'));
+      statusRequest = primaryStatus
+        .then(function (res) {
+          if (!res.ok) throw new Error('status');
+          return res.json();
+        })
+        .catch(serviceFallback)
+        .then(updateStatus)
+        .catch(function () {
+          updateStatus({
+            overall: 'unavailable',
+            checkedAt: new Date().toISOString(),
+            services: {
+              website: { state: 'operational' },
+              api: { state: 'unknown' },
+              liveData: { state: 'unknown' }
+            }
+          });
+        })
+        .finally(function () {
+          statusRequest = null;
+          if (refresh) {
+            refresh.disabled = false;
+            refresh.textContent = 'Refresh status';
+          }
+        });
+      return statusRequest;
+    }
+
+    if (refresh) refresh.addEventListener('click', loadStatus);
+    loadStatus();
+  }());
+
+  (function () {
+    var root = document.querySelector('[data-insights-dashboard]');
+    if (!root) return;
+    var state = root.querySelector('[data-insights-state]');
+    var report = root.querySelector('[data-insights-report]');
+    var refresh = root.querySelector('[data-insights-refresh]');
+    var eventLabels = {
+      app_store_click: 'App Store opens',
+      park_preview_change: 'Park preview changes',
+      gallery_navigate: 'Gallery navigation',
+      feature_open: 'Feature guide opens',
+      status_check: 'Status checks',
+      support_start: 'Support form starts',
+      support_submit: 'Support requests',
+      android_signup: 'Android signups'
+    };
+
+    function renderBars(container, items) {
+      if (!container) return;
+      container.textContent = '';
+      if (!items.length) {
+        var empty = document.createElement('p');
+        empty.className = 'insights-empty';
+        empty.textContent = 'No activity in this period.';
+        container.appendChild(empty);
+        return;
+      }
+      var maximum = Math.max.apply(null, items.map(function (item) { return item.count; }).concat([1]));
+      items.forEach(function (item) {
+        var row = document.createElement('div');
+        row.className = 'insights-bar-row';
+        var heading = document.createElement('div');
+        var label = document.createElement('span');
+        label.textContent = item.label;
+        var count = document.createElement('strong');
+        count.textContent = String(item.count);
+        heading.appendChild(label);
+        heading.appendChild(count);
+        var progress = document.createElement('progress');
+        progress.max = maximum;
+        progress.value = item.count;
+        progress.setAttribute('aria-label', item.label + ': ' + String(item.count));
+        row.appendChild(heading);
+        row.appendChild(progress);
+        container.appendChild(row);
+      });
+    }
+
+    function renderInsights(payload) {
+      var totals = payload && payload.totals ? payload.totals : {};
+      root.querySelectorAll('[data-metric]').forEach(function (element) {
+        var metric = element.getAttribute('data-metric');
+        element.textContent = String(totals[metric] || 0);
+      });
+
+      var actionItems = Object.keys(totals)
+        .filter(function (eventName) { return eventName !== 'support_submit'; })
+        .map(function (eventName) {
+          return { label: eventLabels[eventName] || eventName, count: Number(totals[eventName] || 0) };
+        })
+        .filter(function (item) { return item.count > 0; })
+        .sort(function (a, b) { return b.count - a.count; });
+      renderBars(root.querySelector('[data-insights-bars]'), actionItems);
+
+      var supportByTopic = {};
+      (payload.rows || []).forEach(function (row) {
+        if (row.event !== 'support_submit') return;
+        supportByTopic[row.context] = (supportByTopic[row.context] || 0) + Number(row.count || 0);
+      });
+      renderBars(
+        root.querySelector('[data-support-bars]'),
+        Object.keys(supportByTopic).map(function (topic) {
+          return { label: topic, count: supportByTopic[topic] };
+        }).sort(function (a, b) { return b.count - a.count; })
+      );
+
+      var tbody = root.querySelector('[data-insights-rows]');
+      if (tbody) {
+        tbody.textContent = '';
+        (payload.rows || []).slice(0, 120).forEach(function (item) {
+          var tr = document.createElement('tr');
+          [item.day, eventLabels[item.event] || item.event, item.context, item.count].forEach(function (value) {
+            var td = document.createElement('td');
+            td.textContent = String(value);
+            tr.appendChild(td);
+          });
+          tbody.appendChild(tr);
+        });
+      }
+      var windowLabel = root.querySelector('[data-insights-window]');
+      if (windowLabel) windowLabel.textContent = String(payload.days || 30) + ' days';
+      var generated = root.querySelector('[data-insights-generated]');
+      if (generated) generated.textContent = 'Updated ' + new Date(payload.generatedAt).toLocaleString();
+      if (state) state.hidden = true;
+      if (report) report.hidden = false;
+    }
+
+    function loadInsights() {
+      if (refresh) refresh.disabled = true;
+      if (state) {
+        state.hidden = false;
+        state.textContent = 'Loading the last 30 days...';
+      }
+      return fetch('/api/site/report?days=30', {
+        cache: 'no-store',
+        credentials: 'same-origin',
+        headers: { Accept: 'application/json' }
+      })
+        .then(function (res) {
+          if (!res.ok) {
+            var error = new Error(res.status === 403 || res.status === 404 ? 'This report is private.' : 'Report unavailable.');
+            error.status = res.status;
+            throw error;
+          }
+          return res.json();
+        })
+        .then(renderInsights)
+        .catch(function (error) {
+          if (report) report.hidden = true;
+          if (state) {
+            state.hidden = false;
+            state.textContent = error.message || 'Report unavailable.';
+          }
+        })
+        .finally(function () { if (refresh) refresh.disabled = false; });
+    }
+
+    if (refresh) refresh.addEventListener('click', loadInsights);
+    loadInsights();
   }());
 
   var waitsRoot = document.getElementById('live-waits');
@@ -578,6 +1002,7 @@
   var LIVE_PARK_STORAGE_KEY = 'magicpulse.previewParkId';
   var parkSelect = document.getElementById('live-park-select');
   var openAppLink = document.getElementById('live-open-app');
+  var retryButton = document.getElementById('live-waits-retry');
   var liveRequestSequence = 0;
 
   function publicSnapshotApiUrl(parkId) {
@@ -663,6 +1088,19 @@
       window.setTimeout(function () {
         if (document.visibilityState === 'visible') window.location.href = appStoreUrl;
       }, 1100);
+    });
+  }
+
+  if (retryButton) {
+    retryButton.addEventListener('click', function () {
+      retryButton.disabled = true;
+      retryButton.textContent = 'Checking...';
+      prepareLiveParkLoad(activeLiveParkId);
+      loadLiveWaits({ refresh: false, parkId: activeLiveParkId, useFeatured: false })
+        .finally(function () {
+          retryButton.disabled = false;
+          retryButton.textContent = 'Try again';
+        });
     });
   }
 
@@ -914,7 +1352,12 @@
       return {
         rideId: typeof ride.id === 'string' && ride.id ? ride.id : null,
         name: ride.name,
-        waitTime: ride.wait
+        waitTime: ride.wait,
+        predictedWaitIn30Min: Number.isFinite(Number(ride.predictedWaitIn30Min))
+          ? Number(ride.predictedWaitIn30Min)
+          : null,
+        waitAnomaly: typeof ride.waitAnomaly === 'string' ? ride.waitAnomaly : null,
+        trend: typeof ride.trend === 'string' ? ride.trend : null
       };
     });
 
@@ -1123,13 +1566,20 @@
 
   function updateInsights(items, snapshot, timestamp, source) {
     if (insights) insights.hidden = false;
-    if (bestLabel) bestLabel.textContent = 'Lowest shown';
+    if (bestLabel) bestLabel.textContent = 'Best move';
     var lowest = items.reduce(function (best, item) {
       if (item.waitTime == null) return best;
       return !best || item.waitTime < best.waitTime ? item : best;
     }, null);
+    var largestDrop = items.reduce(function (best, item) {
+      if (item.waitTime == null || item.predictedWaitIn30Min == null) return best;
+      var drop = item.waitTime - item.predictedWaitIn30Min;
+      return !best || drop > best.drop ? { item: item, drop: drop } : best;
+    }, null);
     if (bestMove) {
-      bestMove.textContent = lowest ? lowest.name + ' · ' + lowest.waitTime + ' min' : 'No posted waits';
+      bestMove.textContent = largestDrop && largestDrop.drop >= 10
+        ? 'Wait on ' + largestDrop.item.name + ' · forecast down ' + largestDrop.drop + ' min'
+        : (lowest ? 'Ride ' + lowest.name + ' · ' + lowest.waitTime + ' min' : 'No posted waits');
     }
     if (dataSignal) {
       var sourceLabel = source === 'themeparks' ? 'ThemeParks Wiki' : 'Magic Pulse';
@@ -1213,6 +1663,24 @@
   function render(list) {
     if (!rows) return;
     rows.textContent = '';
+    var lowestWait = list.reduce(function (lowest, item) {
+      if (item.waitTime == null) return lowest;
+      return lowest == null || item.waitTime < lowest ? item.waitTime : lowest;
+    }, null);
+
+    function guidanceFor(item) {
+      if (item.statusText) return { label: 'Not operating', state: 'closed' };
+      if (item.waitTime == null) return { label: 'Example ride', state: 'steady' };
+      if (item.predictedWaitIn30Min != null) {
+        var delta = item.predictedWaitIn30Min - item.waitTime;
+        if (delta <= -5) return { label: 'Forecast down ' + Math.abs(delta) + ' min', state: 'down' };
+        if (delta >= 5) return { label: 'Forecast up ' + delta + ' min', state: 'up' };
+      }
+      if (item.waitAnomaly === 'low') return { label: 'Lower than usual', state: 'down' };
+      if (item.waitAnomaly === 'high') return { label: 'Higher than usual', state: 'up' };
+      return { label: item.waitTime === lowestWait ? 'Shortest shown now' : 'Holding steady', state: 'steady' };
+    }
+
     list.forEach(function (item, idx) {
       var row = document.createElement('div');
       row.className = 'waits-row is-hero';
@@ -1223,16 +1691,24 @@
       rank.setAttribute('aria-hidden', 'true');
       rank.textContent = String(idx + 1);
 
+      var rideCopy = document.createElement('span');
+      rideCopy.className = 'ride-copy';
       var name = document.createElement('span');
       name.className = 'name';
       name.textContent = item.name || '';
+      var guidance = guidanceFor(item);
+      var trend = document.createElement('span');
+      trend.className = 'ride-trend ride-trend--' + guidance.state;
+      trend.textContent = guidance.label;
+      rideCopy.appendChild(name);
+      rideCopy.appendChild(trend);
 
       var value = document.createElement('span');
       value.className = 'value' + (item.statusText ? ' value--closed' : waitValueClass(item.waitTime));
       value.textContent = item.statusText || (item.waitTime != null ? item.waitTime + ' min' : '-');
 
       row.appendChild(rank);
-      row.appendChild(name);
+      row.appendChild(rideCopy);
       row.appendChild(value);
       rows.appendChild(row);
     });
@@ -1360,5 +1836,9 @@
     } else {
       stopRefreshTimer();
     }
+  });
+
+  window.addEventListener('online', function () {
+    loadLiveWaits({ refresh: true, parkId: activeLiveParkId, useFeatured: false });
   });
 })();

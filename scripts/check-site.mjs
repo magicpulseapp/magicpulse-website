@@ -27,7 +27,7 @@ for (const file of htmlFiles) {
   }
 
   if (!html.includes("og-image.png")) problems.push(`${file}: missing current social image metadata`);
-  if (!html.includes("20260718b")) problems.push(`${file}: stale CSS or JavaScript asset version`);
+  if (!html.includes("20260718c")) problems.push(`${file}: stale CSS or JavaScript asset version`);
 }
 
 if (problems.length) throw new Error(problems.join("\n"));

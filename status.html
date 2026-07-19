@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; object-src 'none'; script-src 'self' 'sha256-me/ZuRgI+viyzOypJV0yzNaTUFqb+A/3+aThGGToDKc=' 'sha256-J1HhyhqsC5o/SYw8rim4BLjsC57xpdkUS7SedWoLdOE='; style-src 'self'; img-src 'self' https://www.magicpulse.app data:; font-src 'self'; connect-src 'self' https://api.magicpulse.app https://api.themeparks.wiki; form-action 'self' https://api.magicpulse.app; frame-src 'none'; worker-src 'self'; media-src 'self'; upgrade-insecure-requests" />
+  <meta name="referrer" content="strict-origin-when-cross-origin" />
+  <meta name="description" content="Check the current availability of the Magic Pulse website, app data service, and live theme park data source." />
+  <meta name="theme-color" content="#0c0820" />
+  <link rel="canonical" href="https://www.magicpulse.app/status.html" />
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+  <title>Service Status | Magic Pulse</title>
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Magic Pulse" />
+  <meta property="og:title" content="Service Status | Magic Pulse" />
+  <meta property="og:description" content="Current availability for the Magic Pulse website and live park data services." />
+  <meta property="og:url" content="https://www.magicpulse.app/status.html" />
+  <meta property="og:locale" content="en_US" />
+  <meta property="og:image" content="https://www.magicpulse.app/og-image.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:type" content="image/png" />
+  <meta property="og:image:alt" content="Magic Pulse app showing live waits, day planning, and Lightning Lane details" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Service Status | Magic Pulse" />
+  <meta name="twitter:description" content="Current availability for the Magic Pulse website and live park data services." />
+  <meta name="twitter:image" content="https://www.magicpulse.app/og-image.png" />
+  <meta name="twitter:image:alt" content="Magic Pulse app showing live waits, day planning, and Lightning Lane details" />
+  <link rel="preload" href="fonts/inter-400-latin.woff2" as="font" type="font/woff2" crossorigin="anonymous" />
+  <link rel="preload" href="fonts/outfit-700-latin.woff2" as="font" type="font/woff2" crossorigin="anonymous" />
+  <link rel="stylesheet" href="styles.css?v=20260718c" />
+</head>
+<body>
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+  <header class="site-header"><div class="site-header-backdrop" aria-hidden="true"></div><div class="container nav-row site-header-main"><a href="index.html" class="brand"><img class="brand-mark" src="favicon.svg" width="32" height="32" alt="" />Magic Pulse</a><nav id="site-navigation" class="site-nav" aria-label="Primary"><a href="index.html#product">Product</a><a href="index.html#parks">Parks</a><a href="index.html#pricing">Pricing</a><a href="index.html#faq">FAQ</a><a href="status.html" aria-current="page">Status</a><a href="support.html">Support</a><a href="https://apps.apple.com/us/app/magic-pulse/id6759612612" class="btn btn-nav" target="_blank" rel="noopener noreferrer" data-event="app_store_click" data-event-context="status_header">Get the app</a></nav><button class="menu-btn" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="site-navigation"><span></span><span></span><span></span></button></div></header>
+
+  <main id="main-content" class="status-main" data-status-page>
+    <section class="status-hero">
+      <div class="container status-hero-grid">
+        <div>
+          <p class="eyebrow">Service status</p>
+          <h1>Current Magic Pulse availability</h1>
+          <p class="section-copy">A live check of the website, Magic Pulse data service, and the public park-data source used for ride waits.</p>
+        </div>
+        <div class="status-overall" data-status-overall data-state="checking" aria-live="polite">
+          <span class="status-indicator" aria-hidden="true"></span>
+          <div><small>Overall status</small><strong>Checking services...</strong></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="status-content">
+      <div class="container status-layout">
+        <div class="status-services" aria-label="Service checks">
+          <article class="status-service" data-status-service="website"><div><span class="status-indicator" aria-hidden="true"></span><h2>Website</h2></div><p>The pages, support experience, and App Store links.</p><strong data-status-value>Checking</strong></article>
+          <article class="status-service" data-status-service="api"><div><span class="status-indicator" aria-hidden="true"></span><h2>Magic Pulse data service</h2></div><p>App-facing park snapshots, forecasts, and data freshness.</p><strong data-status-value>Checking</strong></article>
+          <article class="status-service" data-status-service="liveData"><div><span class="status-indicator" aria-hidden="true"></span><h2>Live park data source</h2></div><p>The public upstream source used for current attraction waits.</p><strong data-status-value>Checking</strong></article>
+        </div>
+
+        <aside class="status-sidebar">
+          <p class="privacy-card-label">Last check</p>
+          <strong data-status-checked>Waiting...</strong>
+          <p>This is a current availability check, not a historical uptime guarantee.</p>
+          <button class="btn btn-ghost" type="button" data-status-refresh>Refresh status</button>
+        </aside>
+      </div>
+    </section>
+
+    <section class="status-help"><div class="container"><div><p class="eyebrow">Still having trouble?</p><h2>Send the exact feature and park</h2><p>Service checks can be healthy while one device or one park still has a problem. The support form now accepts app version, device, OS, park, and reproduction steps.</p></div><a class="btn btn-primary" href="support.html?topic=bug">Report an issue</a></div></section>
+  </main>
+
+  <footer class="site-footer"><div class="container footer-grid"><div class="brand-footer"><span class="brand-footer-wordmark"><img class="brand-mark" src="favicon.svg" width="28" height="28" alt="" />Magic Pulse <span class="sep">·</span> <a class="url" href="https://www.magicpulse.app/">magicpulse.app</a></span></div><p><a href="privacy.html">Privacy Policy</a> · <a href="support.html">Support</a> · <a href="status.html">Status</a> · <a href="android.html">Android waitlist</a></p><p class="footer-disclaimer">Magic Pulse is not affiliated with theme park operators. Trademarks belong to their respective owners.</p></div></footer>
+  <script src="script.js?v=20260718c" defer></script>
+</body>
+</html>

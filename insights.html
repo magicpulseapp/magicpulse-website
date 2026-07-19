@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; object-src 'none'; script-src 'self' 'sha256-me/ZuRgI+viyzOypJV0yzNaTUFqb+A/3+aThGGToDKc=' 'sha256-J1HhyhqsC5o/SYw8rim4BLjsC57xpdkUS7SedWoLdOE='; style-src 'self'; img-src 'self' https://www.magicpulse.app data:; font-src 'self'; connect-src 'self' https://api.magicpulse.app https://api.themeparks.wiki; form-action 'self' https://api.magicpulse.app; frame-src 'none'; worker-src 'self'; media-src 'self'; upgrade-insecure-requests" />
+  <meta name="robots" content="noindex, nofollow, noarchive" />
+  <meta name="referrer" content="no-referrer" />
+  <meta name="description" content="Private aggregate website insights for Magic Pulse." />
+  <meta name="theme-color" content="#0c0820" />
+  <link rel="canonical" href="https://www.magicpulse.app/insights.html" />
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+  <title>Website Insights | Magic Pulse</title>
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Magic Pulse" />
+  <meta property="og:title" content="Website Insights | Magic Pulse" />
+  <meta property="og:description" content="Private aggregate website insights for Magic Pulse." />
+  <meta property="og:url" content="https://www.magicpulse.app/insights.html" />
+  <meta property="og:image" content="https://www.magicpulse.app/og-image.png" />
+  <meta property="og:image:alt" content="Magic Pulse app showing live waits, day planning, and Lightning Lane details" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:image" content="https://www.magicpulse.app/og-image.png" />
+  <link rel="preload" href="fonts/inter-400-latin.woff2" as="font" type="font/woff2" crossorigin="anonymous" />
+  <link rel="preload" href="fonts/outfit-700-latin.woff2" as="font" type="font/woff2" crossorigin="anonymous" />
+  <link rel="stylesheet" href="styles.css?v=20260718c" />
+</head>
+<body>
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+  <header class="site-header"><div class="site-header-backdrop" aria-hidden="true"></div><div class="container nav-row site-header-main"><a href="index.html" class="brand"><img class="brand-mark" src="favicon.svg" width="32" height="32" alt="" />Magic Pulse</a><nav id="site-navigation" class="site-nav" aria-label="Primary"><a href="index.html">Website</a><a href="status.html">Status</a><a href="support.html">Support</a></nav><button class="menu-btn" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="site-navigation"><span></span><span></span><span></span></button></div></header>
+
+  <main id="main-content" class="insights-main" data-insights-dashboard>
+    <section class="insights-hero"><div class="container"><p class="eyebrow">Private report</p><div class="insights-heading"><div><h1>Website insights</h1><p>Daily totals only. No cookies, visitor IDs, IP history, profiles, or cross-site tracking.</p></div><button class="btn btn-ghost" type="button" data-insights-refresh>Refresh</button></div></div></section>
+
+    <section class="insights-content"><div class="container">
+      <div class="insights-state" data-insights-state aria-live="polite">Loading the last 30 days...</div>
+      <div data-insights-report hidden>
+        <dl class="insights-totals">
+          <div><dt>App Store opens</dt><dd data-metric="app_store_click">0</dd></div>
+          <div><dt>Park previews</dt><dd data-metric="park_preview_change">0</dd></div>
+          <div><dt>Gallery moves</dt><dd data-metric="gallery_navigate">0</dd></div>
+          <div><dt>Support requests</dt><dd data-metric="support_submit">0</dd></div>
+        </dl>
+
+        <div class="insights-grid">
+          <section class="insights-panel" aria-labelledby="insights-actions-heading"><div class="insights-panel-head"><div><p class="privacy-card-label">Actions</p><h2 id="insights-actions-heading">What visitors used</h2></div><span data-insights-window>30 days</span></div><div class="insights-bars" data-insights-bars></div></section>
+          <section class="insights-panel" aria-labelledby="insights-support-heading"><div class="insights-panel-head"><div><p class="privacy-card-label">Support</p><h2 id="insights-support-heading">Requests by topic</h2></div></div><div class="insights-bars" data-support-bars></div></section>
+        </div>
+
+        <section class="insights-panel insights-table-panel" aria-labelledby="insights-daily-heading"><div class="insights-panel-head"><div><p class="privacy-card-label">Daily record</p><h2 id="insights-daily-heading">Recent aggregate activity</h2></div><span data-insights-generated></span></div><div class="insights-table-wrap"><table><thead><tr><th>Date</th><th>Event</th><th>Context</th><th>Total</th></tr></thead><tbody data-insights-rows></tbody></table></div></section>
+      </div>
+    </div></section>
+  </main>
+
+  <footer class="site-footer"><div class="container footer-grid"><div class="brand-footer"><span class="brand-footer-wordmark"><img class="brand-mark" src="favicon.svg" width="28" height="28" alt="" />Magic Pulse</span></div><p><a href="privacy.html">Privacy Policy</a> · <a href="status.html">Status</a> · <a href="support.html">Support</a></p><p class="footer-disclaimer">This report is available only through the private Magic Pulse workspace site.</p></div></footer>
+  <script src="script.js?v=20260718c" defer></script>
+</body>
+</html>

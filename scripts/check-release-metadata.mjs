@@ -5,6 +5,7 @@ import { fileURLToPath } from "node:url";
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const release = JSON.parse(await readFile(path.join(root, "site-release.json"), "utf8"));
 const homepage = await readFile(path.join(root, "index.html"), "utf8");
+const support = await readFile(path.join(root, "support.html"), "utf8");
 
 const requiredHomepageValues = [
   release.appStoreUrl,
@@ -20,6 +21,9 @@ const requiredHomepageValues = [
 const missing = requiredHomepageValues.filter((value) => !homepage.includes(value));
 if (missing.length) {
   throw new Error(`Homepage release details are out of sync: ${missing.join(", ")}`);
+}
+if (!support.includes(`value="${release.version}"`)) {
+  throw new Error(`Support form app version is out of sync: expected ${release.version}`);
 }
 
 if (process.argv.includes("--remote")) {

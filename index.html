@@ -35,7 +35,7 @@
   <link rel="preconnect" href="https://api.themeparks.wiki" />
   <link rel="preload" href="fonts/inter-400-latin.woff2" as="font" type="font/woff2" crossorigin="anonymous" />
   <link rel="preload" href="fonts/outfit-700-latin.woff2" as="font" type="font/woff2" crossorigin="anonymous" />
-  <link rel="stylesheet" href="styles.css?v=20260718b" />
+  <link rel="stylesheet" href="styles.css?v=20260718c" />
 
   <script type="application/ld+json">
   {
@@ -248,14 +248,19 @@
           <p class="panel-sub" id="live-park-selection-status"><span id="live-park-name">Loading…</span> · <span id="live-updated">—</span></p>
           <div class="hairline-dot live-waits-divider" aria-hidden="true"><span class="dot"></span></div>
           <div id="live-waits" class="live-waits" aria-live="polite" aria-busy="true">
-            <p class="waits-loading">Loading live rides...</p>
+            <div class="waits-loading" aria-label="Loading live rides">
+              <span></span><span></span><span></span><span></span>
+            </div>
             <div class="waits-rows" hidden></div>
             <p class="waits-error" hidden></p>
           </div>
-          <p class="live-waits-fallback-note" id="live-waits-fallback-note" hidden>Live data unavailable — example rides shown.</p>
+          <div class="live-waits-fallback-note" id="live-waits-fallback-note" hidden>
+            <span>Live data is unavailable, so these are example rides.</span>
+            <button class="snapshot-retry" id="live-waits-retry" type="button">Try again</button>
+          </div>
           <div class="hero-panel-insights" id="live-insights" aria-label="Planning summary" aria-live="polite">
             <div>
-              <span id="live-best-label">Lowest shown</span>
+              <span id="live-best-label">Best move</span>
               <strong id="live-best-move">Checking current waits...</strong>
             </div>
             <div>
@@ -299,19 +304,29 @@
           <p class="section-copy">Magic Pulse turns live park data into a clear next step: compare waits, organize your day, and decide whether Lightning Lane is worth it.</p>
         </div>
 
-        <div class="product-gallery" aria-label="Magic Pulse app screenshots">
-          <figure class="product-shot product-shot--lead reveal reveal-1">
-            <img src="assets/app-screens/live-waits.webp" width="600" height="1300" alt="Magic Pulse showing live Magic Kingdom ride wait times, crowd level, weather, and a best-move suggestion" decoding="async" />
-            <figcaption><strong>Know what is worth riding</strong><span>Live waits, trends, weather, and a useful next move in one view.</span></figcaption>
+        <div class="product-gallery" id="product-gallery" aria-label="Magic Pulse app screenshots" tabindex="0">
+          <figure class="product-shot product-shot--lead reveal reveal-1" id="product-slide-1" data-gallery-slide>
+            <img src="assets/app-screens/live-waits.webp" width="600" height="1299" alt="Magic Pulse showing live Magic Kingdom ride wait times, crowd level, weather, and a best-move suggestion" decoding="async" />
+            <figcaption><strong>Know what is worth riding</strong><span>Live waits, trends, weather, and a useful next move in one view.</span><a href="live-waits.html" data-event="feature_open" data-event-context="live_waits">Explore live waits</a></figcaption>
           </figure>
-          <figure class="product-shot reveal reveal-2">
-            <img src="assets/app-screens/my-day.webp" width="600" height="1300" alt="Magic Pulse My Day planner with a date picker, auto-optimize control, and a planned attraction" loading="lazy" decoding="async" />
-            <figcaption><strong>Shape the day around you</strong><span>Plan rides, meals, and events, then optimize the order when conditions change.</span></figcaption>
+          <figure class="product-shot reveal reveal-2" id="product-slide-2" data-gallery-slide>
+            <img src="assets/app-screens/my-day.webp" width="600" height="1299" alt="Magic Pulse My Day planner with a date picker, auto-optimize control, and a planned attraction" loading="lazy" decoding="async" />
+            <figcaption><strong>Shape the day around you</strong><span>Plan rides, meals, and events, then optimize the order when conditions change.</span><a href="day-planner.html" data-event="feature_open" data-event-context="day_planner">Explore My Day</a></figcaption>
           </figure>
-          <figure class="product-shot reveal reveal-3">
-            <img src="assets/app-screens/lightning-lane.webp" width="600" height="1300" alt="Magic Pulse ride detail showing Lightning Lane price, wait forecast, and wait history for TRON Lightcycle Run" loading="lazy" decoding="async" />
-            <figcaption><strong>Judge the price with context</strong><span>Compare standby time, Lightning Lane price, forecasts, and today&apos;s history.</span></figcaption>
+          <figure class="product-shot reveal reveal-3" id="product-slide-3" data-gallery-slide>
+            <img src="assets/app-screens/lightning-lane.webp" width="600" height="1299" alt="Magic Pulse ride detail showing Lightning Lane price, wait forecast, and wait history for TRON Lightcycle Run" loading="lazy" decoding="async" />
+            <figcaption><strong>Judge the price with context</strong><span>Compare standby time, Lightning Lane price, forecasts, and today&apos;s history.</span><a href="lightning-lane.html" data-event="feature_open" data-event-context="lightning_lane">Explore Lightning Lane</a></figcaption>
           </figure>
+        </div>
+
+        <div class="gallery-controls" data-gallery-controls aria-label="Screenshot controls">
+          <button type="button" class="icon-btn" data-gallery-previous aria-label="Previous screenshot" title="Previous screenshot">
+            <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+          </button>
+          <span class="gallery-counter" data-gallery-counter aria-live="polite">1 of 3</span>
+          <button type="button" class="icon-btn" data-gallery-next aria-label="Next screenshot" title="Next screenshot">
+            <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+          </button>
         </div>
 
         <div class="capability-rail" aria-label="More Magic Pulse features">
@@ -645,6 +660,7 @@
         <a href="privacy.html">Privacy Policy</a> ·
         <a href="https://www.apple.com/legal/internet-services/itunes/dev/stdeula/" target="_blank" rel="noopener noreferrer">Apple Standard EULA</a> ·
         <a href="support.html">Support</a> ·
+        <a href="status.html">Status</a> ·
         <a href="android.html">Android waitlist</a>
       </p>
       <p class="footer-disclaimer">
@@ -660,6 +676,6 @@
     </a>
   </div>
 
-  <script src="script.js?v=20260718b" defer></script>
+  <script src="script.js?v=20260718c" defer></script>
 </body>
 </html>

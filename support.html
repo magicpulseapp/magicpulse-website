@@ -30,7 +30,7 @@
 
   <link rel="preload" href="fonts/inter-400-latin.woff2" as="font" type="font/woff2" crossorigin="anonymous" />
   <link rel="preload" href="fonts/outfit-700-latin.woff2" as="font" type="font/woff2" crossorigin="anonymous" />
-  <link rel="stylesheet" href="styles.css?v=20260718b" />
+  <link rel="stylesheet" href="styles.css?v=20260718c" />
 </head>
 <body>
   <a class="skip-link" href="#main-content">Skip to main content</a>
@@ -135,10 +135,58 @@
               <textarea class="form-input form-textarea" id="message" name="message" rows="7" placeholder="Tell us what happened, what you expected, and any details that help..." required minlength="10" maxlength="5000"></textarea>
             </div>
 
+            <details class="support-diagnostics" data-support-diagnostics>
+              <summary>
+                <span>Add technical details</span>
+                <small>Helpful for bug reports</small>
+              </summary>
+              <div class="support-diagnostics-fields">
+                <div class="contact-field-grid">
+                  <div class="form-group">
+                    <label class="form-label" for="app-version">App version</label>
+                    <input class="form-input" id="app-version" name="app_version" type="text" value="1.8.2" maxlength="30" autocomplete="off" />
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label" for="device-model">Device</label>
+                    <input class="form-input" id="device-model" name="device_model" type="text" placeholder="For example, iPhone 16" maxlength="80" autocomplete="off" />
+                  </div>
+                </div>
+
+                <div class="contact-field-grid">
+                  <div class="form-group">
+                    <label class="form-label" for="os-version">iOS or watchOS version</label>
+                    <input class="form-input" id="os-version" name="os_version" type="text" placeholder="For example, iOS 18.5" maxlength="40" autocomplete="off" />
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label" for="support-park">Park</label>
+                    <select class="form-input form-select" id="support-park" name="park">
+                      <option value="">Not park-specific</option>
+                      <option>Magic Kingdom</option>
+                      <option>EPCOT</option>
+                      <option>Disney's Hollywood Studios</option>
+                      <option>Disney's Animal Kingdom</option>
+                      <option>Disneyland Park</option>
+                      <option>Disney California Adventure</option>
+                      <option>Tokyo Disneyland</option>
+                      <option>Tokyo DisneySea</option>
+                      <option>Disneyland Park (Paris)</option>
+                      <option>Disney Adventure World</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label" for="steps-to-reproduce">Steps that caused the issue</label>
+                  <textarea class="form-input form-textarea form-textarea--compact" id="steps-to-reproduce" name="steps" rows="4" maxlength="1200" placeholder="For example: opened Magic Kingdom, selected TRON, then turned on an alert..."></textarea>
+                </div>
+              </div>
+              <p class="support-diagnostics-note">Only the details you enter are sent. This page does not fingerprint your device or collect logs automatically.</p>
+            </details>
+
             <div id="form-status" class="form-status" data-form-status hidden aria-live="polite"></div>
             <div class="contact-actions">
               <button type="submit" class="btn btn-primary">Send message</button>
-              <a class="btn btn-ghost" href="index.html#faq">View FAQ</a>
+              <a class="btn btn-ghost" href="status.html">Check service status</a>
             </div>
 
             <p class="support-trust-note">
@@ -199,6 +247,7 @@
         <a href="privacy.html">Privacy Policy</a> ·
         <a href="https://www.apple.com/legal/internet-services/itunes/dev/stdeula/" target="_blank" rel="noopener noreferrer">Apple Standard EULA</a> ·
         <a href="support.html">Support</a> ·
+        <a href="status.html">Status</a> ·
         <a href="android.html">Android waitlist</a>
       </p>
       <p class="footer-disclaimer">
@@ -207,6 +256,6 @@
     </div>
   </footer>
 
-  <script src="script.js?v=20260718b" defer></script>
+  <script src="script.js?v=20260718c" defer></script>
 </body>
 </html>

@@ -6,9 +6,12 @@ Static landing page for the **Magic Pulse** iOS app (`www.magicpulse.app`). The 
 
 | File | Purpose |
 |------|---------|
-| `index.html` | Home: selectable live park preview, updates, compatibility, features, pricing, and FAQ |
-| `styles.css` | Dark theme, responsive layout, self-hosted `@font-face` (Outfit + Inter) |
-| `script.js` | Mobile nav (a11y), scroll reveal + fallback, hero live waits + auto-refresh |
+| `index.html` | Home: selectable live park preview, product gallery, compatibility, pricing, and FAQ |
+| `live-waits.html` / `day-planner.html` / `lightning-lane.html` | Search-friendly product guides backed by real app screenshots |
+| `status.html` | Current website, API, and live-data availability checks |
+| `insights.html` | Private, authenticated aggregate website report (`noindex`) |
+| `styles.css` | Consolidated responsive design system and page styles |
+| `script.js` | Navigation, galleries, forms, status, aggregate insights, resilient live waits, and offline state |
 | `fonts/*.woff2` | Self-hosted webfonts (latin + latin-ext); no Google Fonts runtime |
 | `favicon.svg` | Tab icon |
 | `apple-touch-icon.png` | 180×180 home-screen icon (iOS ignores SVG here) |
@@ -16,10 +19,12 @@ Static landing page for the **Magic Pulse** iOS app (`www.magicpulse.app`). The 
 | `_headers` | Security headers + Cache-Control hints for **Netlify / Cloudflare Pages** (ignored by stock GitHub Pages) |
 | `CNAME` | Custom hostname for GitHub Pages: `www.magicpulse.app` |
 | `app-ads.txt` | AdMob `app-ads.txt` at site root |
-| `privacy.html` / `support.html` | Legal + protected support form |
+| `privacy.html` / `support.html` | Legal + protected structured support form |
 | `android.html` | Protected email-only Android availability waitlist |
 | `robots.txt` | Crawl rules + `Sitemap` URL |
-| `sitemap.xml` | Index URLs for search engines |
+| `sitemap.xml` | Public index URLs for search engines |
+| `.well-known/security.txt` | Standard security-reporting contact |
+| `drizzle/0000_site_event_daily.sql` | Aggregate-only daily website counters for Sites D1 |
 
 ## Local preview
 
@@ -50,10 +55,18 @@ Calls `GET https://api.magicpulse.app/api/parks/public/featured/snapshot` on the
 
 Ride rows include `data-ride-id` when the source provides an `id`.
 
+The panel also compares a ride's current wait with its 30-minute forecast when the API provides one. It labels the direction on each row and recommends either the shortest displayed ride or a meaningful forecasted drop. All four rows keep the same visual surface.
+
+## Website measurement
+
+Sites deployments use the logical D1 binding `DB` to store allowlisted events as daily totals. The table contains only `day`, `event`, `context`, and `count`; it has no visitor identifier, cookie, email, message, or IP history. Client-side events stop when Do Not Track or Global Privacy Control is enabled. The private report requires the authenticated workspace-user header and is never listed in the sitemap.
+
+Current allowlisted interactions include App Store opens, park-preview changes, gallery navigation, feature-guide opens, status checks, and support-form starts. Completed support requests and Android signups are counted server-side without copying form contents into the metrics table.
+
 ## SEO & sharing
 
 - Canonical URLs assume **`https://www.magicpulse.app/`** (see `CNAME` and each page’s `<link rel="canonical">`). Configure **apex** (`magicpulse.app`) to **301 redirect** to `https://www.magicpulse.app` at your DNS or CDN so one hostname wins.
-- **`robots.txt`** allows all crawlers and references **`sitemap.xml`** (home, support, privacy, Android waitlist). Bump **`<lastmod>`** in `sitemap.xml` when you ship meaningful content changes.
+- **`robots.txt`** allows public pages, excludes the private insights shell, and references **`sitemap.xml`**. Bump **`<lastmod>`** in `sitemap.xml` when you ship meaningful content changes.
 - **Open Graph / Twitter** tags are on all public pages; **`og:image:alt`** and matching Twitter fields improve accessibility and previews.
 - **Structured data** on the home page uses JSON-LD **`@graph`**: `WebSite`, `Organization`, and `SoftwareApplication`.
 - **Performance:** Self-hosted fonts with **`preload`** for critical WOFF2 files; **`script.js`** uses **`defer`**. Social image is **`og-image.png`**.
@@ -78,6 +91,8 @@ npx --yes lighthouse http://127.0.0.1:8080/ --only-categories=performance,seo,ac
 
 Run `npm run build` for the validated Sites bundle. The source can also be uploaded to **GitHub Pages**, **Netlify**, **Cloudflare Pages**, **Vercel**, S3, etc. Ensure `favicon.svg`, `app-ads.txt`, and font files under `fonts/` are served from the site root (same paths as in `styles.css`).
 
+`npm run build` now checks JavaScript syntax, every local link and asset, key responsive/accessibility UI contracts, worker routes, protected reporting, form validation, security headers, and release metadata before packaging.
+
 - **Security headers:** Every HTML page includes a CSP meta fallback. The Sites worker and root **`_headers`** file add the stronger response-level policy plus HSTS, clickjacking protection, MIME protection, and permissions restrictions. **Stock GitHub Pages does not read `_headers`**, so configure the response-only headers at Cloudflare when GitHub Pages remains the origin.
 - **Cache busting:** `styles.css` and `script.js` are cached as immutable for 1 year, so every HTML page references them with a `?v=YYYYMMDD` query. **Bump the `?v=` value on every HTML page whenever you edit either file**, or returning visitors keep the stale copy.
 - **CSP hashes:** The home page keeps JSON-LD inline for SEO. If you edit those `<script type="application/ld+json">` blocks, recalculate the `sha256-...` hashes in `_headers`.
@@ -97,6 +112,8 @@ Must match the iOS target’s **`PrivacyPolicyURL`** in `Info.plist` (see Magic 
 **App Store product page:** `https://apps.apple.com/us/app/magic-pulse/id6759612612`
 
 Full checklist: `MagicPulse/docs/APP_STORE_CONNECT_MANUAL.md` (in the iOS repo).
+
+Website launch steps are also tracked in [`LAUNCH_CHECKLIST.md`](LAUNCH_CHECKLIST.md).
 
 ## Legal
 

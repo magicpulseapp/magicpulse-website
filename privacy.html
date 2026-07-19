@@ -30,7 +30,7 @@
 
   <link rel="preload" href="fonts/inter-400-latin.woff2" as="font" type="font/woff2" crossorigin="anonymous" />
   <link rel="preload" href="fonts/outfit-700-latin.woff2" as="font" type="font/woff2" crossorigin="anonymous" />
-  <link rel="stylesheet" href="styles.css?v=20260718b" />
+  <link rel="stylesheet" href="styles.css?v=20260718c" />
 </head>
 <body>
   <a class="skip-link" href="#main-content">Skip to main content</a>
@@ -45,6 +45,7 @@
         <a href="index.html#pricing">Pricing</a>
         <a href="index.html#faq">FAQ</a>
         <a href="support.html">Support</a>
+        <a href="status.html">Status</a>
         <a href="index.html#download" class="btn btn-nav">Get the app</a>
       </nav>
       <button class="menu-btn" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="site-navigation">
@@ -132,14 +133,15 @@
               <li>Settings sync and shared day plans: Apple iCloud Key-Value Store and CloudKit.</li>
               <li>Purchases: Apple App Store subscriptions and one-time purchases.</li>
               <li>Ads: Google AdMob on the free tier.</li>
+              <li>Website form delivery: Formspree after Magic Pulse validates and relays an accepted submission.</li>
             </ul>
           </section>
 
           <section id="website" class="privacy-section">
             <h2>This website</h2>
             <p class="section-copy">The marketing site may load a <strong>read-only</strong> live snapshot from our API or ThemeParks Wiki; no account is required. Fonts are self-hosted, and the site does not use advertising cookies or cross-site trackers.</p>
-            <p class="section-copy"><strong>Anonymous measurement:</strong> The site can count App Store button clicks, park-preview changes, and completed Android waitlist signups. It sends only an allowlisted event name and a short context such as the button location or selected park. The API stores these as daily totals, without a visitor ID, device ID, cookie, email, or IP address in the measurement table. Browser Do Not Track and Global Privacy Control signals disable these client-side events. Aggregate counters are automatically removed after 18 months.</p>
-            <p class="section-copy"><strong>Forms:</strong> The <a href="support.html">support form</a> and <a href="android.html">Android waitlist</a> first pass through the Magic Pulse API for field validation, a signed form challenge, and rate limiting. The relay keeps a network-based rate-limit bucket briefly in memory and does not add it to the submission. Accepted fields are then sent to <strong>Formspree</strong> for delivery; Magic Pulse does not write form contents to its website database. Android waitlist emails are used only for meaningful Android testing or availability updates.</p>
+            <p class="section-copy"><strong>Anonymous measurement:</strong> The site can count App Store button clicks, park-preview changes, screenshot-gallery navigation, feature-guide opens, status checks, support-form starts, completed support requests by topic, and completed Android waitlist signups. It stores only an allowlisted event name, a short context such as button location or selected park, the calendar day, and a total. The measurement table has no visitor ID, device ID, cookie, email, form message, or IP address. Browser Do Not Track and Global Privacy Control signals disable client-side events. Aggregate counters are automatically removed after about 18 months.</p>
+            <p class="section-copy"><strong>Forms:</strong> The <a href="support.html">support form</a> and <a href="android.html">Android waitlist</a> first pass through the Magic Pulse website service for field validation, a signed form challenge, and rate limiting. The relay keeps a network-based rate-limit bucket briefly in memory and does not add it to the submission. Technical support details are optional and include only what you type; the page does not collect device logs or fingerprint your device. Accepted fields are sent to <strong>Formspree</strong> for delivery, and a random support reference is added. Magic Pulse does not write names, emails, messages, or technical details to its website analytics database. Android waitlist emails are used only for meaningful Android testing or availability updates.</p>
           </section>
 
           <section id="children" class="privacy-section">
@@ -191,7 +193,8 @@
       <p>
         <a href="privacy.html">Privacy Policy</a> ·
         <a href="https://www.apple.com/legal/internet-services/itunes/dev/stdeula/" target="_blank" rel="noopener noreferrer">Apple Standard EULA</a> ·
-        <a href="support.html">Support</a>
+        <a href="support.html">Support</a> ·
+        <a href="status.html">Status</a>
       </p>
       <p class="footer-disclaimer">
         Magic Pulse is not affiliated with theme park operators. Trademarks belong to their respective owners.
@@ -199,6 +202,6 @@
     </div>
   </footer>
 
-  <script src="script.js?v=20260718b" defer></script>
+  <script src="script.js?v=20260718c" defer></script>
 </body>
 </html>
