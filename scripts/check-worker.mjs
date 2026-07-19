@@ -186,7 +186,10 @@ try {
       ASSETS: {
         async fetch() {
           return new Response(await readFile(new URL("../status-history.json", import.meta.url)), {
-            headers: { "Content-Type": "application/json" },
+            headers: {
+              "Content-Type": "application/json",
+              "Cache-Control": "public, max-age=0, must-revalidate",
+            },
           });
         },
       },

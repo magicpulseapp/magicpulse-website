@@ -433,7 +433,9 @@ function cachePolicy(url, response, isPage) {
 function withSecurityHeaders(response, url, isHtmlPage = false) {
   const headers = new Headers(response.headers);
   if (isHtmlPage) headers.set("Content-Type", "text/html; charset=utf-8");
-  if (!headers.has("Cache-Control")) {
+  if (url.pathname === "/status-history.json" && response.status < 400) {
+    headers.set("Cache-Control", cachePolicy(url, response, isHtmlPage));
+  } else if (!headers.has("Cache-Control")) {
     headers.set("Cache-Control", cachePolicy(url, response, isHtmlPage));
   }
   headers.set("Content-Security-Policy", CONTENT_SECURITY_POLICY);
