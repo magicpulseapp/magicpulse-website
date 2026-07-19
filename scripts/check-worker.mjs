@@ -197,7 +197,7 @@ try {
     {},
   );
   assert.equal(historyResponse.status, 200);
-  assert.equal(historyResponse.headers.get("cache-control"), "public, max-age=60, must-revalidate");
+  assert.equal(historyResponse.headers.get("cache-control"), "public, max-age=0, must-revalidate");
   assert.equal((await historyResponse.json()).entries.length, 1);
 
   const foreignOrigin = await worker.fetch(

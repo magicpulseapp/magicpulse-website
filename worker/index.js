@@ -421,7 +421,6 @@ function cachePolicy(url, response, isPage) {
   if (isPage) return "public, max-age=0, must-revalidate";
   const type = response.headers.get("content-type") ?? "";
   if (type.includes("text/html")) return "public, max-age=0, must-revalidate";
-  if (url.pathname === "/status-history.json") return "public, max-age=60, must-revalidate";
   if (/\.(?:woff2?|ttf)$/i.test(url.pathname)) return "public, max-age=31536000, immutable";
   if (/\.(?:css|js)$/i.test(url.pathname) && url.searchParams.has("v")) {
     return "public, max-age=31536000, immutable";
@@ -433,9 +432,7 @@ function cachePolicy(url, response, isPage) {
 function withSecurityHeaders(response, url, isHtmlPage = false) {
   const headers = new Headers(response.headers);
   if (isHtmlPage) headers.set("Content-Type", "text/html; charset=utf-8");
-  if (url.pathname === "/status-history.json" && response.status < 400) {
-    headers.set("Cache-Control", cachePolicy(url, response, isHtmlPage));
-  } else if (!headers.has("Cache-Control")) {
+  if (!headers.has("Cache-Control")) {
     headers.set("Cache-Control", cachePolicy(url, response, isHtmlPage));
   }
   headers.set("Content-Security-Policy", CONTENT_SECURITY_POLICY);
