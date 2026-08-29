@@ -62,7 +62,7 @@
           <h1>Privacy Policy</h1>
           <p class="section-copy">A plain-language look at what Magic Pulse uses, what stays on your device, and which services help power live park planning.</p>
           <div class="privacy-meta" aria-label="Privacy policy summary">
-            <span class="privacy-pill"><strong>Updated</strong> Jul 18, 2026</span>
+            <span class="privacy-pill"><strong>Updated</strong> Aug 29, 2026</span>
             <span class="privacy-pill"><strong>No account</strong> required</span>
             <span class="privacy-pill"><strong>No cookies</strong> on this site</span>
           </div>
@@ -109,8 +109,8 @@
               <li><strong>iCloud settings sync:</strong> If you’re signed in to iCloud, certain preferences sync across your own iPhones and iPads via Apple’s Key-Value Store. The data is stored in your private iCloud account; we never see it. You can disable iCloud Drive for Magic Pulse to opt out.</li>
               <li><strong>Day plans:</strong> Plans are stored locally in Core Data. When you choose to <strong>share a plan</strong>, that plan is mirrored to your private iCloud database via Apple’s CloudKit so invited family members can collaborate. Magic Pulse never holds a copy of your CloudKit data.</li>
               <li><strong>On-device history (forecasts):</strong> Wait-time history used for trends and on-device forecasts stays on your device unless you use the optional API path below.</li>
-              <li><strong>Optional Magic Pulse API:</strong> If you or the default configuration use our servers, the app may send requests authenticated with Apple’s App Attest and an app API key. We process park snapshots and aggregated wait history to power forecasts, Lightning Lane price history, and crowd insights. We do not use this to build an advertising profile.</li>
-              <li><strong>Advertising (free tier):</strong> The free tier may show banner ads through <strong>Google AdMob</strong>. Google may collect device and usage data as described in <a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer">Google’s Privacy Policy</a>. Magic Pulse Pro removes the in-app banner.</li>
+              <li><strong>Optional Magic Pulse API:</strong> If you or the default configuration use our servers, the app may send requests authenticated with Apple’s App Attest and an app API key. We process park snapshots and aggregated wait history to power forecasts, Lightning Lane price history, and crowd insights. When push notifications are enabled, the API stores the APNs device token, a random installation identifier, enabled park identifiers, alert preferences, time zone, locale, and app/build version solely to route the requested alerts. Turning notifications off deletes that push subscription. Invalid APNs tokens are also removed when Apple rejects them. We do not use this information to build an advertising profile.</li>
+              <li><strong>Advertising (free tier):</strong> The free tier may show banner ads through <strong>Google AdMob</strong>. Depending on the user’s region and choices, Google’s SDK may process an IP address to estimate general location, diagnostics and performance data, app- or developer-bounded device identifiers, advertising data, and interactions with the app or ads. Magic Pulse requests the applicable consent status before requesting an ad, serves only non-personalized ads, disables Google’s publisher first-party identifier, and does not request permission for cross-app tracking. In-app privacy options are available when Google requires them. See <a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer">Google’s Privacy Policy</a>. Magic Pulse Pro removes the in-app banner.</li>
               <li><strong>Diagnostics:</strong> Lightweight app events may be logged locally on your device for product improvement and are not uploaded by default.</li>
             </ul>
           </section>
@@ -122,7 +122,7 @@
 
           <section id="no-sale" class="privacy-section">
             <h2>Data we do not sell</h2>
-            <p class="section-copy">We do not sell your personal information. We do not use your data for third-party behavioral advertising beyond what ad networks apply when ads are shown on the free tier.</p>
+            <p class="section-copy">We do not sell your personal information. Magic Pulse configures its advertising SDK for non-personalized ads and does not enable cross-app tracking.</p>
           </section>
 
           <section id="services" class="privacy-section">
@@ -151,7 +151,7 @@
 
           <section id="choices" class="privacy-section">
             <h2>Your choices</h2>
-            <p class="section-copy">You can limit location and notifications in iOS Settings. For ad-related settings, use Apple’s “Tracking” and in-app privacy options where available. California residents may have additional rights under the CPRA; contact us via the support form and we will respond as required.</p>
+            <p class="section-copy">You can limit location and notifications in iOS Settings. When Google requires an advertising privacy-options form for your region or prior choice, it appears in Magic Pulse under Settings &gt; Privacy &amp; Data. You can also use Apple’s privacy controls in iOS Settings. California residents may have additional rights under the CPRA; contact us via the support form and we will respond as required.</p>
           </section>
 
           <section id="international" class="privacy-section">
@@ -161,7 +161,7 @@
 
           <section id="retention" class="privacy-section">
             <h2>Retention</h2>
-            <p class="section-copy">Server-side wait samples and snapshots are kept only as long as needed to operate the service and improve reliability, including automatic pruning of old history. Anonymous website event totals are kept for up to 18 months. Support emails or form submissions are retained only as needed to respond and meet legal obligations. Android waitlist addresses are retained until the list’s purpose ends or you ask us to remove your address.</p>
+            <p class="section-copy">Server-side wait samples and snapshots are kept only as long as needed to operate the service and improve reliability, including automatic pruning of old history. A push subscription remains only while notifications are enabled and its APNs token remains valid; turning notifications off deletes it. Anonymous website event totals are kept for up to 18 months. Support emails or form submissions are retained only as needed to respond and meet legal obligations. Android waitlist addresses are retained until the list’s purpose ends or you ask us to remove your address.</p>
           </section>
 
           <section id="updates" class="privacy-section">
