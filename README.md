@@ -67,7 +67,7 @@ Current allowlisted interactions include App Store opens, park-preview changes, 
 
 ## SEO & sharing
 
-- Canonical URLs assume **`https://www.magicpulse.app/`** (see `CNAME` and each page’s `<link rel="canonical">`). Configure **apex** (`magicpulse.app`) to **301 redirect** to `https://www.magicpulse.app` at your DNS or CDN so one hostname wins.
+- Canonical URLs assume **`https://www.magicpulse.app/`** (see `CNAME` and each page’s `<link rel="canonical">`). When both hostnames are routed through `worker/index.js`, the worker permanently redirects **apex** (`magicpulse.app`) to the matching `www` path with status 308. Other hosts must configure the same redirect at their DNS or CDN.
 - **`robots.txt`** allows public pages, excludes the private insights shell, and references **`sitemap.xml`**. Bump **`<lastmod>`** in `sitemap.xml` when you ship meaningful content changes.
 - **Open Graph / Twitter** tags are on all public pages; **`og:image:alt`** and matching Twitter fields improve accessibility and previews.
 - **Structured data** on the home page uses JSON-LD **`@graph`**: `WebSite`, `Organization`, and `SoftwareApplication`.
@@ -82,7 +82,8 @@ npm run check:release:remote
 ```
 
 Run `npm run check:production` after DNS, proxy, API, or website deployments. It
-verifies the canonical website and legal pages, public API routes, and the
+verifies the canonical website and legal pages, the read-only support-form
+service, public API routes, required response security headers, and the
 permanent apex-to-`www` redirect without changing production state.
 
 ### Lighthouse (local)
@@ -100,6 +101,7 @@ Run `npm run build` for the validated Sites bundle. The source can also be uploa
 `npm run build` now checks JavaScript syntax, every local link and asset, key responsive/accessibility UI contracts, worker routes, protected reporting, form validation, security headers, and release metadata before packaging.
 
 - **Security headers:** Every HTML page includes a CSP meta fallback. The Sites worker and root **`_headers`** file add the stronger response-level policy plus HSTS, clickjacking protection, MIME protection, and permissions restrictions. **Stock GitHub Pages does not read `_headers`**, so configure the response-only headers at Cloudflare when GitHub Pages remains the origin.
+- **Forms require the worker:** The support form and Android waitlist use `/api/site/form-token` and `/api/site/forms/*`. A static-only GitHub Pages deployment serves the pages but not those routes. Route the public hostnames through `worker/index.js`, configure `SITE_FORM_SECRET`, and require `npm run check:production` to pass before considering the forms live.
 - **Cache busting:** `styles.css` and `script.js` are cached as immutable for 1 year, so every HTML page references them with a `?v=YYYYMMDD` query. **Bump the `?v=` value on every HTML page whenever you edit either file**, or returning visitors keep the stale copy.
 - **CSP hashes:** The home page keeps JSON-LD inline for SEO. If you edit those `<script type="application/ld+json">` blocks, recalculate the `sha256-...` hashes in `_headers`.
 - If you also serve this site from **MagicPulseAPI** `public/`, copy these files there after changes.
@@ -118,9 +120,8 @@ Must match the iOS target’s **`PrivacyPolicyURL`** in `Info.plist` (see Magic 
 
 **App Store product page:** `https://apps.apple.com/us/app/magic-pulse/id6759612612`
 
-Full checklist: `MagicPulse/docs/APP_STORE_CONNECT_MANUAL.md` (in the iOS repo).
-
-Website launch steps are also tracked in [`LAUNCH_CHECKLIST.md`](LAUNCH_CHECKLIST.md).
+The companion iOS repository tracks the full account and release checklist in
+`docs/APP_STORE_RELEASE_1.8.4.md` and `docs/APP_STORE_PRIVACY_1.8.4.md`.
 
 ## Legal
 
