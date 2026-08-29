@@ -25,6 +25,7 @@ Static landing page for the **Magic Pulse** iOS app (`www.magicpulse.app`). The 
 | `robots.txt` | Crawl rules + `Sitemap` URL |
 | `sitemap.xml` | Public index URLs for search engines |
 | `.well-known/security.txt` | Standard security-reporting contact |
+| `.nojekyll` | Ensures GitHub Pages publishes `.well-known` and other dot paths |
 | `drizzle/0000_site_event_daily.sql` | Aggregate-only daily website counters for Sites D1 |
 
 ## Local preview
@@ -79,6 +80,10 @@ Check the page against `site-release.json`, or compare that file with Apple's li
 npm run check:release
 npm run check:release:remote
 ```
+
+Run `npm run check:production` after DNS, proxy, API, or website deployments. It
+verifies the canonical website and legal pages, public API routes, and the
+permanent apex-to-`www` redirect without changing production state.
 
 ### Lighthouse (local)
 
