@@ -91,6 +91,16 @@ try {
   assert.equal(apexRedirect.headers.get("cache-control"), "public, max-age=86400");
   assert.equal(apexRedirect.headers.get("x-content-type-options"), "nosniff");
 
+  const unavailableFormService = await worker.fetch(
+    new Request("https://preview.example/api/site/form-token", { headers: requestHeaders }),
+    { ...env, SITE_FORM_SECRET: "" },
+    {},
+  );
+  assert.equal(unavailableFormService.status, 503);
+  assert.deepEqual(await unavailableFormService.json(), { error: "Form service unavailable" });
+  assert.equal(unavailableFormService.headers.get("cache-control"), "no-store");
+  assert.equal(unavailableFormService.headers.get("x-content-type-options"), "nosniff");
+
   const home = await worker.fetch(new Request("https://preview.example/"), env, {});
   assert.equal(home.status, 200);
   assert.match(home.headers.get("content-security-policy"), /frame-ancestors 'none'/);
