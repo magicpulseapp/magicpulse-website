@@ -1,11 +1,13 @@
 {
   "appStoreId": "6759612612",
   "appStoreUrl": "https://apps.apple.com/us/app/magic-pulse/id6759612612",
-  "version": "1.8.2",
-  "releaseDate": "2026-06-28",
-  "releaseDateDisplay": "June 28, 2026",
-  "downloadSize": "72.7 MB",
+  "version": "1.8.3",
+  "releaseDate": "2026-07-23",
+  "releaseDateDisplay": "July 23, 2026",
+  "downloadSize": "42.6 MB",
   "minimumOS": "iOS 18.0 or later",
   "weeklyPrice": "$0.99 / week",
-  "lifetimePrice": "$2.99"
+  "lifetimePrice": "$2.99",
+  "releaseHeadline": "Faster, clearer, and more dependable",
+  "releaseSummary": "Version 1.8.3 improves launch reliability, park switching, resort-matched notifications, cached-data status, ride layouts, My Day planning, accessibility controls, and performance throughout the app."
 }

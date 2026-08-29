@@ -1203,7 +1203,10 @@
     }
     if (openAppLink) {
       openAppLink.setAttribute('data-deep-link', 'magicpulse://park/' + parkId);
-      openAppLink.setAttribute('aria-label', 'Open ' + meta.name + ' in Magic Pulse');
+      var openAppLabel = 'Open ' + meta.name + ' in Magic Pulse';
+      var openAppLabelElement = document.getElementById('live-open-app-label');
+      if (openAppLabelElement) openAppLabelElement.textContent = openAppLabel;
+      openAppLink.setAttribute('aria-label', openAppLabel);
     }
   }
 

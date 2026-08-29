@@ -20,11 +20,14 @@ for (const file of htmlFiles) {
 }
 
 const home = await readFile(path.join(root, "index.html"), "utf8");
+const clientScript = await readFile(path.join(root, "script.js"), "utf8");
 assert.equal((home.match(/data-gallery-slide/g) || []).length, 3, "Home: gallery must have three slides");
 assert.match(home, /data-gallery-previous[^>]+aria-label="Previous screenshot"/, "Home: previous gallery control needs an accessible name");
 assert.match(home, /data-gallery-next[^>]+aria-label="Next screenshot"/, "Home: next gallery control needs an accessible name");
 assert.match(home, /id="live-waits-retry"/, "Home: live snapshot needs a retry control");
 assert.equal((home.match(/<span><\/span>/g) || []).length >= 4, true, "Home: live snapshot needs loading placeholders");
+assert.match(home, /id="live-open-app-label">Open Magic Kingdom in Magic Pulse</, "Home: live park CTA needs a visible park-specific label");
+assert.match(clientScript, /openAppLabelElement\.textContent = openAppLabel/, "Home: live park CTA visible and accessible names must update together");
 for (const page of ["live-waits.html", "day-planner.html", "lightning-lane.html"]) {
   assert.match(home, new RegExp(`href="${page}"`), `Home: missing feature link to ${page}`);
 }
@@ -78,6 +81,13 @@ const cssLines = css.split(/\r?\n/).length;
 assert.ok(cssLines < 3600, `CSS: expected consolidated stylesheet, found ${cssLines} lines`);
 assert.equal((css.match(/{/g) || []).length, (css.match(/}/g) || []).length, "CSS: unbalanced braces");
 assert.doesNotMatch(css, /letter-spacing:\s*-/, "CSS: negative letter spacing is not allowed");
+const actionColor = css.match(/--violet-action:\s*(#[0-9a-f]{6})/i)?.[1];
+assert.ok(actionColor, "CSS: primary actions need a dedicated contrast-safe color");
+const rgb = actionColor.slice(1).match(/.{2}/g).map((pair) => Number.parseInt(pair, 16) / 255);
+const luminance = rgb
+  .map((value) => value <= 0.04045 ? value / 12.92 : ((value + 0.055) / 1.055) ** 2.4)
+  .reduce((total, value, index) => total + value * [0.2126, 0.7152, 0.0722][index], 0);
+assert.ok(1.05 / (luminance + 0.05) >= 4.5, `CSS: primary action color ${actionColor} needs 4.5:1 contrast against white text`);
 for (const selector of [".gallery-controls", ".ride-trend", ".connection-banner", ".status-service", ".status-history-entry", ".accessibility-feature-row", ".insights-panel"]) {
   assert.ok(css.includes(selector), `CSS: missing ${selector}`);
 }

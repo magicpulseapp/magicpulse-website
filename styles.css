@@ -11,6 +11,7 @@
   --line-strong: rgba(255, 255, 255, 0.2);
   --violet: #9e59ff;
   --violet-bright: #b879ff;
+  --violet-action: #8f49e8;
   --cyan: #57cfe0;
   --green: #4fd59a;
   --amber: #ffc247;
@@ -407,14 +408,14 @@ body.nav-open .nav-overlay {
 .btn-primary,
 .site-nav .btn-nav {
   border-color: #b06dff;
-  background: var(--violet);
+  background: var(--violet-action);
   color: #fff;
 }
 
 .btn-primary:hover,
 .site-nav .btn-nav:hover {
-  border-color: #c397ff;
-  background: #ab6bff;
+  border-color: #a974ef;
+  background: #8240cf;
   color: #fff;
 }
 
