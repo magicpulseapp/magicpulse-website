@@ -15,6 +15,9 @@ const CONTENT_SECURITY_POLICY = [
   "upgrade-insecure-requests",
 ].join("; ");
 
+const APEX_HOST = "magicpulse.app";
+const CANONICAL_HOST = "www.magicpulse.app";
+
 const PAGE_ROUTES = new Map([
   ["/", "index.page"],
   ["/index.html", "index.page"],
@@ -451,8 +454,23 @@ function withSecurityHeaders(response, url, isHtmlPage = false) {
 
 export default {
   async fetch(request, env, context) {
-    if (!env.ASSETS) return new Response("Static asset binding unavailable", { status: 503 });
     const url = new URL(request.url);
+    if (url.hostname.toLowerCase() === APEX_HOST) {
+      url.hostname = CANONICAL_HOST;
+      return withSecurityHeaders(new Response(null, {
+        status: 308,
+        headers: {
+          "Cache-Control": "public, max-age=86400",
+          Location: url.toString(),
+        },
+      }), url);
+    }
+    if (!env.ASSETS) {
+      return withSecurityHeaders(
+        new Response("Static asset binding unavailable", { status: 503 }),
+        url,
+      );
+    }
     if (url.pathname.startsWith("/api/site/")) {
       return withSecurityHeaders(await handleSiteApi(request, env, context, url), url);
     }

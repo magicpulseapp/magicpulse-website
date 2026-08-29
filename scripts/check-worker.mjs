@@ -78,6 +78,19 @@ const requestHeaders = {
 };
 
 try {
+  const apexRedirect = await worker.fetch(
+    new Request("https://magicpulse.app/support.html?source=apex"),
+    env,
+    {},
+  );
+  assert.equal(apexRedirect.status, 308);
+  assert.equal(
+    apexRedirect.headers.get("location"),
+    "https://www.magicpulse.app/support.html?source=apex",
+  );
+  assert.equal(apexRedirect.headers.get("cache-control"), "public, max-age=86400");
+  assert.equal(apexRedirect.headers.get("x-content-type-options"), "nosniff");
+
   const home = await worker.fetch(new Request("https://preview.example/"), env, {});
   assert.equal(home.status, 200);
   assert.match(home.headers.get("content-security-policy"), /frame-ancestors 'none'/);
