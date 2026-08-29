@@ -2,6 +2,8 @@ import { cp, mkdir, readFile, rm, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
+import { transform } from "esbuild";
+
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const dist = path.join(root, "dist");
 const client = path.join(dist, "client");
@@ -51,6 +53,25 @@ for (const directory of [".well-known", "assets", "fonts"]) {
   await cp(path.join(root, directory), path.join(client, directory), { recursive: true });
 }
 
+let sourceBytes = 0;
+let deployedBytes = 0;
+for (const [file, loader] of [["script.js", "js"], ["styles.css", "css"]]) {
+  const source = await readFile(path.join(root, file), "utf8");
+  const optimized = await transform(source, {
+    legalComments: "none",
+    loader,
+    minify: true,
+    target: loader === "js" ? ["chrome100", "firefox100", "safari15"] : undefined,
+  });
+  await writeFile(path.join(client, file), optimized.code);
+  sourceBytes += Buffer.byteLength(source);
+  deployedBytes += Buffer.byteLength(optimized.code);
+}
+
 const worker = await readFile(path.join(root, "worker", "index.js"), "utf8");
 await writeFile(path.join(server, "index.js"), worker);
-console.log(`Built ${files.length} root assets, ${pageFiles.length} secured pages, and 3 asset directories for Sites.`);
+const savedPercent = Math.round((1 - deployedBytes / sourceBytes) * 100);
+console.log(
+  `Built ${files.length} root assets, ${pageFiles.length} secured pages, and 3 asset directories for Sites; ` +
+  `optimized CSS/JS by ${savedPercent}%.`,
+);

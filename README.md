@@ -1,6 +1,6 @@
 # Magic Pulse — marketing site
 
-Static landing page for the **Magic Pulse** iOS app (`www.magicpulse.app`). The source stays HTML, CSS, and vanilla JS; a small dependency-free build packages it with the response headers used by Sites.
+Static landing page for the **Magic Pulse** iOS app (`www.magicpulse.app`). The source stays HTML, CSS, and vanilla JS; a small build validates and minifies the deployment assets before packaging them with the response headers used by Sites.
 
 ## Files
 
@@ -98,7 +98,7 @@ npx --yes lighthouse http://127.0.0.1:8080/ --only-categories=performance,seo,ac
 
 Run `npm run build` for the validated Sites bundle. The source can also be uploaded to **GitHub Pages**, **Netlify**, **Cloudflare Pages**, **Vercel**, S3, etc. Ensure `favicon.svg`, `app-ads.txt`, and font files under `fonts/` are served from the site root (same paths as in `styles.css`).
 
-`npm run build` now checks JavaScript syntax, every local link and asset, key responsive/accessibility UI contracts, worker routes, protected reporting, form validation, security headers, and release metadata before packaging.
+`npm run build` now checks JavaScript syntax, every local link and asset, key responsive/accessibility UI contracts, worker routes, protected reporting, form validation, security headers, and release metadata before packaging. It minifies the generated CSS and JavaScript while keeping the checked-in source readable.
 
 - **Security headers:** Every HTML page includes a CSP meta fallback. The Sites worker and root **`_headers`** file add the stronger response-level policy plus HSTS, clickjacking protection, MIME protection, and permissions restrictions. **Stock GitHub Pages does not read `_headers`**, so configure the response-only headers at Cloudflare when GitHub Pages remains the origin.
 - **Forms require the worker:** The support form and Android waitlist use `/api/site/form-token` and `/api/site/forms/*`. A static-only GitHub Pages deployment serves the pages but not those routes. Route the public hostnames through `worker/index.js`, configure `SITE_FORM_SECRET`, and require `npm run check:production` to pass before considering the forms live.

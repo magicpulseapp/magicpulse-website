@@ -9,5 +9,8 @@
     "check:release": "node scripts/check-release-metadata.mjs",
     "check:release:remote": "node scripts/check-release-metadata.mjs --remote",
     "check:production": "node scripts/check-production-domains.mjs"
+  },
+  "devDependencies": {
+    "esbuild": "^0.28.2"
   }
 }
