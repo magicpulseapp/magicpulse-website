@@ -3347,10 +3347,38 @@ body.is-offline main {
 
   .hero-actions {
     display: grid;
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+    gap: 0.5rem;
   }
 
   .hero-actions .btn {
     width: 100%;
+    min-width: 0;
+    padding-inline: 0.7rem;
+  }
+
+  .hero {
+    padding: 1.35rem 0 1.8rem;
+  }
+
+  .hero-grid {
+    gap: 1rem;
+  }
+
+  .hero-copy {
+    margin-bottom: 0.9rem;
+  }
+
+  .hero-trustline {
+    margin-top: 0.65rem;
+  }
+
+  .hero-panel {
+    padding: 0.75rem;
+  }
+
+  .panel-head {
+    margin-bottom: 0.55rem;
   }
 
   .panel-head h2 {
@@ -3363,7 +3391,16 @@ body.is-offline main {
   }
 
   .live-waits {
-    min-height: 224px;
+    min-height: 108px;
+  }
+
+  .waits-loading span:nth-child(n + 3),
+  .waits-rows .waits-row:nth-child(n + 3) {
+    display: none;
+  }
+
+  .live-waits-divider {
+    margin-block: 0.5rem;
   }
 
   .waits-loading span,
@@ -3402,13 +3439,23 @@ body.is-offline main {
   }
 
   .hero-panel-insights {
-    grid-template-columns: 1fr;
+    grid-template-columns: 1fr 1fr;
+    margin-top: 0.55rem;
   }
 
   .hero-panel-insights > div + div {
-    padding-left: 0.15rem;
-    border-top: 1px solid var(--line);
-    border-left: 0;
+    padding-left: 0.65rem;
+    border-top: 0;
+    border-left: 1px solid var(--line);
+  }
+
+  .hero-panel-insights > div {
+    padding-block: 0.5rem;
+  }
+
+  .live-open-app,
+  .hero-panel .brand-footer {
+    display: none;
   }
 
   .live-waits-fallback-note {
@@ -3498,6 +3545,22 @@ body.is-offline main {
   .connection-banner {
     justify-content: space-between;
     text-align: left;
+  }
+}
+
+@media (max-width: 520px) and (max-height: 720px) {
+  .hero {
+    padding-bottom: 1.15rem;
+  }
+
+  .live-waits {
+    min-height: 52px;
+  }
+
+  .waits-loading span:nth-child(n + 2),
+  .waits-rows .waits-row:nth-child(n + 2),
+  .hero-panel-insights {
+    display: none;
   }
 }
 
