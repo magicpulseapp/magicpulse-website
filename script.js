@@ -764,11 +764,14 @@
     }
 
     function ingestionLooksDelayed(ingestion) {
-      if (!ingestion || ingestion.ok !== false) return false;
+      if (!ingestion) return true;
       var startedAt = Date.parse(ingestion.startedAt || '');
+      var completedAt = Date.parse(ingestion.completedAt || '');
       var isRecent = Number.isFinite(startedAt) && Date.now() - startedAt < 10 * 60 * 1000;
       var isActiveRefresh = !ingestion.completedAt && /progress|refresh|running/i.test(String(ingestion.message || ''));
-      return !(isRecent && isActiveRefresh);
+      if (isRecent && isActiveRefresh) return false;
+      if (ingestion.ok !== true || !Number.isFinite(completedAt)) return true;
+      return Date.now() - completedAt > 15 * 60 * 1000;
     }
 
     function serviceFallback() {
@@ -791,14 +794,20 @@
         var apiState = results[0].status === 'fulfilled' ? 'operational' : 'unavailable';
         var apiValue = results[0].status === 'fulfilled' ? results[0].value : null;
         var liveState = results[1].status === 'fulfilled' ? 'operational' : 'unavailable';
+        var pushState = apiValue && apiValue.push && apiValue.push.configured === true
+          ? 'operational'
+          : (apiValue ? 'degraded' : 'unavailable');
         if (apiValue && ingestionLooksDelayed(apiValue.ingestion)) liveState = 'degraded';
         return {
-          overall: apiState === 'operational' && liveState === 'operational' ? 'operational' : 'degraded',
+          overall: apiState === 'operational' && liveState === 'operational' && pushState === 'operational'
+            ? 'operational'
+            : 'degraded',
           checkedAt: new Date().toISOString(),
           services: {
             website: { state: 'operational' },
             api: { state: apiState },
-            liveData: { state: liveState }
+            liveData: { state: liveState },
+            push: { state: pushState }
           }
         };
       });
@@ -806,7 +815,7 @@
 
     function updateStatus(payload) {
       var services = payload && payload.services ? payload.services : {};
-      ['website', 'api', 'liveData'].forEach(function (key) {
+      ['website', 'api', 'liveData', 'push'].forEach(function (key) {
         var row = root.querySelector('[data-status-service="' + key + '"]');
         if (!row) return;
         var state = services[key] && services[key].state ? services[key].state : 'unknown';
@@ -865,7 +874,8 @@
             services: {
               website: { state: 'operational' },
               api: { state: 'unknown' },
-              liveData: { state: 'unknown' }
+              liveData: { state: 'unknown' },
+              push: { state: 'unknown' }
             }
           });
         })

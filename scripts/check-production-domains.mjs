@@ -48,6 +48,7 @@ try {
   const response = await request("https://www.magicpulse.app/");
   const requiredHeaders = [
     "content-security-policy",
+    "cross-origin-opener-policy",
     "strict-transport-security",
     "x-content-type-options",
     "x-frame-options",

@@ -126,11 +126,11 @@ The repo root **`_headers`** file sets browser security headers and **Cache-Cont
 For the current GitHub Pages plus Cloudflare setup:
 
 1. In Cloudflare, open **Rules → Transform Rules → Modify Response Header** and create a rule for host `www.magicpulse.app`.
-2. Copy the `Content-Security-Policy`, `X-Content-Type-Options`, `Referrer-Policy`, and `Permissions-Policy` values from **`_headers`** into static response-header actions.
-3. Open **SSL/TLS → Edge Certificates → HTTP Strict Transport Security (HSTS)** and enable a one-year max age, include subdomains, and preload only while every subdomain is HTTPS-ready.
+2. Copy the `Content-Security-Policy`, `Cross-Origin-Opener-Policy`, `X-Content-Type-Options`, `X-Frame-Options`, `Referrer-Policy`, and `Permissions-Policy` values from **`_headers`** into static response-header actions.
+3. Open **SSL/TLS → Edge Certificates → HTTP Strict Transport Security (HSTS)** and use the matching two-year max age, include subdomains, and preload only while every subdomain is HTTPS-ready.
 4. Purge the Cloudflare cache and verify the live response with `curl -I https://www.magicpulse.app/`.
 
-The expected response must include `content-security-policy`, `strict-transport-security`, `x-content-type-options`, `referrer-policy`, and `permissions-policy`.
+The expected response must include `content-security-policy`, `cross-origin-opener-policy`, `strict-transport-security`, `x-content-type-options`, `x-frame-options`, `referrer-policy`, and `permissions-policy`.
 
 ---
 

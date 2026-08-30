@@ -225,11 +225,14 @@ async function fetchWithTimeout(url, timeoutMs = 4_000) {
 }
 
 function ingestionLooksDelayed(ingestion) {
-  if (!ingestion || ingestion.ok !== false) return false;
+  if (!ingestion) return true;
   const startedAt = Date.parse(ingestion.startedAt ?? "");
+  const completedAt = Date.parse(ingestion.completedAt ?? "");
   const isRecent = Number.isFinite(startedAt) && Date.now() - startedAt < 10 * 60 * 1000;
   const isActiveRefresh = !ingestion.completedAt && /progress|refresh|running/i.test(String(ingestion.message ?? ""));
-  return !(isRecent && isActiveRefresh);
+  if (isRecent && isActiveRefresh) return false;
+  if (ingestion.ok !== true || !Number.isFinite(completedAt)) return true;
+  return Date.now() - completedAt > 15 * 60 * 1000;
 }
 
 async function currentServiceStatus() {
@@ -244,12 +247,14 @@ async function currentServiceStatus() {
   ]);
   let apiState = "unavailable";
   let liveDataState = "unavailable";
+  let pushState = "unavailable";
 
   if (apiResult.status === "fulfilled" && apiResult.value.ok) {
     apiState = "operational";
     try {
       const health = await apiResult.value.json();
       if (ingestionLooksDelayed(health?.ingestion)) liveDataState = "degraded";
+      pushState = health?.push?.configured === true ? "operational" : "degraded";
     } catch {
       apiState = "degraded";
     }
@@ -258,7 +263,7 @@ async function currentServiceStatus() {
     liveDataState = liveDataState === "degraded" ? "degraded" : "operational";
   }
 
-  const overall = apiState === "operational" && liveDataState === "operational"
+  const overall = apiState === "operational" && liveDataState === "operational" && pushState === "operational"
     ? "operational"
     : (apiState === "unavailable" && liveDataState === "unavailable" ? "unavailable" : "degraded");
   const payload = {
@@ -268,6 +273,7 @@ async function currentServiceStatus() {
       website: { state: "operational" },
       api: { state: apiState },
       liveData: { state: liveDataState },
+      push: { state: pushState },
     },
   };
   cachedServiceStatus = { cachedAt: now, payload };

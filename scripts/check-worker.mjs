@@ -7,6 +7,15 @@ const originalFetch = globalThis.fetch;
 const forwarded = [];
 const metrics = new Map();
 const backgroundTasks = [];
+let healthPayload = {
+  ok: true,
+  ingestion: {
+    ok: true,
+    startedAt: new Date(Date.now() - 60_000).toISOString(),
+    completedAt: new Date().toISOString(),
+  },
+  push: { configured: true },
+};
 globalThis.fetch = async (input, init) => {
   const url = typeof input === "string" ? input : input.url;
   if (url.startsWith("https://formspree.io/")) {
@@ -16,7 +25,7 @@ globalThis.fetch = async (input, init) => {
     return new Response(JSON.stringify({ ok: true }), { status: 200 });
   }
   if (url === "https://api.magicpulse.app/api/health") {
-    return new Response(JSON.stringify({ ok: true, ingestion: { ok: true } }), { status: 200 });
+    return new Response(JSON.stringify(healthPayload), { status: 200 });
   }
   if (url.startsWith("https://api.themeparks.wiki/")) {
     return new Response(JSON.stringify({ liveData: [] }), { status: 200 });
@@ -76,6 +85,21 @@ const requestHeaders = {
   Origin: "https://preview.example",
   "CF-Connecting-IP": "192.0.2.10",
 };
+const expectedSecurityHeaders = new Map([
+  ["cross-origin-opener-policy", "same-origin"],
+  ["permissions-policy", "camera=(), microphone=(), geolocation=(), payment=(), usb=()"],
+  ["referrer-policy", "strict-origin-when-cross-origin"],
+  ["strict-transport-security", "max-age=63072000; includeSubDomains; preload"],
+  ["x-content-type-options", "nosniff"],
+  ["x-frame-options", "DENY"],
+]);
+
+function assertSecurityHeaders(response) {
+  assert.match(response.headers.get("content-security-policy"), /frame-ancestors 'none'/);
+  for (const [name, expected] of expectedSecurityHeaders) {
+    assert.equal(response.headers.get(name), expected, `Unexpected ${name} header`);
+  }
+}
 
 try {
   const apexRedirect = await worker.fetch(
@@ -89,7 +113,7 @@ try {
     "https://www.magicpulse.app/support.html?source=apex",
   );
   assert.equal(apexRedirect.headers.get("cache-control"), "public, max-age=86400");
-  assert.equal(apexRedirect.headers.get("x-content-type-options"), "nosniff");
+  assertSecurityHeaders(apexRedirect);
 
   const unavailableFormService = await worker.fetch(
     new Request("https://preview.example/api/site/form-token", { headers: requestHeaders }),
@@ -99,12 +123,11 @@ try {
   assert.equal(unavailableFormService.status, 503);
   assert.deepEqual(await unavailableFormService.json(), { error: "Form service unavailable" });
   assert.equal(unavailableFormService.headers.get("cache-control"), "no-store");
-  assert.equal(unavailableFormService.headers.get("x-content-type-options"), "nosniff");
+  assertSecurityHeaders(unavailableFormService);
 
   const home = await worker.fetch(new Request("https://preview.example/"), env, {});
   assert.equal(home.status, 200);
-  assert.match(home.headers.get("content-security-policy"), /frame-ancestors 'none'/);
-  assert.equal(home.headers.get("x-content-type-options"), "nosniff");
+  assertSecurityHeaders(home);
   assert.match(await home.text(), /<title>Magic Pulse/);
 
   const tokenResponse = await worker.fetch(
@@ -184,7 +207,52 @@ try {
     {},
   );
   assert.equal(statusResponse.status, 200);
-  assert.equal((await statusResponse.json()).overall, "operational");
+  const statusBody = await statusResponse.json();
+  assert.equal(statusBody.overall, "operational");
+  assert.equal(statusBody.services.push.state, "operational");
+
+  const realDateNow = Date.now;
+  const firstCheckAt = realDateNow();
+  try {
+    healthPayload = {
+      ...healthPayload,
+      ingestion: {
+        ok: true,
+        startedAt: new Date(firstCheckAt - 61 * 60_000).toISOString(),
+        completedAt: new Date(firstCheckAt - 60 * 60_000).toISOString(),
+      },
+    };
+    Date.now = () => firstCheckAt + 31_000;
+    const staleStatus = await worker.fetch(
+      new Request("https://preview.example/api/site/status"),
+      env,
+      {},
+    );
+    const staleBody = await staleStatus.json();
+    assert.equal(staleBody.overall, "degraded");
+    assert.equal(staleBody.services.liveData.state, "degraded");
+
+    healthPayload = {
+      ...healthPayload,
+      ingestion: {
+        ok: true,
+        startedAt: new Date(firstCheckAt + 60_000).toISOString(),
+        completedAt: new Date(firstCheckAt + 61_000).toISOString(),
+      },
+      push: { configured: false },
+    };
+    Date.now = () => firstCheckAt + 62_000;
+    const pushStatus = await worker.fetch(
+      new Request("https://preview.example/api/site/status"),
+      env,
+      {},
+    );
+    const pushBody = await pushStatus.json();
+    assert.equal(pushBody.overall, "degraded");
+    assert.equal(pushBody.services.push.state, "degraded");
+  } finally {
+    Date.now = realDateNow;
+  }
 
   const featurePage = await worker.fetch(
     new Request("https://preview.example/live-waits.html"),

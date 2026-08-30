@@ -7,6 +7,22 @@ const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const htmlFiles = (await readdir(root)).filter((name) => name.endsWith(".html"));
 const problems = [];
 const expectedAssetVersion = "20260829c";
+const staticHeaders = await readFile(path.join(root, "_headers"), "utf8");
+const requiredStaticHeaders = [
+  "Content-Security-Policy",
+  "Cross-Origin-Opener-Policy",
+  "Permissions-Policy",
+  "Referrer-Policy",
+  "Strict-Transport-Security",
+  "X-Content-Type-Options",
+  "X-Frame-Options",
+];
+
+for (const header of requiredStaticHeaders) {
+  if (!staticHeaders.includes(`  ${header}:`)) {
+    problems.push(`_headers: missing ${header}`);
+  }
+}
 
 for (const file of htmlFiles) {
   const html = await readFile(path.join(root, file), "utf8");
@@ -39,7 +55,7 @@ const inlineScriptHashes = [...homepage.matchAll(/<script(?:\s[^>]*)?>([\s\S]*?)
   .map((match) => `sha256-${crypto.createHash("sha256").update(match[1]).digest("base64")}`);
 const policySources = await Promise.all([
   readFile(path.join(root, "index.html"), "utf8"),
-  readFile(path.join(root, "_headers"), "utf8"),
+  staticHeaders,
   readFile(path.join(root, "worker", "index.js"), "utf8"),
 ]);
 for (const hash of inlineScriptHashes) {
