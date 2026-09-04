@@ -53,7 +53,7 @@ assert.equal((accessibility.match(/class="accessibility-feature-row"/g) || []).l
 
 const status = await readFile(path.join(root, "status.html"), "utf8");
 assert.match(status, /data-status-page/, "Status: status controller hook is required");
-assert.equal((status.match(/data-status-service=/g) || []).length, 4, "Status: four service checks are required");
+assert.equal((status.match(/data-status-service=/g) || []).length, 5, "Status: five service checks are required");
 assert.match(status, /data-status-history-list/, "Status: incident history list is required");
 assert.match(status, /data-status-history-state/, "Status: incident history state is required");
 

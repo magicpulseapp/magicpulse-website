@@ -236,7 +236,7 @@ function ingestionLooksDelayed(ingestion) {
   return Date.now() - completedAt > 15 * 60 * 1000;
 }
 
-async function currentServiceStatus() {
+async function currentServiceStatus(env) {
   const now = Date.now();
   if (cachedServiceStatus && now - cachedServiceStatus.cachedAt < 30_000) {
     return cachedServiceStatus.payload;
@@ -249,6 +249,13 @@ async function currentServiceStatus() {
   let apiState = "unavailable";
   let liveDataState = "unavailable";
   let pushState = "unavailable";
+  let formsState = "unavailable";
+  try {
+    const formEndpoint = new URL(env.FORMSPREE_ENDPOINT ?? "https://formspree.io/f/xjgeljqp");
+    formsState = env.SITE_FORM_SECRET && formEndpoint.protocol === "https:" ? "operational" : "degraded";
+  } catch {
+    formsState = "degraded";
+  }
 
   if (apiResult.status === "fulfilled" && apiResult.value.ok) {
     apiState = "operational";
@@ -264,7 +271,7 @@ async function currentServiceStatus() {
     liveDataState = liveDataState === "degraded" ? "degraded" : "operational";
   }
 
-  const overall = apiState === "operational" && liveDataState === "operational" && pushState === "operational"
+  const overall = apiState === "operational" && liveDataState === "operational" && pushState === "operational" && formsState === "operational"
     ? "operational"
     : (apiState === "unavailable" && liveDataState === "unavailable" ? "unavailable" : "degraded");
   const payload = {
@@ -275,6 +282,7 @@ async function currentServiceStatus() {
       api: { state: apiState },
       liveData: { state: liveDataState },
       push: { state: pushState },
+      forms: { state: formsState },
     },
   };
   cachedServiceStatus = { cachedAt: now, payload };
@@ -337,7 +345,7 @@ async function handleSiteApi(request, env, context, url) {
     const retryAfter = rateLimit(request, "site-status", 60, 60_000);
     if (retryAfter) return jsonResponse({ error: "Rate limit exceeded" }, 429, { "Retry-After": String(retryAfter) });
     try {
-      return jsonResponse(await currentServiceStatus(), 200, { "Cache-Control": "public, max-age=30" });
+      return jsonResponse(await currentServiceStatus(env), 200, { "Cache-Control": "public, max-age=30" });
     } catch {
       return jsonResponse({ error: "Status check unavailable" }, 503);
     }

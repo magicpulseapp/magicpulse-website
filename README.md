@@ -9,7 +9,7 @@ Static landing page for the **Magic Pulse** iOS app (`www.magicpulse.app`). The 
 | `index.html` | Home: selectable live park preview, product gallery, compatibility, pricing, and FAQ |
 | `features.html` | Complete feature guide for the current iPhone and Apple Watch app |
 | `live-waits.html` / `day-planner.html` / `lightning-lane.html` | Search-friendly product guides backed by real app screenshots |
-| `status.html` / `status-history.json` | Current availability checks and the dated public incident record |
+| `status.html` / `status-history.json` | Current availability checks, including website forms, and the dated public incident record |
 | `accessibility.html` | Current app accessibility support, scope, and issue-reporting route |
 | `insights.html` | Private, authenticated aggregate website report (`noindex`) |
 | `styles.css` | Consolidated responsive design system and page styles |
@@ -72,7 +72,7 @@ Current allowlisted interactions include App Store opens, park-preview changes, 
 - **`robots.txt`** allows public pages, excludes the private insights shell, and references **`sitemap.xml`**. Bump **`<lastmod>`** in `sitemap.xml` when you ship meaningful content changes.
 - **Open Graph / Twitter** tags are on all public pages; **`og:image:alt`** and matching Twitter fields improve accessibility and previews.
 - **Structured data** on the home page uses JSON-LD **`@graph`**: `WebSite`, `Organization`, and `SoftwareApplication`.
-- **Performance:** Self-hosted fonts with **`preload`** for critical WOFF2 files; **`script.js`** uses **`defer`**. Social image is **`og-image.png`**.
+- **Performance:** Self-hosted fonts with **`preload`** for critical WOFF2 files; **`script.js`** uses **`defer`**; below-the-fold screenshots use lazy loading while feature-page hero screenshots load with high priority. Social image is **`og-image.png`**.
 - **Release metadata:** The home page's current version, release date, download size, and compatibility copy are editorial snapshots of the App Store listing. Refresh them when a new app version ships.
 
 Check the page against `site-release.json`, or compare that file with Apple's live listing:

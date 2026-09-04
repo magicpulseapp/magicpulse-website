@@ -505,6 +505,7 @@
       form.addEventListener('submit', function (event) {
         event.preventDefault();
         submit.disabled = true;
+        form.setAttribute('aria-busy', 'true');
         submit.textContent = sendingLabel;
         status.hidden = true;
         status.className = 'form-status';
@@ -584,6 +585,7 @@
           .finally(function () {
             status.hidden = false;
             submit.disabled = false;
+            form.setAttribute('aria-busy', 'false');
             submit.textContent = idleLabel;
           });
       });
@@ -797,9 +799,10 @@
         var pushState = apiValue && apiValue.push && apiValue.push.configured === true
           ? 'operational'
           : (apiValue ? 'degraded' : 'unavailable');
+        var formsState = siteRunsOnWorker ? 'unknown' : 'unavailable';
         if (apiValue && ingestionLooksDelayed(apiValue.ingestion)) liveState = 'degraded';
         return {
-          overall: apiState === 'operational' && liveState === 'operational' && pushState === 'operational'
+          overall: apiState === 'operational' && liveState === 'operational' && pushState === 'operational' && formsState === 'operational'
             ? 'operational'
             : 'degraded',
           checkedAt: new Date().toISOString(),
@@ -807,7 +810,8 @@
             website: { state: 'operational' },
             api: { state: apiState },
             liveData: { state: liveState },
-            push: { state: pushState }
+            push: { state: pushState },
+            forms: { state: formsState }
           }
         };
       });
@@ -815,7 +819,7 @@
 
     function updateStatus(payload) {
       var services = payload && payload.services ? payload.services : {};
-      ['website', 'api', 'liveData', 'push'].forEach(function (key) {
+      ['website', 'api', 'liveData', 'push', 'forms'].forEach(function (key) {
         var row = root.querySelector('[data-status-service="' + key + '"]');
         if (!row) return;
         var state = services[key] && services[key].state ? services[key].state : 'unknown';
@@ -875,7 +879,8 @@
               website: { state: 'operational' },
               api: { state: 'unknown' },
               liveData: { state: 'unknown' },
-              push: { state: 'unknown' }
+              push: { state: 'unknown' },
+              forms: { state: siteRunsOnWorker ? 'unknown' : 'unavailable' }
             }
           });
         })

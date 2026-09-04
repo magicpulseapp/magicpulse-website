@@ -210,6 +210,7 @@ try {
   const statusBody = await statusResponse.json();
   assert.equal(statusBody.overall, "operational");
   assert.equal(statusBody.services.push.state, "operational");
+  assert.equal(statusBody.services.forms.state, "operational");
 
   const realDateNow = Date.now;
   const firstCheckAt = realDateNow();
