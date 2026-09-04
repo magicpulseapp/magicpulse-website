@@ -6,7 +6,7 @@ import { fileURLToPath } from "node:url";
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const htmlFiles = (await readdir(root)).filter((name) => name.endsWith(".html"));
 const problems = [];
-const expectedAssetVersion = "20260903a";
+const expectedAssetVersion = "20260904a";
 const staticHeaders = await readFile(path.join(root, "_headers"), "utf8");
 const requiredStaticHeaders = [
   "Content-Security-Policy",

@@ -30,7 +30,7 @@
   <meta name="twitter:image:alt" content="Magic Pulse app showing live waits, day planning, and Lightning Lane details" />
   <link rel="preload" href="fonts/inter-400-latin.woff2" as="font" type="font/woff2" crossorigin="anonymous" />
   <link rel="preload" href="fonts/outfit-700-latin.woff2" as="font" type="font/woff2" crossorigin="anonymous" />
-  <link rel="stylesheet" href="styles.css?v=20260903a" />
+  <link rel="stylesheet" href="styles.css?v=20260904a" />
 </head>
 <body>
   <a class="skip-link" href="#main-content">Skip to main content</a>
@@ -40,6 +40,7 @@
       <a href="index.html" class="brand"><img class="brand-mark" src="favicon.svg" width="32" height="32" alt="" />Magic Pulse</a>
       <nav id="site-navigation" class="site-nav" aria-label="Primary">
         <a href="index.html#product">Product</a>
+        <a href="live-waits.html" aria-current="page">Live data</a>
         <a href="index.html#parks">Parks</a>
         <a href="index.html#pricing">Pricing</a>
         <a href="index.html#faq">FAQ</a>
@@ -51,42 +52,139 @@
     </div>
   </header>
 
-  <main id="main-content" class="feature-main">
-    <section class="feature-hero">
-      <div class="container feature-hero-grid">
-        <div class="feature-hero-copy">
-          <p class="eyebrow">Live waits</p>
-          <h1>Know what is worth riding now</h1>
-          <p class="feature-lede">Compare current waits with short-term forecasts, crowd context, park hours, and weather before you cross the park.</p>
-          <div class="hero-actions">
-            <a class="btn btn-primary" href="https://apps.apple.com/us/app/magic-pulse/id6759612612" target="_blank" rel="noopener noreferrer" data-event="app_store_click" data-event-context="live_waits_feature">Get Magic Pulse</a>
-            <a class="btn btn-ghost" href="index.html#product">See every feature</a>
-          </div>
-          <ul class="feature-facts" aria-label="Live wait features">
-            <li>10 supported Disney parks</li>
-            <li>Freshness and delayed-data labels</li>
-            <li>No Magic Pulse account required</li>
-          </ul>
+  <main id="main-content" class="live-data-main">
+    <section class="live-data-hero">
+      <div class="container live-data-intro">
+        <div>
+          <p class="eyebrow">Magic Pulse live data</p>
+          <h1>Live Disney wait times</h1>
+          <p class="feature-lede">See current ride waits, what the next 30 minutes may bring, and whether Lightning Lane is worth a closer look.</p>
         </div>
-        <figure class="feature-product-image">
-          <img src="assets/app-screens/live-waits.webp" width="600" height="1299" alt="Magic Pulse live Magic Kingdom waits with crowd level, weather, and a best-move suggestion" loading="eager" fetchpriority="high" decoding="async" />
-        </figure>
+        <a class="btn btn-primary" href="https://apps.apple.com/us/app/magic-pulse/id6759612612" target="_blank" rel="noopener noreferrer" data-event="app_store_click" data-event-context="live_waits_feature">Get Magic Pulse</a>
       </div>
     </section>
 
-    <section class="feature-detail-band">
+    <section class="live-data-band" aria-labelledby="live-data-heading">
+      <div class="container">
+        <div class="live-data-toolbar">
+          <div>
+            <div class="live-data-title-row">
+              <h2 id="live-data-heading">Current park conditions</h2>
+              <span class="live-badge" id="live-badge"><span class="live-dot" aria-hidden="true"></span>Live</span>
+            </div>
+            <p class="panel-sub" id="live-park-selection-status"><span id="live-park-name">Loading...</span> <span aria-hidden="true">·</span> <span id="live-updated">Checking the latest update</span></p>
+          </div>
+          <div class="live-park-picker live-data-park-picker">
+            <label for="live-park-select">Park</label>
+            <select id="live-park-select" aria-describedby="live-park-selection-status">
+              <optgroup label="Walt Disney World">
+                <option value="6">Magic Kingdom</option>
+                <option value="5">EPCOT</option>
+                <option value="7">Disney's Hollywood Studios</option>
+                <option value="8">Disney's Animal Kingdom</option>
+              </optgroup>
+              <optgroup label="Disneyland Resort">
+                <option value="16">Disneyland Park</option>
+                <option value="17">Disney California Adventure</option>
+              </optgroup>
+              <optgroup label="Tokyo Disney Resort">
+                <option value="274">Tokyo Disneyland</option>
+                <option value="275">Tokyo DisneySea</option>
+              </optgroup>
+              <optgroup label="Disneyland Paris">
+                <option value="4">Disneyland Park (Paris)</option>
+                <option value="28">Disney Adventure World</option>
+              </optgroup>
+            </select>
+          </div>
+        </div>
+
+        <dl class="live-data-metrics" aria-label="Current park summary">
+          <div><dt>Open rides</dt><dd id="live-open-count">-</dd></div>
+          <div><dt>Average wait</dt><dd id="live-average-wait">-</dd></div>
+          <div><dt>Crowd</dt><dd id="live-crowd">-</dd></div>
+          <div><dt>Park hours</dt><dd id="live-hours">-</dd></div>
+        </dl>
+
+        <div class="hero-panel-insights live-data-insights" id="live-insights" aria-label="Planning summary" aria-live="polite">
+          <div>
+            <span id="live-best-label">Best move</span>
+            <strong id="live-best-move">Checking current waits...</strong>
+          </div>
+          <div>
+            <span>Data status</span>
+            <strong id="live-data-signal">Checking freshness...</strong>
+          </div>
+        </div>
+
+        <div class="live-data-controls" aria-label="Attraction filters">
+          <label class="live-search" for="live-ride-search">
+            <span>Find a ride</span>
+            <input id="live-ride-search" type="search" inputmode="search" autocomplete="off" placeholder="Search rides" />
+          </label>
+          <label class="live-sort" for="live-ride-sort">
+            <span>Sort</span>
+            <select id="live-ride-sort">
+              <option value="wait-asc">Shortest wait</option>
+              <option value="wait-desc">Longest wait</option>
+              <option value="forecast-drop">Biggest forecast drop</option>
+              <option value="name">Attraction name</option>
+            </select>
+          </label>
+          <div class="live-status-filter" role="group" aria-label="Operating status">
+            <button type="button" class="is-active" data-live-filter="all" aria-pressed="true">All</button>
+            <button type="button" data-live-filter="open" aria-pressed="false">Open</button>
+            <button type="button" data-live-filter="closed" aria-pressed="false">Closed</button>
+          </div>
+        </div>
+
+        <div class="live-data-results-head">
+          <span>Rides</span>
+          <span id="live-result-count" aria-live="polite">Loading...</span>
+        </div>
+        <div class="live-data-columns" aria-hidden="true">
+          <span>Attraction</span><span>Now</span><span>In 30 min</span><span>Lightning Lane</span>
+        </div>
+        <div id="live-waits" class="live-waits live-data-waits" data-live-mode="full" aria-live="polite" aria-busy="true">
+          <div class="waits-loading" aria-hidden="true">
+            <span></span><span></span><span></span><span></span><span></span><span></span>
+          </div>
+          <div class="waits-rows" hidden></div>
+          <p class="waits-error" hidden></p>
+        </div>
+        <div class="live-waits-fallback-note" id="live-waits-fallback-note" hidden>
+          <span>Live data is temporarily unavailable.</span>
+          <button class="snapshot-retry" id="live-waits-retry" type="button">Try again</button>
+        </div>
+        <a
+          class="live-open-app live-data-open-app"
+          id="live-open-app"
+          href="https://apps.apple.com/us/app/magic-pulse/id6759612612"
+          data-deep-link="magicpulse://park/6"
+          data-event="app_store_click"
+          data-event-context="live_snapshot"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <span id="live-open-app-label">Open Magic Kingdom in Magic Pulse</span>
+          <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7"/><path d="M7 7h10v10"/></svg>
+        </a>
+      </div>
+    </section>
+
+    <section class="feature-detail-band live-data-detail">
       <div class="container feature-detail-list">
         <article>
           <span class="feature-number">01</span>
-          <div><h2>Read the wait in context</h2><p>A posted time is only the starting point. Magic Pulse places it beside crowd level, operating status, weather, and recent movement so the number is easier to judge.</p></div>
+          <div><h2>Current waits with context</h2><p>Live operating status, crowd level, park hours, and freshness make each posted wait easier to judge.</p></div>
         </article>
         <article>
           <span class="feature-number">02</span>
-          <div><h2>Look a little ahead</h2><p>Short-term forecasts help show whether a ride is holding steady, likely to rise, or may be better after another stop.</p></div>
+          <div><h2>A look 30 minutes ahead</h2><p>Short-term forecasts flag meaningful rises and drops so a nearby attraction can become the better move.</p></div>
         </article>
         <article>
           <span class="feature-number">03</span>
-          <div><h2>Let the right change find you</h2><p>Pro alerts can call out meaningful drops and reopenings. Apple Watch glances keep your selected park and top watchlist ride close without another full phone check.</p></div>
+          <div><h2>Lightning Lane in the same view</h2><p>Availability, price, and the server's buy, wait, or skip signal sit beside standby time instead of living in a separate search.</p></div>
         </article>
       </div>
     </section>
@@ -119,6 +217,6 @@
       <p class="footer-disclaimer">Magic Pulse is not affiliated with theme park operators. Trademarks belong to their respective owners.</p>
     </div>
   </footer>
-  <script src="script.js?v=20260903b" defer></script>
+  <script src="script.js?v=20260904a" defer></script>
 </body>
 </html>

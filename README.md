@@ -8,7 +8,8 @@ Static landing page for the **Magic Pulse** iOS app (`www.magicpulse.app`). The 
 |------|---------|
 | `index.html` | Home: selectable live park preview, product gallery, compatibility, pricing, and FAQ |
 | `features.html` | Complete feature guide for the current iPhone and Apple Watch app |
-| `live-waits.html` / `day-planner.html` / `lightning-lane.html` | Search-friendly product guides backed by real app screenshots |
+| `live-waits.html` | Public live-data browser with park summaries, ride search, status filters, forecasts, and Lightning Lane signals |
+| `day-planner.html` / `lightning-lane.html` | Search-friendly product guides backed by real app screenshots |
 | `status.html` / `status-history.json` | Current availability checks, including website forms, and the dated public incident record |
 | `accessibility.html` | Current app accessibility support, scope, and issue-reporting route |
 | `insights.html` | Private, authenticated aggregate website report (`noindex`) |

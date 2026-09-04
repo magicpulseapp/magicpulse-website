@@ -31,6 +31,17 @@ assert.match(clientScript, /openAppLabelElement\.textContent = openAppLabel/, "H
 for (const page of ["live-waits.html", "day-planner.html", "lightning-lane.html"]) {
   assert.match(home, new RegExp(`href="${page}"`), `Home: missing feature link to ${page}`);
 }
+const liveWaits = await readFile(path.join(root, "live-waits.html"), "utf8");
+assert.match(liveWaits, /data-live-mode="full"/, "Live waits: full data mode is required");
+assert.match(liveWaits, /id="live-ride-search"/, "Live waits: attraction search is required");
+assert.match(liveWaits, /id="live-ride-sort"/, "Live waits: ride sorting is required");
+assert.equal((liveWaits.match(/data-live-filter=/g) || []).length, 3, "Live waits: all/open/closed filters are required");
+for (const heading of ["Open rides", "Average wait", "Crowd", "Park hours", "In 30 min", "Lightning Lane"]) {
+  assert.match(liveWaits, new RegExp(heading), `Live waits: missing ${heading}`);
+}
+assert.match(clientScript, /function renderFullLiveItems\(\)/, "Live waits: full result renderer is required");
+assert.match(clientScript, /function mergeFullSnapshotRides\(/, "Live waits: enriched and complete ride data must be merged");
+assert.match(clientScript, /snapshot\.closedRides/, "Live waits: closed rides from the enriched API must be included");
 const features = await readFile(path.join(root, "features.html"), "utf8");
 for (const feature of ["Events", "Apple Watch", "Trip recap", "Siri Shortcuts"]) {
   assert.match(features, new RegExp(feature), `Features: missing ${feature}`);
@@ -83,7 +94,7 @@ for (const page of publicPages) {
 
 const css = await readFile(path.join(root, "styles.css"), "utf8");
 const cssLines = css.split(/\r?\n/).length;
-assert.ok(cssLines < 3800, `CSS: expected consolidated stylesheet, found ${cssLines} lines`);
+assert.ok(cssLines < 4300, `CSS: expected consolidated stylesheet, found ${cssLines} lines`);
 assert.equal((css.match(/{/g) || []).length, (css.match(/}/g) || []).length, "CSS: unbalanced braces");
 assert.doesNotMatch(css, /letter-spacing:\s*-/, "CSS: negative letter spacing is not allowed");
 const actionColor = css.match(/--violet-action:\s*(#[0-9a-f]{6})/i)?.[1];

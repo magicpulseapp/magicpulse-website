@@ -261,7 +261,7 @@ try {
     {},
   );
   assert.equal(featurePage.status, 200);
-  assert.match(await featurePage.text(), /Know what is worth riding now/);
+  assert.match(await featurePage.text(), /Live Disney wait times/);
 
   const accessibilityPage = await worker.fetch(
     new Request("https://preview.example/accessibility.html"),
