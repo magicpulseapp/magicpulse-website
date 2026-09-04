@@ -1340,6 +1340,7 @@
   function themeParksPayloadToRides(payload) {
     var items = (payload && payload.liveData) || [];
     var rides = [];
+    var latestUpdatedAt = NaN;
     for (var i = 0; i < items.length; i++) {
       var item = items[i];
       if ((item.entityType || '').toUpperCase() !== 'ATTRACTION') continue;
@@ -1350,6 +1351,10 @@
       var q = item.queue || {};
       var standby = q.STANDBY || q.standby;
       var wait = standby && standby.waitTime != null ? standby.waitTime : null;
+      var updatedAt = Date.parse(item.lastUpdated || '');
+      if (Number.isFinite(updatedAt) && (!Number.isFinite(latestUpdatedAt) || updatedAt > latestUpdatedAt)) {
+        latestUpdatedAt = updatedAt;
+      }
       rides.push({
         id: item.id || null,
         name: nm,
@@ -1357,12 +1362,18 @@
         is_open: isOpen
       });
     }
-    return rides;
+    return {
+      rides: rides,
+      sourceUpdatedISO: Number.isFinite(latestUpdatedAt) ? new Date(latestUpdatedAt).toISOString() : null
+    };
   }
 
-  function buildSyntheticSnapshot(parkId, rides) {
+  function buildSyntheticSnapshot(parkId, rides, sourceUpdatedISO) {
     var meta = parkMetaById(parkId);
-    var now = new Date();
+    var sourceUpdatedAt = Date.parse(sourceUpdatedISO || '');
+    var hasSourceTimestamp = Number.isFinite(sourceUpdatedAt);
+    var displayDate = hasSourceTimestamp ? new Date(sourceUpdatedAt) : null;
+    var isStale = !hasSourceTimestamp || Date.now() - sourceUpdatedAt > 15 * 60 * 1000;
     return {
       park: {
         id: String(parkId),
@@ -1370,8 +1381,11 @@
         icon: meta && meta.icon ? meta.icon : '',
         theme: meta ? meta.theme : ''
       },
-      updated: now.toLocaleString(undefined, { dateStyle: 'short', timeStyle: 'short' }),
-      updatedISO: now.toISOString(),
+      updated: displayDate
+        ? displayDate.toLocaleString(undefined, { dateStyle: 'short', timeStyle: 'short' })
+        : 'Update time unavailable',
+      updatedISO: hasSourceTimestamp ? new Date(sourceUpdatedAt).toISOString() : null,
+      status: { rides: { isStale: isStale } },
       rides: rides
     };
   }
@@ -1407,10 +1421,10 @@
 
   function resolveThemeParksSnapshot(parkId, budgetEnd) {
     return fetchThemeParksLive(parkId, budgetEnd).then(function (payload) {
-      var rides = themeParksPayloadToRides(payload);
-      if (!rides.length) return { snapshot: null, selectedParkId: parkId, source: 'themeparks' };
+      var parsed = themeParksPayloadToRides(payload);
+      if (!parsed.rides.length) return { snapshot: null, selectedParkId: parkId, source: 'themeparks' };
       return {
-        snapshot: buildSyntheticSnapshot(parkId, rides),
+        snapshot: buildSyntheticSnapshot(parkId, parsed.rides, parsed.sourceUpdatedISO),
         selectedParkId: parkId,
         source: 'themeparks'
       };

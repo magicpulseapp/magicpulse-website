@@ -28,6 +28,7 @@ const pageFiles = [
   "accessibility.html",
   "android.html",
   "day-planner.html",
+  "features.html",
   "index.html",
   "insights.html",
   "lightning-lane.html",

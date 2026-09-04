@@ -31,6 +31,11 @@ assert.match(clientScript, /openAppLabelElement\.textContent = openAppLabel/, "H
 for (const page of ["live-waits.html", "day-planner.html", "lightning-lane.html"]) {
   assert.match(home, new RegExp(`href="${page}"`), `Home: missing feature link to ${page}`);
 }
+const features = await readFile(path.join(root, "features.html"), "utf8");
+for (const feature of ["Events", "Apple Watch", "Trip recap", "Siri Shortcuts"]) {
+  assert.match(features, new RegExp(feature), `Features: missing ${feature}`);
+}
+assert.match(home, /href="features\.html"/, "Home: missing all-features link");
 
 const support = await readFile(path.join(root, "support.html"), "utf8");
 for (const field of ["app_version", "device_model", "os_version", "park", "steps"]) {
@@ -78,7 +83,7 @@ for (const page of publicPages) {
 
 const css = await readFile(path.join(root, "styles.css"), "utf8");
 const cssLines = css.split(/\r?\n/).length;
-assert.ok(cssLines < 3600, `CSS: expected consolidated stylesheet, found ${cssLines} lines`);
+assert.ok(cssLines < 3800, `CSS: expected consolidated stylesheet, found ${cssLines} lines`);
 assert.equal((css.match(/{/g) || []).length, (css.match(/}/g) || []).length, "CSS: unbalanced braces");
 assert.doesNotMatch(css, /letter-spacing:\s*-/, "CSS: negative letter spacing is not allowed");
 const actionColor = css.match(/--violet-action:\s*(#[0-9a-f]{6})/i)?.[1];

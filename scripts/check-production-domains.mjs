@@ -2,6 +2,7 @@ const checks = [
   ["Website home", "https://www.magicpulse.app/", 200],
   ["Privacy policy", "https://www.magicpulse.app/privacy.html", 200],
   ["Support", "https://www.magicpulse.app/support.html", 200],
+  ["Private insights is hidden", "https://www.magicpulse.app/insights.html", 404],
   ["Support form service", "https://www.magicpulse.app/api/site/form-token", 200],
   ["Security contact", "https://www.magicpulse.app/.well-known/security.txt", 200],
   ["API health", "https://api.magicpulse.app/api/health", 200],

@@ -1,21 +1,21 @@
 :root {
-  --bg: #080b12;
-  --bg-raised: #0d111a;
-  --surface: #121720;
-  --surface-2: #191f2a;
-  --surface-3: #222936;
+  --bg: #05060b;
+  --bg-raised: #0b0a16;
+  --surface: #11111d;
+  --surface-2: #171627;
+  --surface-3: #211f33;
   --text: #f7f8fd;
   --muted: #a6adba;
   --muted-strong: #c9ced7;
   --line: rgba(255, 255, 255, 0.11);
   --line-strong: rgba(255, 255, 255, 0.2);
-  --violet: #9e59ff;
-  --violet-bright: #b879ff;
-  --violet-action: #8f49e8;
-  --cyan: #57cfe0;
-  --green: #4fd59a;
-  --amber: #ffc247;
-  --coral: #ff6f83;
+  --violet: #a25cff;
+  --violet-bright: #c08cff;
+  --violet-action: #8647d8;
+  --cyan: #46d2c8;
+  --green: #44d27c;
+  --amber: #f2c738;
+  --coral: #ff7857;
   --container: 1160px;
   --header-height: 66px;
   --shadow: 0 20px 55px rgba(0, 0, 0, 0.28);
@@ -100,7 +100,10 @@ html {
 body {
   min-width: 320px;
   margin: 0;
-  background: var(--bg);
+  background:
+    radial-gradient(circle at 86% 2%, rgba(162, 92, 255, 0.12), transparent 32rem),
+    radial-gradient(circle at 12% 45%, rgba(70, 210, 200, 0.06), transparent 30rem),
+    linear-gradient(180deg, #070611 0%, var(--bg) 52%, #061011 100%);
   color: var(--text);
   font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   font-size: 16px;
@@ -1687,6 +1690,111 @@ body.nav-open .nav-overlay {
   text-align: center;
 }
 
+/* App-aligned feature hub: compact HUD surfaces with a clear accent hierarchy. */
+.feature-hub-hero {
+  padding-block: 4.5rem 3.5rem;
+}
+
+.feature-hub-heading {
+  max-width: 840px;
+}
+
+.feature-hub-content {
+  padding: 3.5rem 0 4.5rem;
+}
+
+.feature-hub-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.feature-hub-card {
+  display: grid;
+  grid-template-columns: 44px minmax(0, 1fr);
+  gap: 1rem;
+  min-width: 0;
+  padding: 1.25rem;
+  border: 1px solid var(--line-strong);
+  border-radius: 16px;
+  background: linear-gradient(145deg, rgba(33, 31, 51, 0.92), rgba(17, 17, 29, 0.94));
+  box-shadow: 0 18px 48px rgba(0, 0, 0, 0.2);
+}
+
+.feature-hub-card--violet { border-color: rgba(162, 92, 255, 0.34); }
+.feature-hub-card--green { border-color: rgba(68, 210, 124, 0.3); }
+.feature-hub-card--amber { border-color: rgba(242, 199, 56, 0.34); }
+.feature-hub-card--teal { border-color: rgba(70, 210, 200, 0.34); }
+
+.feature-hub-icon {
+  display: grid;
+  width: 44px;
+  height: 44px;
+  place-items: center;
+  border: 1px solid rgba(192, 140, 255, 0.42);
+  border-radius: 12px;
+  background: rgba(162, 92, 255, 0.14);
+  color: var(--violet-bright);
+  font-family: "Outfit", sans-serif;
+  font-size: 0.82rem;
+  font-weight: 800;
+}
+
+.feature-hub-card h2 {
+  margin-bottom: 0.45rem;
+  font-size: 1.55rem;
+}
+
+.feature-hub-card p:not(.eyebrow) {
+  margin-bottom: 0.85rem;
+  color: var(--muted);
+}
+
+.feature-hub-band {
+  padding: 3.5rem 0;
+  border-block: 1px solid var(--line);
+  background: linear-gradient(105deg, rgba(162, 92, 255, 0.1), rgba(70, 210, 200, 0.06));
+}
+
+.feature-hub-band-inner {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 2rem;
+}
+
+.feature-hub-band h2 {
+  max-width: 680px;
+  margin-bottom: 0.65rem;
+}
+
+.feature-hub-band .section-copy {
+  max-width: 680px;
+  margin-bottom: 0;
+}
+
+.hero-panel,
+.status-service,
+.accessibility-feature-row,
+.insights-panel,
+.waitlist-form-panel {
+  border-radius: 16px;
+  background: linear-gradient(145deg, rgba(33, 31, 51, 0.9), rgba(17, 17, 29, 0.95));
+}
+
+.waits-row,
+.waits-row.is-hero,
+.product-shot img {
+  border-radius: 14px;
+}
+
+.live-badge,
+.live-park-picker select,
+.live-open-app,
+.snapshot-retry {
+  border-radius: 12px;
+}
+
 .connection-banner button {
   padding: 0.25rem 0.45rem;
   border: 1px solid rgba(255, 227, 161, 0.45);
@@ -3100,6 +3208,15 @@ body.is-offline main {
   .insights-grid {
     grid-template-columns: 1fr;
   }
+
+  .feature-hub-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .feature-hub-band-inner {
+    align-items: flex-start;
+    flex-direction: column;
+  }
 }
 
 @media (max-width: 760px) {
@@ -3136,6 +3253,30 @@ body.is-offline main {
 
   .hero-actions .btn {
     flex: 1 1 180px;
+  }
+
+  .feature-hub-hero {
+    padding-block: 3.2rem 2.7rem;
+  }
+
+  .feature-hub-content {
+    padding-block: 2.8rem 3.4rem;
+  }
+
+  .feature-hub-card {
+    grid-template-columns: 36px minmax(0, 1fr);
+    gap: 0.8rem;
+    padding: 1rem;
+  }
+
+  .feature-hub-icon {
+    width: 36px;
+    height: 36px;
+    font-size: 0.72rem;
+  }
+
+  .feature-hub-card h2 {
+    font-size: 1.35rem;
   }
 
   .product-gallery {
