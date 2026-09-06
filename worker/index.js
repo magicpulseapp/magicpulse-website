@@ -2,7 +2,7 @@ const CONTENT_SECURITY_POLICY = [
   "default-src 'self'",
   "base-uri 'self'",
   "object-src 'none'",
-  "script-src 'self' 'sha256-olqwHtOe+Si9Z70voR7q0DQz7/n7t4VgbsFfGvGxxDA=' 'sha256-J1HhyhqsC5o/SYw8rim4BLjsC57xpdkUS7SedWoLdOE='",
+  "script-src 'self' 'sha256-bXUCCx3w4FBWKBixmqLqHWijZjy8I20Vq73YE/fn22o=' 'sha256-J1HhyhqsC5o/SYw8rim4BLjsC57xpdkUS7SedWoLdOE='",
   "style-src 'self'",
   "img-src 'self' https://www.magicpulse.app data:",
   "font-src 'self'",

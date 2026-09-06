@@ -1,7 +1,7 @@
 {
   "appStoreId": "6759612612",
   "appStoreUrl": "https://apps.apple.com/us/app/magic-pulse/id6759612612",
-  "version": "1.8.7",
+  "version": "2.0",
   "releaseDate": "2026-09-03",
   "releaseDateDisplay": "September 3, 2026",
   "downloadSize": "46.5 MB",
@@ -9,5 +9,5 @@
   "weeklyPrice": "$0.99 / week",
   "lifetimePrice": "$2.99",
   "releaseHeadline": "Bug fixes and improvements",
-  "releaseSummary": "Version 1.8.7 includes bug fixes and improvements to make your park experience even better."
+  "releaseSummary": "Version 2.0 includes bug fixes and improvements to make your park experience even better."
 }
