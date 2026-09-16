@@ -1,13 +1,13 @@
 {
   "appStoreId": "6759612612",
   "appStoreUrl": "https://apps.apple.com/us/app/magic-pulse/id6759612612",
-  "version": "2.1",
-  "releaseDate": "2026-09-03",
-  "releaseDateDisplay": "September 3, 2026",
-  "downloadSize": "46.5 MB",
+  "version": "2.2",
+  "releaseDate": "2026-09-14",
+  "releaseDateDisplay": "September 14, 2026",
+  "downloadSize": "50.2 MB",
   "minimumOS": "iOS 18.0 or later",
   "weeklyPrice": "$0.99 / week",
   "lifetimePrice": "$2.99",
-  "releaseHeadline": "Bug fixes and improvements",
-  "releaseSummary": "Version 2.1 includes bug fixes and improvements to make your park experience even better."
+  "releaseHeadline": "Seasonal nights, smarter hours, smoother planning",
+  "releaseSummary": "Version 2.2 adds enhanced Halloween and Christmas party guidance, support for Extended Evening Hours and member-exclusive events, improved notifications, refreshed park and Watch experiences, and smoother loading."
 }

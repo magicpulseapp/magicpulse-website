@@ -15,6 +15,7 @@
   --cyan: #46d2c8;
   --green: #44d27c;
   --amber: #f2c738;
+  --orange: #ff922b;
   --coral: #ff7857;
   --container: 1160px;
   --header-height: 66px;
@@ -1453,6 +1454,125 @@ body.nav-open .nav-overlay {
 .capability-rail span {
   color: var(--muted);
   font-size: 0.82rem;
+}
+
+.special-nights-section {
+  border-bottom: 1px solid var(--line);
+  background:
+    linear-gradient(90deg, rgba(255, 143, 34, 0.08), transparent 54%),
+    var(--bg);
+}
+
+.special-nights-layout,
+.feature-proof-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 0.86fr) minmax(360px, 1.14fr);
+  gap: clamp(2rem, 5vw, 5rem);
+  align-items: center;
+}
+
+.special-nights-copy h2,
+.feature-proof-copy h2 {
+  max-width: 680px;
+}
+
+.special-night-points {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin: 1.7rem 0 1.2rem;
+  border-block: 1px solid var(--line);
+}
+
+.special-night-points > div {
+  min-width: 0;
+  padding: 1rem 0.9rem;
+}
+
+.special-night-points > div:first-child {
+  padding-left: 0;
+}
+
+.special-night-points > div + div {
+  border-left: 1px solid var(--line);
+}
+
+.special-night-points dt {
+  margin-bottom: 0.32rem;
+  color: var(--orange);
+  font-family: "Outfit", sans-serif;
+  font-weight: 800;
+}
+
+.special-night-points dd {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.8rem;
+  line-height: 1.55;
+}
+
+.special-nights-visual,
+.watch-proof-visual {
+  margin: 0;
+}
+
+.special-nights-visual img {
+  display: block;
+  width: 100%;
+  max-height: 620px;
+  border: 1px solid rgba(255, 143, 34, 0.34);
+  border-radius: 8px;
+  object-fit: cover;
+  object-position: top;
+}
+
+.special-nights-visual figcaption,
+.watch-proof-visual figcaption {
+  margin-top: 0.7rem;
+  color: var(--muted);
+  font-size: 0.78rem;
+}
+
+.feature-proof-section {
+  border-block: 1px solid var(--line);
+  background:
+    linear-gradient(110deg, rgba(70, 210, 200, 0.07), transparent 50%),
+    var(--bg-raised);
+}
+
+.feature-proof-list {
+  display: grid;
+  gap: 0;
+  margin: 1.4rem 0 0;
+  padding: 0;
+  border-top: 1px solid var(--line);
+  list-style: none;
+}
+
+.feature-proof-list li {
+  padding: 0.72rem 0;
+  border-bottom: 1px solid var(--line);
+  color: var(--muted-strong);
+  font-size: 0.86rem;
+}
+
+.feature-proof-list li::before {
+  margin-right: 0.65rem;
+  color: var(--green);
+  content: "✓";
+  font-weight: 900;
+}
+
+.watch-proof-visual {
+  justify-self: center;
+  text-align: center;
+}
+
+.watch-proof-visual img {
+  display: block;
+  width: min(100%, 416px);
+  height: auto;
+  border-radius: 30px;
+  box-shadow: 0 28px 70px rgba(0, 0, 0, 0.36);
 }
 
 .coverage-metrics,
@@ -3477,6 +3597,8 @@ body.is-offline main {
   .product-intro,
   .coverage-heading,
   .compatibility-heading,
+  .special-nights-layout,
+  .feature-proof-layout,
   .contact-hero-grid,
   .privacy-hero-grid,
   .waitlist-hero-grid,
@@ -3559,6 +3681,10 @@ body.is-offline main {
   .feature-hub-band-inner {
     align-items: flex-start;
     flex-direction: column;
+  }
+
+  .special-nights-visual {
+    width: min(100%, 720px);
   }
 }
 
@@ -3739,6 +3865,29 @@ body.is-offline main {
 
   .feature-hub-card h2 {
     font-size: 1.35rem;
+  }
+
+  .special-night-points {
+    grid-template-columns: 1fr;
+  }
+
+  .special-night-points > div {
+    padding-inline: 0;
+  }
+
+  .special-night-points > div + div {
+    border-top: 1px solid var(--line);
+    border-left: 0;
+  }
+
+  .special-nights-visual img {
+    height: auto;
+    max-height: none;
+    object-fit: contain;
+  }
+
+  .watch-proof-visual img {
+    margin-inline: auto;
   }
 
   .product-gallery {

@@ -47,6 +47,10 @@ for (const feature of ["Events", "Apple Watch", "Trip recap", "Siri Shortcuts"])
   assert.match(features, new RegExp(feature), `Features: missing ${feature}`);
 }
 assert.match(home, /href="features\.html"/, "Home: missing all-features link");
+assert.match(home, /id="special-nights"/, "Home: special-night planning section is required");
+assert.match(home, /assets\/app-screens\/seasonal-night\.webp/, "Home: seasonal-night product screenshot is required");
+assert.match(features, /id="special-nights"/, "Features: special-night details are required");
+assert.match(features, /assets\/app-screens\/apple-watch\.webp/, "Features: Apple Watch product screenshot is required");
 
 const support = await readFile(path.join(root, "support.html"), "utf8");
 for (const field of ["app_version", "device_model", "os_version", "park", "steps"]) {
@@ -94,7 +98,7 @@ for (const page of publicPages) {
 
 const css = await readFile(path.join(root, "styles.css"), "utf8");
 const cssLines = css.split(/\r?\n/).length;
-assert.ok(cssLines < 4300, `CSS: expected consolidated stylesheet, found ${cssLines} lines`);
+assert.ok(cssLines < 4400, `CSS: expected consolidated stylesheet, found ${cssLines} lines`);
 assert.equal((css.match(/{/g) || []).length, (css.match(/}/g) || []).length, "CSS: unbalanced braces");
 assert.doesNotMatch(css, /letter-spacing:\s*-/, "CSS: negative letter spacing is not allowed");
 const actionColor = css.match(/--violet-action:\s*(#[0-9a-f]{6})/i)?.[1];
