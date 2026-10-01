@@ -6,7 +6,7 @@ import { fileURLToPath } from "node:url";
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const htmlFiles = (await readdir(root)).filter((name) => name.endsWith(".html"));
 const problems = [];
-const expectedAssetVersion = "20260921a";
+const expectedAssetVersion = "20261001a";
 const staticHeaders = await readFile(path.join(root, "_headers"), "utf8");
 const requiredStaticHeaders = [
   "Content-Security-Policy",
@@ -44,7 +44,9 @@ for (const file of htmlFiles) {
   }
 
   if (!html.includes("og-image.png")) problems.push(`${file}: missing current social image metadata`);
-  if (!html.includes(expectedAssetVersion)) problems.push(`${file}: stale CSS or JavaScript asset version`);
+  for (const asset of ["styles.css", "script.js"]) {
+    if (!html.includes(`${asset}?v=${expectedAssetVersion}`)) problems.push(`${file}: stale ${asset} asset version`);
+  }
 }
 
 if (problems.length) throw new Error(problems.join("\n"));

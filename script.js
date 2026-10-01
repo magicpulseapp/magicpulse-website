@@ -247,7 +247,7 @@
     });
     banner.appendChild(message);
     banner.appendChild(retry);
-    document.body.appendChild(banner);
+    document.body.insertBefore(banner, document.querySelector('main'));
 
     function updateConnectionState() {
       var offline = window.navigator.onLine === false;
@@ -356,6 +356,7 @@
     previous.addEventListener('click', function () { goTo(activeIndex - 1); });
     next.addEventListener('click', function () { goTo(activeIndex + 1); });
     gallery.addEventListener('keydown', function (event) {
+      if (gallery.scrollWidth <= gallery.clientWidth) return;
       if (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight') return;
       event.preventDefault();
       goTo(activeIndex + (event.key === 'ArrowRight' ? 1 : -1));
@@ -1248,6 +1249,18 @@
     var updatedEl = document.getElementById('live-updated');
     if (meta && parkEl) parkEl.textContent = (meta.icon ? meta.icon + ' ' : '') + meta.name;
     if (updatedEl) updatedEl.textContent = 'Loading current waits...';
+    fullLiveItems = [];
+    lastSuccessfulSnapshotAt = null;
+    if (rows) { rows.hidden = true; rows.textContent = ''; }
+    if (loading) loading.hidden = false;
+    if (error) error.hidden = true;
+    clearHeroFallbackState();
+    if (bestMove) bestMove.textContent = 'Checking current waits...';
+    if (dataSignal) dataSignal.textContent = 'Checking freshness...';
+    ['live-open-count', 'live-average-wait', 'live-crowd', 'live-hours', 'live-result-count'].forEach(function (id) {
+      var element = document.getElementById(id);
+      if (element) element.textContent = id === 'live-result-count' ? 'Loading...' : '-';
+    });
     setLiveBadge('Loading', 'demo');
     waitsRoot.classList.add('is-refreshing');
     waitsRoot.setAttribute('aria-busy', 'true');

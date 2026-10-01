@@ -21,6 +21,11 @@ for (const file of htmlFiles) {
 
 const home = await readFile(path.join(root, "index.html"), "utf8");
 const clientScript = await readFile(path.join(root, "script.js"), "utf8");
+assert.match(home, /class="hero-app-screen"/, "Home: real app screen must appear in the hero");
+assert.match(home, /class="snapshot-section"/, "Home: live preview must have its own section");
+assert.match(clientScript, /gallery\.scrollWidth <= gallery\.clientWidth/, "Gallery: editorial layout must preserve normal arrow-key scrolling");
+assert.match(clientScript, /insertBefore\(banner, document\.querySelector\('main'\)\)/, "Offline notice: must participate in page layout");
+assert.match(clientScript, /if \(rows\) \{ rows\.hidden = true; rows\.textContent = ''; \}/, "Park switching: old park rows must not appear under the new park name");
 assert.equal((home.match(/data-gallery-slide/g) || []).length, 3, "Home: gallery must have three slides");
 assert.match(home, /data-gallery-previous[^>]+aria-label="Previous screenshot"/, "Home: previous gallery control needs an accessible name");
 assert.match(home, /data-gallery-next[^>]+aria-label="Next screenshot"/, "Home: next gallery control needs an accessible name");
@@ -101,6 +106,8 @@ const cssLines = css.split(/\r?\n/).length;
 assert.ok(cssLines < 4400, `CSS: expected consolidated stylesheet, found ${cssLines} lines`);
 assert.equal((css.match(/{/g) || []).length, (css.match(/}/g) || []).length, "CSS: unbalanced braces");
 assert.doesNotMatch(css, /letter-spacing:\s*-/, "CSS: negative letter spacing is not allowed");
+assert.doesNotMatch(css, /\.waits-row:nth-child\(n \+ [23]\)/, "Snapshot: all four rows must remain visible on small screens");
+assert.match(css, /\.live-data-value strong\.value--closed \{ color: var\(--coral\); \}/, "Wait colors: closed state must remain distinct from high waits");
 const actionColor = css.match(/--violet-action:\s*(#[0-9a-f]{6})/i)?.[1];
 assert.ok(actionColor, "CSS: primary actions need a dedicated contrast-safe color");
 const rgb = actionColor.slice(1).match(/.{2}/g).map((pair) => Number.parseInt(pair, 16) / 255);

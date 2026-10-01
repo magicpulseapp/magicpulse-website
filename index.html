@@ -36,7 +36,7 @@
   <link rel="preload" href="fonts/inter-400-latin.woff2" as="font" type="font/woff2" crossorigin="anonymous" />
   <link rel="preload" href="fonts/outfit-700-latin.woff2" as="font" type="font/woff2" crossorigin="anonymous" />
   <link rel="preload" href="assets/brand/magic-pulse-atmosphere-wide-v1.webp" as="image" type="image/webp" fetchpriority="high" />
-  <link rel="stylesheet" href="styles.css?v=20260921a" />
+  <link rel="stylesheet" href="styles.css?v=20261001a" />
 
   <script type="application/ld+json">
   {
@@ -203,9 +203,10 @@
   <main id="main-content">
     <section class="hero">
       <div class="container hero-grid">
-        <div>
+        <div class="hero-message">
           <p class="eyebrow">Live waits. Better plans. Less guessing.</p>
-          <h1>Magic Pulse for <span class="gradient-text">smarter park days.</span></h1>
+          <h1>Magic Pulse</h1>
+          <p class="hero-tagline">Smarter park days. One clear view.</p>
           <p class="hero-copy">
             See current ride waits, build your day, follow Lightning Lane prices, and get the right update on iPhone or Apple Watch.
           </p>
@@ -218,7 +219,24 @@
           </div>
           <p class="hero-trustline"><span>Free on iOS</span><span aria-hidden="true">·</span><span>3 free days of Pro</span><span aria-hidden="true">·</span><a href="#pricing">Compare Free and Pro</a><span aria-hidden="true">·</span><a href="android.html">Android waitlist</a></p>
         </div>
+        <figure class="hero-app" aria-label="Magic Pulse on iPhone">
+          <div class="hero-app-screen"><img src="assets/app-screens/live-waits.webp" width="600" height="1299" alt="Magic Pulse on iPhone with park status, ride waits, and a best-move recommendation" fetchpriority="high" decoding="async" /></div>
+          <figcaption>iPhone + Apple Watch</figcaption>
+        </figure>
+
+      </div>
+    </section>
+
+    <section class="snapshot-section" aria-label="Live park preview">
+      <div class="container">
+        <nav class="snapshot-tabs" aria-label="Park planning tools">
+          <a href="live-waits.html" class="is-active">Ride waits</a>
+          <a href="day-planner.html">My Day</a>
+          <a href="features.html#special-nights">Events</a>
+          <a href="lightning-lane.html">Lightning Lane</a>
+        </nav>
         <aside class="hero-panel" aria-label="Live wait times">
+          <div class="snapshot-chrome">
           <div class="panel-head">
             <h2>Live wait snapshot</h2>
             <span class="live-badge" id="live-badge"><span class="live-dot" aria-hidden="true"></span>Live</span>
@@ -247,7 +265,8 @@
             </select>
           </div>
           <p class="panel-sub" id="live-park-selection-status"><span id="live-park-name">Loading…</span> · <span id="live-updated">—</span></p>
-          <div class="hairline-dot live-waits-divider" aria-hidden="true"><span class="dot"></span></div>
+          </div>
+          <div class="snapshot-live">
           <div id="live-waits" class="live-waits" aria-live="polite" aria-busy="true">
             <div class="waits-loading" aria-hidden="true">
               <span></span><span></span><span></span><span></span>
@@ -259,6 +278,8 @@
             <span>Live data is unavailable, so these are example rides.</span>
             <button class="snapshot-retry" id="live-waits-retry" type="button">Try again</button>
           </div>
+          </div>
+          <div class="snapshot-planning">
           <div class="hero-panel-insights" id="live-insights" aria-label="Planning summary" aria-live="polite">
             <div>
               <span id="live-best-label">Best move</span>
@@ -282,14 +303,6 @@
             <span id="live-open-app-label">Open Magic Kingdom in Magic Pulse</span>
             <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7"/><path d="M7 7h10v10"/></svg>
           </a>
-          <div class="brand-footer" aria-hidden="true">
-            <div class="hairline-dot"><span class="dot"></span></div>
-            <span class="brand-footer-wordmark">
-              <img class="brand-mark" src="favicon.svg?v=20260921b" width="32" height="32" alt="" />
-              Magic Pulse
-              <span class="sep">·</span>
-              <span class="url">magicpulse.app</span>
-            </span>
           </div>
         </aside>
       </div>
@@ -700,6 +713,6 @@
     </a>
   </div>
 
-  <script src="script.js?v=20260921a" defer></script>
+  <script src="script.js?v=20261001a" defer></script>
 </body>
 </html>
