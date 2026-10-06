@@ -7,6 +7,15 @@ const release = JSON.parse(await readFile(path.join(root, "site-release.json"), 
 const homepage = await readFile(path.join(root, "index.html"), "utf8");
 const support = await readFile(path.join(root, "support.html"), "utf8");
 const accessibility = await readFile(path.join(root, "accessibility.html"), "utf8");
+const liveWaits = await readFile(path.join(root, "live-waits.html"), "utf8");
+const structuredData = [...homepage.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)]
+  .map((match) => JSON.parse(match[1]));
+const software = structuredData.flatMap((entry) => entry['@graph'] ?? [entry])
+  .find((entry) => entry['@type'] === 'SoftwareApplication');
+if (!software || software.softwareVersion !== release.version || software.dateModified !== release.releaseDate ||
+    software.downloadUrl !== release.appStoreUrl || !software.operatingSystem.includes(release.minimumOS)) {
+  throw new Error('Software structured data is out of sync with the verified release');
+}
 
 const requiredHomepageValues = [
   release.appStoreUrl,
@@ -30,6 +39,14 @@ if (!support.includes(`value="${release.version}"`)) {
 }
 if (!accessibility.includes(`Magic Pulse ${release.version}`)) {
   throw new Error(`Accessibility statement version is out of sync: expected ${release.version}`);
+}
+for (const [name, html] of [["Home", homepage], ["Live waits", liveWaits]]) {
+  if (!html.includes(`data-app-version="${release.version}"`)) {
+    throw new Error(`${name} public content audience is out of sync: expected ${release.version}`);
+  }
+  if (html.indexOf('src="live-policy.js') < 0 || html.indexOf('src="live-policy.js') > html.indexOf('src="script.js')) {
+    throw new Error(`${name} must load the live policy before the live renderer`);
+  }
 }
 
 if (process.argv.includes("--remote")) {

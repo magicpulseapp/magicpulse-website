@@ -184,6 +184,17 @@ try {
   assert.equal(report.totals.gallery_navigate, 1);
   assert.equal(report.totals.support_submit, 1);
 
+  for (const topic of ["data", "events", "notifications", "content"]) {
+    const response = await worker.fetch(new Request("https://preview.example/api/site/forms/support", {
+      method: "POST",
+      headers: { ...requestHeaders, "CF-Connecting-IP": `fixture-${topic}`, "Content-Type": "application/json" },
+      body: JSON.stringify({ challenge, honeypot: "", name: "Test User", email: "test@example.com", topic,
+        message: "A disposable support-topic validation fixture, never delivered." }),
+    }), env, testContext);
+    assert.equal(response.status, 202, `New support topic ${topic} must be accepted`);
+    assert.equal(forwarded.at(-1).topic, topic);
+  }
+
   const privatePage = await worker.fetch(
     new Request("https://preview.example/insights.html", {
       headers: { "oai-authenticated-user-email": "owner@example.com" },

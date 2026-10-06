@@ -1034,6 +1034,14 @@
   var waitsRoot = document.getElementById('live-waits');
   if (!waitsRoot) return;
   var FULL_LIVE_VIEW = waitsRoot.getAttribute('data-live-mode') === 'full';
+  var livePolicy = window.MagicPulseLivePolicy;
+  var publicAppVersion = waitsRoot.getAttribute('data-app-version');
+  var currentPolicy = livePolicy.unknown();
+  var lastLiveResult = null;
+  var lastLiveItems = [];
+  var refreshFailed = false;
+  var policyBoundaryTimer = null;
+  var lastPresentationKey = '';
 
   var MAGICPULSE_API_BASE =
     typeof window.MAGICPULSE_API_BASE === 'string' ? window.MAGICPULSE_API_BASE : 'https://api.magicpulse.app';
@@ -1056,7 +1064,7 @@
   var LIVE_REFRESH_MS =
     typeof window.MAGICPULSE_LIVE_REFRESH_MS === 'number' && !Number.isNaN(window.MAGICPULSE_LIVE_REFRESH_MS)
       ? Math.max(60000, Math.min(600000, window.MAGICPULSE_LIVE_REFRESH_MS))
-      : 180000;
+      : 60000;
 
   var LIVE_FETCH_TIMEOUT_MS =
     typeof window.MAGICPULSE_LIVE_FETCH_TIMEOUT_MS === 'number' && !Number.isNaN(window.MAGICPULSE_LIVE_FETCH_TIMEOUT_MS)
@@ -1251,6 +1259,14 @@
     if (updatedEl) updatedEl.textContent = 'Loading current waits...';
     fullLiveItems = [];
     lastSuccessfulSnapshotAt = null;
+    lastLiveResult = null;
+    lastLiveItems = [];
+    currentPolicy = livePolicy.unknown();
+    refreshFailed = false;
+    if (policyBoundaryTimer != null) window.clearTimeout(policyBoundaryTimer);
+    lastPresentationKey = '';
+    var serviceNotice = document.getElementById('live-service-notice');
+    if (serviceNotice) serviceNotice.hidden = true;
     if (rows) { rows.hidden = true; rows.textContent = ''; }
     if (loading) loading.hidden = false;
     if (error) error.hidden = true;
@@ -1500,7 +1516,7 @@
   function getFetchErrorMessage(err) {
     var msg = err && err.message ? err.message : '';
     if (err && (err.name === 'AbortError' || msg === 'Snapshot time budget exceeded')) {
-      return 'Live data took too long. Showing example rides.';
+      return FULL_LIVE_VIEW ? 'Live data took too long. Please try again.' : 'Live data took too long. Showing example rides.';
     }
     if (msg.indexOf('fetch') !== -1 || msg === 'Failed to fetch') {
       if (!SNAPSHOT_SOURCE_MAGICPULSE) {
@@ -1511,7 +1527,7 @@
       if (pageIsHttps && apiIsHttp) {
         return 'API unreachable (HTTPS page cannot call HTTP API). Use HTTPS for the API or a same-origin proxy.';
       }
-      return 'Could not reach the API. Check that it’s running and reachable, and that CORS is enabled.';
+      return 'Live data could not be reached. Check your connection and try again.';
     }
     return msg || 'Could not load live wait times.';
   }
@@ -1759,7 +1775,7 @@
   }
 
   function fetchMagicPulseSnapshot(parkId, budgetEndTs) {
-    var opts = { method: 'GET' };
+    var opts = { method: 'GET', credentials: 'omit', headers: { Accept: 'application/json' } };
     var msLeft =
       typeof budgetEndTs === 'number' ? budgetEndTs - Date.now() : LIVE_FETCH_TIMEOUT_MS;
     if (msLeft < 200) {
@@ -1776,7 +1792,7 @@
 
     return fetch(requestUrl, opts)
       .then(function (res) {
-        if (!res.ok) throw new Error(res.status === 401 ? 'API token required' : 'Request failed');
+        if (!res.ok) throw new Error('Public park data is unavailable right now.');
         return res.json();
       })
       .then(function (payload) {
@@ -1785,9 +1801,12 @@
           String(payload.selectedParkId || (payload.snapshot.park && payload.snapshot.park.id) || parkId),
           10
         );
+        var meta = parkMetaFromSnapshot(payload.snapshot);
+        if (!meta || (parkId != null && meta.id !== parkId) ||
+            (!Number.isNaN(selectedParkId) && meta.id !== selectedParkId)) throw new Error('Park data did not match the selection');
         return {
           snapshot: payload.snapshot,
-          selectedParkId: Number.isNaN(selectedParkId) ? parkId || MAGICPULSE_PARK_ID : selectedParkId,
+          selectedParkId: meta.id,
           source: 'magicpulse'
         };
       })
@@ -1796,8 +1815,7 @@
       });
   }
 
-  function resolveSnapshot(primaryParkId, useFeatured) {
-    var budgetEnd = Date.now() + LIVE_SNAPSHOT_BUDGET_MS;
+  function resolveSnapshotData(primaryParkId, useFeatured, budgetEnd) {
     if (!SNAPSHOT_SOURCE_MAGICPULSE) {
       return resolveThemeParksSnapshot(primaryParkId, budgetEnd);
     }
@@ -1834,12 +1852,49 @@
       });
   }
 
+  function fetchPublicPolicy(parkId, budgetEnd) {
+    var controller = new AbortController();
+    var remaining = Math.min(1500, budgetEnd - Date.now());
+    if (remaining <= 0) return Promise.resolve(livePolicy.unknown());
+    var timeout = window.setTimeout(function () { controller.abort(); }, remaining);
+    var leaseEnd = Date.now();
+    var url = MAGICPULSE_API_BASE.replace(/\/$/, '') + '/api/app/content?parkId=' +
+      encodeURIComponent(parkId) + '&version=' + encodeURIComponent(publicAppVersion) + '&locale=en';
+    return fetch(url, { signal: controller.signal, credentials: 'omit', redirect: 'error', cache: 'no-store', headers: { Accept: 'application/json' } })
+      .then(function (response) {
+        if (!response.ok) throw new Error('Content unavailable');
+        if (Number(response.headers.get('content-length')) > 1500000) throw new Error('Content too large');
+        var maxAge = /(?:^|,)\s*max-age=(\d+)/.exec(response.headers.get('cache-control') || '');
+        if (!maxAge) throw new Error('Content freshness unknown');
+        var age = Math.max(0, Number(response.headers.get('age')) || 0);
+        leaseEnd = Date.now() + Math.max(0, Math.min(60, Number(maxAge[1]) - age)) * 1000;
+        return response.text();
+      })
+      .then(function (body) {
+        if (body.length > 1500000) throw new Error('Content too large');
+        return livePolicy.read(JSON.parse(body), parkId, publicAppVersion, Date.now(), leaseEnd - Date.now());
+      })
+      .catch(function () { return livePolicy.unknown(); })
+      .finally(function () { window.clearTimeout(timeout); });
+  }
+
+  function resolveSnapshot(primaryParkId, useFeatured) {
+    var budgetEnd = Date.now() + LIVE_SNAPSHOT_BUDGET_MS;
+    return resolveSnapshotData(primaryParkId, useFeatured, budgetEnd).then(function (result) {
+      if (!result) return null;
+      return fetchPublicPolicy(result.selectedParkId, budgetEnd).then(function (policy) {
+        result.policy = policy;
+        return result;
+      });
+    });
+  }
+
   function snapshotTimestamp(snapshot) {
-    var parsed = snapshot && snapshot.updatedISO ? Date.parse(snapshot.updatedISO) : NaN;
-    return Number.isNaN(parsed) ? Date.now() : parsed;
+    return livePolicy.freshness(snapshot, Date.now()).timestamp;
   }
 
   function formatAge(timestamp) {
+    if (timestamp == null) return 'update time unknown';
     var minutes = Math.max(0, Math.floor((Date.now() - timestamp) / 60000));
     if (minutes < 1) return 'just now';
     if (minutes === 1) return '1 min ago';
@@ -1847,12 +1902,7 @@
   }
 
   function snapshotReportsStale(snapshot) {
-    return !!(
-      snapshot &&
-      snapshot.status &&
-      snapshot.status.rides &&
-      snapshot.status.rides.isStale
-    );
+    return refreshFailed || livePolicy.freshness(snapshot, Date.now()).stale;
   }
 
   function setPanelMeta(snapshot, timestamp) {
@@ -1864,7 +1914,7 @@
       var name = currentMeta && currentMeta.name ? currentMeta.name : snapshot.park.name;
       parkEl.textContent = (icon ? icon + ' ' : '') + name;
     }
-    if (updatedEl) updatedEl.textContent = 'Updated ' + formatAge(timestamp);
+    if (updatedEl) updatedEl.textContent = timestamp == null ? 'Update time unavailable' : 'Updated ' + formatAge(timestamp);
   }
 
   function waitValueClass(waitTime) {
@@ -1904,16 +1954,21 @@
     if (insights) insights.hidden = false;
     if (bestLabel) bestLabel.textContent = 'Best move';
     var lowest = items.reduce(function (best, item) {
-      if (item.waitTime == null) return best;
+      if (item.isOpen === false || item.statusText || item.waitTime == null) return best;
       return !best || item.waitTime < best.waitTime ? item : best;
     }, null);
     var largestDrop = items.reduce(function (best, item) {
-      if (item.waitTime == null || item.predictedWaitIn30Min == null) return best;
+      if (item.isOpen === false || item.statusText || item.waitTime == null || item.predictedWaitIn30Min == null) return best;
       var drop = item.waitTime - item.predictedWaitIn30Min;
       return !best || drop > best.drop ? { item: item, drop: drop } : best;
     }, null);
     if (bestMove) {
-      bestMove.textContent = largestDrop && largestDrop.drop >= 10
+      var allowed = livePolicy.restrictions(currentPolicy, Date.now());
+      var stale = snapshotReportsStale(snapshot);
+      if (bestLabel) bestLabel.textContent = stale || !allowed.recommendations ? 'Posted waits' : 'Best move';
+      bestMove.textContent = stale ? 'Last available waits · check before you move'
+        : !allowed.recommendations ? 'Ride suggestions temporarily unavailable'
+        : largestDrop && largestDrop.drop >= 10
         ? 'Wait on ' + largestDrop.item.name + ' · forecast down ' + largestDrop.drop + ' min'
         : (lowest ? 'Ride ' + lowest.name + ' · ' + lowest.waitTime + ' min' : 'No posted waits');
     }
@@ -1939,6 +1994,8 @@
   }
 
   function markLiveDataStale() {
+    refreshFailed = true;
+    refreshLivePresentation();
     waitsRoot.classList.add('live-waits--stale');
     setLiveBadge('Delayed', 'stale');
     var updatedEl = document.getElementById('live-updated');
@@ -1948,6 +2005,41 @@
         : 'Live update unavailable';
     }
     if (dataSignal) dataSignal.textContent = 'Refresh delayed';
+  }
+
+  function refreshLivePresentation(force) {
+    if (!lastLiveResult) return;
+    var snapshot = lastLiveResult.snapshot;
+    var now = Date.now();
+    var fresh = livePolicy.freshness(snapshot, now);
+    if (refreshFailed) fresh.stale = true;
+    var allowed = livePolicy.restrictions(currentPolicy, now);
+    var key = JSON.stringify([fresh.stale, allowed, Math.floor(now / 60000)]);
+    if (!force && key === lastPresentationKey) return;
+    lastPresentationKey = key;
+    var items = livePolicy.project(lastLiveItems, currentPolicy, fresh, now);
+    render(items);
+    var notice = document.getElementById('live-service-notice');
+    if (notice) {
+      notice.textContent = allowed.reasons.slice(0, 3).join(' ') || (!allowed.known
+        ? 'Forecast and suggestion availability could not be checked. Posted waits remain available.' : '');
+      notice.hidden = !notice.textContent;
+    }
+    if (rideSort) {
+      var forecastOption = rideSort.querySelector('option[value="forecast-drop"]');
+      if (forecastOption) forecastOption.disabled = fresh.stale || !allowed.forecasts;
+      if ((fresh.stale || !allowed.forecasts) && liveSortMode === 'forecast-drop') {
+        liveSortMode = 'wait-asc';
+        rideSort.value = liveSortMode;
+        renderFullLiveItems();
+      }
+    }
+    var closed = snapshot.parkHours && snapshot.parkHours.isOpenNow === false;
+    setLiveBadge(closed ? 'Closed' : fresh.stale ? 'Delayed' : 'Live', closed ? 'closed' : fresh.stale ? 'stale' : 'live');
+    waitsRoot.classList.toggle('live-waits--stale', fresh.stale);
+    setPanelMeta(snapshot, fresh.timestamp);
+    if (closed) updateClosedInsights(snapshot, fresh.timestamp, lastLiveResult.source);
+    else updateInsights(items, snapshot, fresh.timestamp, lastLiveResult.source);
   }
 
   function clearHeroFallbackState() {
@@ -2146,7 +2238,7 @@
         }
       } else {
         forecastValue.textContent = '-';
-        forecastDetail.textContent = item.isOpen ? 'No forecast' : 'Not operating';
+        forecastDetail.textContent = item.isOpen ? item.guidanceUnavailable || 'No forecast' : 'Not operating';
       }
       forecast.appendChild(forecastValue);
       forecast.appendChild(forecastDetail);
@@ -2193,6 +2285,7 @@
     function guidanceFor(item) {
       if (item.statusText) return { label: 'Not operating', state: 'closed' };
       if (item.waitTime == null) return { label: 'Example ride', state: 'steady' };
+      if (item.guidanceUnavailable) return { label: item.guidanceUnavailable, state: 'steady' };
       if (item.predictedWaitIn30Min != null) {
         var delta = item.predictedWaitIn30Min - item.waitTime;
         if (delta <= -5) return { label: 'Forecast down ' + Math.abs(delta) + ' min', state: 'down' };
@@ -2200,7 +2293,7 @@
       }
       if (item.waitAnomaly === 'low') return { label: 'Lower than usual', state: 'down' };
       if (item.waitAnomaly === 'high') return { label: 'Higher than usual', state: 'up' };
-      return { label: item.waitTime === lowestWait ? 'Shortest shown now' : 'Holding steady', state: 'steady' };
+      return { label: item.waitTime === lowestWait ? 'Shortest shown now' : 'Posted wait', state: 'steady' };
     }
 
     list.forEach(function (item, idx) {
@@ -2277,9 +2370,10 @@
       snapshot.parkHours &&
       snapshot.parkHours.isOpenNow === false
     );
+    var allRidesClosed = snapshot.rides.length > 0 && snapshot.rides.every(function (ride) { return ride.is_open === false; });
     var items = FULL_LIVE_VIEW
       ? selectFullSnapshotRides(snapshotRidesIncludingClosed(snapshot))
-      : parkIsClosed
+      : parkIsClosed || allRidesClosed
         ? selectClosedSnapshotRides(snapshot.rides, selectedParkId)
         : selectSnapshotRides(snapshot.rides, selectedParkId);
 
@@ -2295,7 +2389,15 @@
     if (loading) loading.hidden = true;
     if (error) error.hidden = true;
     updateFullLiveSummary(snapshot, items);
-    render(items);
+    currentPolicy = result.policy || livePolicy.unknown();
+    lastLiveResult = result;
+    lastLiveItems = items;
+    refreshFailed = false;
+    if (policyBoundaryTimer != null) window.clearTimeout(policyBoundaryTimer);
+    var timestamp = snapshotTimestamp(snapshot);
+    var boundary = Math.min(currentPolicy.validUntil, timestamp == null ? Infinity : timestamp + 15 * 60000);
+    policyBoundaryTimer = window.setTimeout(function () { refreshLivePresentation(); }, Math.max(0, boundary - Date.now()) + 1);
+    refreshLivePresentation(true);
     lastSuccessfulSnapshotAt = snapshotTimestamp(snapshot);
     var isStale = snapshotReportsStale(snapshot);
     setLiveBadge(
@@ -2304,11 +2406,6 @@
     );
     if (isStale) waitsRoot.classList.add('live-waits--stale');
     setPanelMeta(snapshot, lastSuccessfulSnapshotAt);
-    if (parkIsClosed) {
-      updateClosedInsights(snapshot, lastSuccessfulSnapshotAt, result.source);
-    } else {
-      updateInsights(items, snapshot, lastSuccessfulSnapshotAt, result.source);
-    }
     waitsRoot.setAttribute('aria-busy', 'false');
     waitsRoot.classList.remove('is-refreshing');
   }
@@ -2365,9 +2462,13 @@
   }
 
   if (document.visibilityState === 'visible') startRefreshTimer();
+  window.setInterval(function () {
+    if (document.visibilityState === 'visible') refreshLivePresentation();
+  }, 15000);
 
   document.addEventListener('visibilitychange', function () {
     if (document.visibilityState === 'visible') {
+      refreshLivePresentation();
       loadLiveWaits({ refresh: true, parkId: activeLiveParkId, useFeatured: false });
       startRefreshTimer();
     } else {
@@ -2378,4 +2479,5 @@
   window.addEventListener('online', function () {
     loadLiveWaits({ refresh: true, parkId: activeLiveParkId, useFeatured: false });
   });
+  window.addEventListener('offline', markLiveDataStale);
 })();

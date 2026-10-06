@@ -23,6 +23,16 @@
   color-scheme: dark;
 }
 
+.live-service-notice {
+  margin: 0 0 16px;
+  padding: 12px 0 12px 12px;
+  border-left: 3px solid var(--amber);
+  color: var(--muted-strong);
+  font-size: 14px;
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+}
+
 @font-face {
   font-family: "Inter";
   src: url("fonts/inter-400-latin.woff2") format("woff2");
@@ -1010,7 +1020,7 @@ body.nav-open .nav-overlay {
 
 .live-data-controls {
   display: grid;
-  grid-template-columns: minmax(240px, 1fr) minmax(190px, 230px) auto;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr));
   gap: 0.75rem;
   align-items: end;
   margin-top: 1.25rem;
@@ -1055,8 +1065,8 @@ body.nav-open .nav-overlay {
 
 .live-status-filter {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 5rem), 1fr));
-  width: calc(15rem + 8px);
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 6em), 1fr));
+  width: 100%;
   max-width: 100%;
   min-height: 44px;
   padding: 3px;

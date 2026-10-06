@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; object-src 'none'; script-src 'self' 'sha256-YJ48rB4KplXY7SFR2XqFNnFNdYE9udab1SkFOhnrrhE=' 'sha256-J1HhyhqsC5o/SYw8rim4BLjsC57xpdkUS7SedWoLdOE='; style-src 'self'; img-src 'self' https://www.magicpulse.app data:; font-src 'self'; connect-src 'self' https://api.magicpulse.app https://api.themeparks.wiki; form-action 'self' https://api.magicpulse.app; frame-src 'none'; worker-src 'self'; media-src 'self'; upgrade-insecure-requests" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; object-src 'none'; script-src 'self' 'sha256-YJ48rB4KplXY7SFR2XqFNnFNdYE9udab1SkFOhnrrhE=' 'sha256-UexoEvxRlRWSwQFz+xqsP9fY7R0wO+5GpYwu9vxdFXc='; style-src 'self'; img-src 'self' https://www.magicpulse.app data:; font-src 'self'; connect-src 'self' https://api.magicpulse.app https://api.themeparks.wiki; form-action 'self' https://api.magicpulse.app; frame-src 'none'; worker-src 'self'; media-src 'self'; upgrade-insecure-requests" />
   <meta name="referrer" content="strict-origin-when-cross-origin" />
   <meta name="description" content="Contact Magic Pulse support for product questions, billing, and troubleshooting." />
   <meta name="theme-color" content="#080611" />
@@ -31,7 +31,7 @@
 
   <link rel="preload" href="fonts/inter-400-latin.woff2" as="font" type="font/woff2" crossorigin="anonymous" />
   <link rel="preload" href="fonts/outfit-700-latin.woff2" as="font" type="font/woff2" crossorigin="anonymous" />
-  <link rel="stylesheet" href="styles.css?v=20261001a" />
+  <link rel="stylesheet" href="styles.css?v=20261006a" />
 </head>
 <body>
   <a class="skip-link" href="#main-content">Skip to main content</a>
@@ -120,6 +120,10 @@
                 <option value="">Choose a topic...</option>
                 <option value="general">General question</option>
                 <option value="bug">Bug report</option>
+                <option value="data">Live waits / delayed data</option>
+                <option value="events">Events / showtimes</option>
+                <option value="notifications">Notifications / announcements</option>
+                <option value="content">Ride information / collections</option>
                 <option value="feature">Feature request</option>
                 <option value="dayplan">My Day / shared plan</option>
                 <option value="lightninglane">Lightning Lane tracker</option>
@@ -207,7 +211,7 @@
               </div>
               <div>
                 <h3>General &amp; billing</h3>
-                <p>Include the Apple ID email used for purchases if it is different from your contact email.</p>
+                <p>Include your app version and the purchase option involved. Never send your Apple ID password, payment details, or authentication codes.</p>
               </div>
             </div>
             <div class="support-quick-item">
@@ -230,6 +234,13 @@
             </div>
           </div>
         </aside>
+      </div>
+    </section>
+    <section class="feature-detail-band" aria-labelledby="support-checks-heading">
+      <div class="container feature-detail-list">
+        <article><span class="feature-number">01</span><div><h2 id="support-checks-heading">Waits or forecasts look wrong?</h2><p>Check the selected park, update time, and connection. A cached posted wait is not a new reading. Forecasts can be unavailable even when waits still load. Include the ride and update time in your report.</p><a class="text-link" href="status.html">Check service status</a></div></article>
+        <article><span class="feature-number">02</span><div><h2>An event or plan is different?</h2><p>Include the park, date, and event or ride name. Showtimes use the park's local time and can change; confirm reservations and admission requirements with the park operator. For templates or collections, include your app version because availability can differ between releases.</p></div></article>
+        <article><span class="feature-number">03</span><div><h2>Missing an alert?</h2><p>Check iOS notification permission, the app's notification switches, selected notification parks, Pro access where required, and quiet hours. If your app offers Park announcements, that separate option must also be enabled. A healthy service check does not prove delivery to your device.</p></div></article>
       </div>
     </section>
   </main>
@@ -258,6 +269,6 @@
     </div>
   </footer>
 
-  <script src="script.js?v=20261001a" defer></script>
+  <script src="script.js?v=20261006a" defer></script>
 </body>
 </html>

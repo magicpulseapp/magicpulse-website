@@ -18,6 +18,7 @@ const files = [
   "og-image.png",
   "robots.txt",
   "script.js",
+  "live-policy.js",
   "sitemap.xml",
   "status-history.json",
   "styles.css",
@@ -56,7 +57,7 @@ for (const directory of [".well-known", "assets", "fonts"]) {
 
 let sourceBytes = 0;
 let deployedBytes = 0;
-for (const [file, loader] of [["script.js", "js"], ["styles.css", "css"]]) {
+for (const [file, loader] of [["script.js", "js"], ["live-policy.js", "js"], ["styles.css", "css"]]) {
   const source = await readFile(path.join(root, file), "utf8");
   const optimized = await transform(source, {
     legalComments: "none",

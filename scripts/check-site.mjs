@@ -6,7 +6,7 @@ import { fileURLToPath } from "node:url";
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const htmlFiles = (await readdir(root)).filter((name) => name.endsWith(".html"));
 const problems = [];
-const expectedAssetVersion = "20261001a";
+const expectedAssetVersion = "20261006a";
 const staticHeaders = await readFile(path.join(root, "_headers"), "utf8");
 const requiredStaticHeaders = [
   "Content-Security-Policy",
@@ -28,6 +28,11 @@ for (const file of htmlFiles) {
   const html = await readFile(path.join(root, file), "utf8");
   const ids = [...html.matchAll(/\sid="([^"]+)"/g)].map((match) => match[1]);
   const duplicateIds = ids.filter((id, index) => ids.indexOf(id) !== index);
+  for (const match of html.matchAll(/aria-(?:labelledby|describedby|controls)="([^"]+)"/g)) {
+    for (const id of match[1].split(/\s+/)) {
+      if (!ids.includes(id)) problems.push(`${file}: missing accessibility reference ${id}`);
+    }
+  }
   if (duplicateIds.length) problems.push(`${file}: duplicate IDs ${[...new Set(duplicateIds)].join(", ")}`);
 
   const localRefs = [...html.matchAll(/(?:href|src)="([^"#?]+)(?:[?#][^"]*)?"/g)]

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; object-src 'none'; script-src 'self' 'sha256-YJ48rB4KplXY7SFR2XqFNnFNdYE9udab1SkFOhnrrhE=' 'sha256-J1HhyhqsC5o/SYw8rim4BLjsC57xpdkUS7SedWoLdOE='; style-src 'self'; img-src 'self' https://www.magicpulse.app data:; font-src 'self'; connect-src 'self' https://api.magicpulse.app https://api.themeparks.wiki; form-action 'self' https://api.magicpulse.app; frame-src 'none'; worker-src 'self'; media-src 'self'; upgrade-insecure-requests" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; object-src 'none'; script-src 'self' 'sha256-YJ48rB4KplXY7SFR2XqFNnFNdYE9udab1SkFOhnrrhE=' 'sha256-UexoEvxRlRWSwQFz+xqsP9fY7R0wO+5GpYwu9vxdFXc='; style-src 'self'; img-src 'self' https://www.magicpulse.app data:; font-src 'self'; connect-src 'self' https://api.magicpulse.app https://api.themeparks.wiki; form-action 'self' https://api.magicpulse.app; frame-src 'none'; worker-src 'self'; media-src 'self'; upgrade-insecure-requests" />
   <meta name="referrer" content="strict-origin-when-cross-origin" />
   <meta name="description" content="Explore every Magic Pulse feature: live waits, Events, My Day, Lightning Lane, Apple Watch, alerts, widgets, trip recaps, and weather." />
   <meta name="theme-color" content="#080611" />
@@ -30,7 +30,7 @@
   <meta name="twitter:image:alt" content="Magic Pulse app showing live waits, day planning, and Lightning Lane details" />
   <link rel="preload" href="fonts/inter-400-latin.woff2" as="font" type="font/woff2" crossorigin="anonymous" />
   <link rel="preload" href="fonts/outfit-700-latin.woff2" as="font" type="font/woff2" crossorigin="anonymous" />
-  <link rel="stylesheet" href="styles.css?v=20261001a" />
+  <link rel="stylesheet" href="styles.css?v=20261006a" />
 </head>
 <body>
   <a class="skip-link" href="#main-content">Skip to main content</a>
@@ -56,7 +56,7 @@
     <section class="feature-hero feature-hero--violet feature-hub-hero">
       <div class="container feature-hub-heading">
         <p class="eyebrow">The full Magic Pulse toolkit</p>
-        <h1>Make the next park decision easier</h1>
+        <h1 id="feature-hub-heading">Magic Pulse features</h1>
         <p class="feature-lede">Magic Pulse brings live conditions, personal planning, and timely updates into one compact park-day view.</p>
         <div class="hero-actions">
           <a class="btn btn-primary" href="https://apps.apple.com/us/app/magic-pulse/id6759612612" target="_blank" rel="noopener noreferrer" data-event="app_store_click" data-event-context="features_hero">Get Magic Pulse</a>
@@ -70,11 +70,11 @@
         <div class="feature-hub-grid">
           <article class="feature-hub-card feature-hub-card--violet">
             <span class="feature-hub-icon" aria-hidden="true">01</span>
-            <div><p class="eyebrow">Choose well</p><h2>Live waits and Events</h2><p>See current waits, weather, seasonal party guidance, party entertainment, Extended Evening Hours, and member-exclusive events before you move.</p><a class="text-link" href="live-waits.html">Explore live waits <span aria-hidden="true">↗</span></a></div>
+            <div><p class="eyebrow">Choose well</p><h2>Live waits and Events</h2><p>Compare posted waits and operating status, then check weather, seasonal entertainment, Extended Evening Hours, and member-exclusive events. Schedules and coverage vary by park.</p><a class="text-link" href="live-waits.html">Explore live waits <span aria-hidden="true">↗</span></a></div>
           </article>
           <article class="feature-hub-card feature-hub-card--green">
             <span class="feature-hub-icon" aria-hidden="true">02</span>
-            <div><p class="eyebrow">Shape the day</p><h2>My Day planning</h2><p>Add rides, meals, events, and custom stops. Auto-optimize the order when waits or priorities change.</p><a class="text-link" href="day-planner.html">Explore My Day <span aria-hidden="true">↗</span></a></div>
+            <div><p class="eyebrow">Shape the day</p><h2>My Day planning</h2><p>Keep rides, meals, events, and custom stops together. Review the order as conditions change, and check the timing of your reservations and shows before you move.</p><a class="text-link" href="day-planner.html">Explore My Day <span aria-hidden="true">↗</span></a></div>
           </article>
           <article class="feature-hub-card feature-hub-card--amber">
             <span class="feature-hub-icon" aria-hidden="true">03</span>
@@ -116,6 +116,14 @@
       </div>
     </section>
 
+    <section class="feature-detail-band" aria-labelledby="feature-availability-heading">
+      <div class="container feature-detail-list">
+        <article><span class="feature-number">01</span><div><h2 id="feature-availability-heading">A suggestion, not a guarantee</h2><p>Now suggestions and short-term forecasts help compare your options. Posted waits, ride availability, and park rules can change before you arrive.</p></div></article>
+        <article><span class="feature-number">02</span><div><h2>Check freshness before you move</h2><p>Cached waits can help when the connection drops, but they are not a fresh update. On this website, delayed data keeps its posted waits while forecast advice is hidden.</p><a class="text-link" href="support.html?topic=data">Get help with delayed data</a></div></article>
+        <article><span class="feature-number">03</span><div><h2>Choose the alerts you need</h2><p>Pro alerts depend on your selected park, app preferences, and iOS notification permission. Check quiet hours and system settings if an expected alert does not arrive.</p><a class="text-link" href="support.html?topic=notifications">Get notification help</a></div></article>
+      </div>
+    </section>
+
     <section class="feature-hub-band" aria-labelledby="feature-hub-coverage-heading">
       <div class="container feature-hub-band-inner">
         <div><p class="eyebrow">One app, four resorts</p><h2 id="feature-hub-coverage-heading">Use the same park-day view wherever you go</h2><p class="section-copy">Walt Disney World, Disneyland Resort, Tokyo Disney Resort, and Disneyland Paris are supported in the same flow.</p></div>
@@ -129,6 +137,6 @@
   </main>
 
   <footer class="site-footer"><div class="container footer-grid"><div class="brand-footer"><span class="brand-footer-wordmark"><img class="brand-mark" src="favicon.svg?v=20260921b" width="28" height="28" alt="" />Magic Pulse <span class="sep">·</span> <a class="url" href="https://www.magicpulse.app/">magicpulse.app</a></span></div><p><a href="privacy.html">Privacy Policy</a> · <a href="accessibility.html">Accessibility</a> · <a href="support.html">Support</a> · <a href="status.html">Status</a> · <a href="android.html">Android waitlist</a></p><p class="footer-disclaimer">Magic Pulse is not affiliated with theme park operators. Trademarks belong to their respective owners.</p></div></footer>
-  <script src="script.js?v=20261001a" defer></script>
+  <script src="script.js?v=20261006a" defer></script>
 </body>
 </html>

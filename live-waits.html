@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; object-src 'none'; script-src 'self' 'sha256-YJ48rB4KplXY7SFR2XqFNnFNdYE9udab1SkFOhnrrhE=' 'sha256-J1HhyhqsC5o/SYw8rim4BLjsC57xpdkUS7SedWoLdOE='; style-src 'self'; img-src 'self' https://www.magicpulse.app data:; font-src 'self'; connect-src 'self' https://api.magicpulse.app https://api.themeparks.wiki; form-action 'self' https://api.magicpulse.app; frame-src 'none'; worker-src 'self'; media-src 'self'; upgrade-insecure-requests" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; object-src 'none'; script-src 'self' 'sha256-YJ48rB4KplXY7SFR2XqFNnFNdYE9udab1SkFOhnrrhE=' 'sha256-UexoEvxRlRWSwQFz+xqsP9fY7R0wO+5GpYwu9vxdFXc='; style-src 'self'; img-src 'self' https://www.magicpulse.app data:; font-src 'self'; connect-src 'self' https://api.magicpulse.app https://api.themeparks.wiki; form-action 'self' https://api.magicpulse.app; frame-src 'none'; worker-src 'self'; media-src 'self'; upgrade-insecure-requests" />
   <meta name="referrer" content="strict-origin-when-cross-origin" />
   <meta name="description" content="See live Disney ride waits, forecasts, crowd context, park hours, and smart wait alerts in Magic Pulse for iPhone and Apple Watch." />
   <meta name="theme-color" content="#080611" />
@@ -30,7 +30,7 @@
   <meta name="twitter:image:alt" content="Magic Pulse app showing live waits, day planning, and Lightning Lane details" />
   <link rel="preload" href="fonts/inter-400-latin.woff2" as="font" type="font/woff2" crossorigin="anonymous" />
   <link rel="preload" href="fonts/outfit-700-latin.woff2" as="font" type="font/woff2" crossorigin="anonymous" />
-  <link rel="stylesheet" href="styles.css?v=20261001a" />
+  <link rel="stylesheet" href="styles.css?v=20261006a" />
 </head>
 <body>
   <a class="skip-link" href="#main-content">Skip to main content</a>
@@ -117,6 +117,7 @@
           </div>
         </div>
 
+        <p class="live-service-notice" id="live-service-notice" role="status" hidden></p>
         <div class="live-data-controls" aria-label="Attraction filters">
           <label class="live-search" for="live-ride-search">
             <span>Find an attraction</span>
@@ -145,7 +146,7 @@
         <div class="live-data-columns" aria-hidden="true">
           <span>Attraction</span><span>Now</span><span>In 30 min</span><span>Lightning Lane</span>
         </div>
-        <div id="live-waits" class="live-waits live-data-waits" data-live-mode="full" aria-live="polite" aria-busy="true">
+        <div id="live-waits" class="live-waits live-data-waits" data-app-version="2.2" data-live-mode="full" aria-live="polite" aria-busy="true">
           <div class="waits-loading" aria-hidden="true">
             <span></span><span></span><span></span><span></span><span></span><span></span>
           </div>
@@ -180,7 +181,7 @@
         </article>
         <article>
           <span class="feature-number">02</span>
-          <div><h2>A look 30 minutes ahead</h2><p>Short-term forecasts flag meaningful rises and drops so a nearby attraction can become the better move.</p></div>
+          <div><h2>A look 30 minutes ahead</h2><p>Available forecasts estimate rises and drops, not guaranteed waits. Forecasts and advice are hidden when data is delayed or the applicable service notice pauses them; posted waits remain visible.</p></div>
         </article>
         <article>
           <span class="feature-number">03</span>
@@ -217,6 +218,7 @@
       <p class="footer-disclaimer">Magic Pulse is not affiliated with theme park operators. Trademarks belong to their respective owners.</p>
     </div>
   </footer>
-  <script src="script.js?v=20261001a" defer></script>
+  <script src="live-policy.js?v=20261006a" defer></script>
+  <script src="script.js?v=20261006a" defer></script>
 </body>
 </html>

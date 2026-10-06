@@ -15,6 +15,8 @@ Static landing page for the **Magic Pulse** iOS app (`www.magicpulse.app`). The 
 | `insights.html` | Private, authenticated aggregate website report (`noindex`) |
 | `styles.css` | Consolidated responsive design system and page styles |
 | `script.js` | Navigation, galleries, forms, status, aggregate insights, resilient live waits, and offline state |
+| `live-policy.js` | Audience-checked public incident policy and immutable live-advice projection |
+| `PRODUCT-SYNC-EVIDENCE.md` / `NEXT-RELEASE-DRAFT.md` | Release/feature evidence and unreleased copy; excluded from the website build |
 | `fonts/*.woff2` | Self-hosted webfonts (latin + latin-ext); no Google Fonts runtime |
 | `favicon.svg` | Tab icon |
 | `apple-touch-icon.png` | 180×180 home-screen icon (iOS ignores SVG here) |
@@ -49,7 +51,7 @@ Behavior:
 - Requests one server-selected featured park on a visitor's first load. The picker then calls the chosen park's public snapshot directly and remembers that selection locally.
 - If a Magic Pulse route is unavailable, tries the selected park once through ThemeParks Wiki.
 - Caps the full initial request path at 8 seconds and marks retained rows as delayed when a refresh fails.
-- **Auto-refreshes** while the tab is visible; refreshes when you return to the tab.
+- **Auto-refreshes** every minute while visible; refreshes when you return to the tab.
 
 ### Live wait snapshot API
 
@@ -60,6 +62,10 @@ Calls `GET https://api.magicpulse.app/api/parks/public/featured/snapshot` on the
 Ride rows include `data-ride-id` when the source provides an `id`.
 
 The panel also compares a ride's current wait with its 30-minute forecast when the API provides one. It labels the direction on each row and recommends either the shortest displayed ride or a meaningful forecasted drop. All four rows keep the same visual surface.
+
+The page also reads published `/api/app/content` incident entries for the selected park, English locale, and the verified public app version declared on the live panel. It does not display the editorial library or use private/native authentication. Missing policy, expired leases, stale source timestamps, or applicable incidents suppress unsafe advice while preserving posted waits. `Cache-Control` bounds the policy lease; rendering never silently restores a forecast using an expired response.
+
+Production CORS deliberately does not allow arbitrary localhost origins. Use the fixture browser suite for local testing; do not loosen API CORS or add credentials to make a static preview work.
 
 ## Website measurement
 
@@ -82,6 +88,17 @@ Check the page against `site-release.json`, or compare that file with Apple's li
 npm run check:release
 npm run check:release:remote
 ```
+
+Run the retained browser QA after building and starting the local HTTP preview:
+
+```bash
+PLAYWRIGHT_MODULE=/absolute/path/to/playwright/index.mjs node scripts/qa-product-sync.mjs
+PLAYWRIGHT_MODULE=/absolute/path/to/playwright/index.mjs node scripts/qa-product-accessibility.mjs
+```
+
+It uses isolated headless Chrome contexts, built CSS/JavaScript, deterministic public API fixtures, and non-delivering form responses. Screenshots/results go to `.qa/product-sync-20261006/`; physical-device, screen-reader and public deployment results remain separate. The default preview URL is `http://127.0.0.1:8091`; override it with `QA_BASE_URL`.
+
+The focused accessibility runner checks keyboard focus, reduced motion, notice contrast, and live-data touch targets at desktop, mobile, and enlarged-text widths. It is not a screen-reader or full WCAG certification.
 
 Run `npm run check:production` after DNS, proxy, API, or website deployments. It
 verifies the canonical website and legal pages, the read-only support-form
