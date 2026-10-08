@@ -26,7 +26,12 @@ assert.match(home, /class="snapshot-section"/, "Home: live preview must have its
 assert.match(clientScript, /gallery\.scrollWidth <= gallery\.clientWidth/, "Gallery: editorial layout must preserve normal arrow-key scrolling");
 assert.match(clientScript, /insertBefore\(banner, document\.querySelector\('main'\)\)/, "Offline notice: must participate in page layout");
 assert.match(clientScript, /if \(rows\) \{ rows\.hidden = true; rows\.textContent = ''; \}/, "Park switching: old park rows must not appear under the new park name");
-assert.equal((home.match(/data-gallery-slide/g) || []).length, 3, "Home: gallery must have three slides");
+assert.equal((home.match(/data-gallery-slide/g) || []).length, 4, "Home: gallery must have four slides");
+for (const asset of ["park-overview-ui-20261007.webp", "park-overview-20261007.webp", "ride-details-20261007.webp"]) {
+  assert.ok(home.includes(asset), `Home: missing refreshed screenshot ${asset}`);
+}
+assert.equal((home.match(/class="product-preview-note"/g) || []).length, 2, "Home: both upcoming screenshots need a preview disclosure");
+assert.doesNotMatch(home, /preload[^>]*magic-pulse-atmosphere/, "Home: unused old artwork must not be preloaded");
 assert.match(home, /data-gallery-previous[^>]+aria-label="Previous screenshot"/, "Home: previous gallery control needs an accessible name");
 assert.match(home, /data-gallery-next[^>]+aria-label="Next screenshot"/, "Home: next gallery control needs an accessible name");
 assert.match(home, /id="live-waits-retry"/, "Home: live snapshot needs a retry control");
@@ -102,6 +107,9 @@ for (const page of publicPages) {
 }
 
 const css = await readFile(path.join(root, "styles.css"), "utf8");
+assert.match(css, /storybook-header-20261007\.webp/, "Hero: refreshed artwork is required");
+assert.match(css, /storybook-header-mobile-20261007\.webp/, "Hero: lightweight mobile artwork is required");
+assert.match(css, /\.hero-app-screen img \{[^}]*margin: 0;/, "Hero: refreshed capture must not retain the old poster crop");
 const cssLines = css.split(/\r?\n/).length;
 assert.ok(cssLines < 4400, `CSS: expected consolidated stylesheet, found ${cssLines} lines`);
 assert.equal((css.match(/{/g) || []).length, (css.match(/}/g) || []).length, "CSS: unbalanced braces");

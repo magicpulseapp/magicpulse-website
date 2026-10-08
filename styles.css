@@ -505,7 +505,7 @@ body.nav-open .nav-overlay {
   position: relative;
   padding: 2rem 0;
   border-bottom: 1px solid var(--line);
-  background: linear-gradient(90deg, rgba(9, 10, 12, 0.88), rgba(9, 10, 12, 0.38)), url("assets/brand/magic-pulse-atmosphere-wide-v1.webp") center 56% / cover no-repeat;
+  background: linear-gradient(90deg, rgba(9, 10, 12, 0.94), rgba(9, 10, 12, 0.3)), url("assets/brand/storybook-header-20261007.webp") center / cover no-repeat;
   isolation: isolate;
   overflow: hidden;
 }
@@ -1293,7 +1293,7 @@ body.nav-open .nav-overlay {
 
 .product-gallery {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 2rem;
   outline: none;
 }
@@ -1310,7 +1310,7 @@ body.nav-open .nav-overlay {
   max-width: 290px;
   margin-inline: auto;
   height: auto;
-  aspect-ratio: 600 / 1299;
+  aspect-ratio: auto;
   border-radius: 14px;
   object-fit: contain;
 }
@@ -1330,6 +1330,11 @@ body.nav-open .nav-overlay {
 .product-shot figcaption span {
   color: var(--muted);
   font-size: 0.86rem;
+}
+
+.product-shot figcaption .product-preview-note {
+  color: var(--muted-strong);
+  font-size: 0.75rem;
 }
 
 .product-shot figcaption a,
@@ -3814,8 +3819,8 @@ body.is-offline main {
   }
 
   .product-gallery { grid-template-columns: 1fr; gap: 1.5rem; }
-  .product-shot { display: grid; grid-template-columns: minmax(0, 0.8fr) minmax(0, 1fr); gap: 1.5rem; align-items: center; }
-  .product-shot img { max-width: 240px; }
+  .product-shot { display: grid; grid-template-columns: minmax(0, 1fr); gap: 1.5rem; align-items: center; }
+  .product-shot img { max-width: 290px; }
   .product-shot figcaption { padding: 0; }
 
   .capability-rail {
@@ -4212,9 +4217,9 @@ body.is-offline main {
 
 /* Shared HUD surfaces and the live preview retain stable columns at every width. */
 .hero-tagline { margin: 0 0 1rem; font-family: "Outfit", sans-serif; font-size: 2rem; line-height: 1.15; color: var(--text); }
-.hero-app { width: 100%; margin: 0; }
-.hero-app-screen { aspect-ratio: 600 / 895; overflow: hidden; border: 1px solid var(--line-strong); border-radius: 16px; background: var(--surface); }
-.hero-app-screen img { width: 100%; max-width: none; height: auto; margin-top: -66.5%; }
+.hero-app { width: 100%; max-width: 200px; justify-self: center; margin: 0; }
+.hero-app-screen { aspect-ratio: 600 / 1304; overflow: hidden; border: 1px solid var(--line-strong); border-radius: 8px; background: var(--surface); }
+.hero-app-screen img { width: 100%; max-width: none; height: auto; margin: 0; }
 .hero-app figcaption { margin-top: 0.65rem; text-align: center; font-size: 0.875rem; color: var(--muted-strong); }
 .snapshot-section { padding: 1.25rem 0 1.5rem; border-bottom: 1px solid var(--line); background: var(--bg); }
 .snapshot-tabs { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 0.75rem; }
@@ -4278,7 +4283,7 @@ h1, h2, h3, p, li, label, summary, dt, dd, strong, .btn { overflow-wrap: anywher
   .live-data-lane { padding-top: 1rem; }
   .live-data-verdict { position: static; }
   .section, .section-alt { padding-block: 2.5rem; }
-  .hero { padding: 1.5rem 0; }
+  .hero { padding: 1.5rem 0; background-image: linear-gradient(180deg, rgba(9, 10, 12, 0.55), rgba(9, 10, 12, 0.78) 14rem, var(--bg) 20rem), url("assets/brand/storybook-header-mobile-20261007.webp"); background-size: auto, auto 20rem; background-position: center, center top; }
   .hero-grid { grid-template-columns: minmax(0, 1fr) 140px; gap: 0.75rem 1rem; }
   .hero-message { display: contents; }
   .hero-message .eyebrow { grid-column: 1 / -1; margin: 0; }

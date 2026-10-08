@@ -2,6 +2,8 @@
 
 October 6, 2026. **Locally review-ready, not deployed.** Website source only was changed. Native/API repositories were read-only references. No push, Cloudflare deployment, app release, production write, real form delivery or notification occurred.
 
+This is the historical October 6 cohort. The October 7 authorized artwork and screenshot refresh changes the source/build identity; current media validation is recorded in `MEDIA-REFRESH-QA.md`. The earlier hashes below do not identify the refreshed website.
+
 Preview: `http://127.0.0.1:8091/`. Production CORS intentionally does not allow localhost, so production-backed waits may fall back in this preview. Browser fixtures exercise the full integration locally; a separate allowed-origin check verified real public API reads without deploying files or relaxing CORS.
 
 ## Final source and build

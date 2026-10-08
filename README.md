@@ -17,6 +17,7 @@ Static landing page for the **Magic Pulse** iOS app (`www.magicpulse.app`). The 
 | `script.js` | Navigation, galleries, forms, status, aggregate insights, resilient live waits, and offline state |
 | `live-policy.js` | Audience-checked public incident policy and immutable live-advice projection |
 | `PRODUCT-SYNC-EVIDENCE.md` / `NEXT-RELEASE-DRAFT.md` | Release/feature evidence and unreleased copy; excluded from the website build |
+| `MEDIA-REFRESH-QA.md` | Artwork/screenshot provenance and current local media validation |
 | `fonts/*.woff2` | Self-hosted webfonts (latin + latin-ext); no Google Fonts runtime |
 | `favicon.svg` | Tab icon |
 | `apple-touch-icon.png` | 180×180 home-screen icon (iOS ignores SVG here) |
@@ -99,6 +100,14 @@ PLAYWRIGHT_MODULE=/absolute/path/to/playwright/index.mjs node scripts/qa-product
 It uses isolated headless Chrome contexts, built CSS/JavaScript, deterministic public API fixtures, and non-delivering form responses. Screenshots/results go to `.qa/product-sync-20261006/`; physical-device, screen-reader and public deployment results remain separate. The default preview URL is `http://127.0.0.1:8091`; override it with `QA_BASE_URL`.
 
 The focused accessibility runner checks keyboard focus, reduced motion, notice contrast, and live-data touch targets at desktop, mobile, and enlarged-text widths. It is not a screen-reader or full WCAG certification.
+
+The image refresh has a focused runner that checks viewport-specific artwork downloads, image pixels, full capture framing, screenshot ratios, preview disclosures, and first-view actions:
+
+```bash
+PLAYWRIGHT_MODULE=/absolute/path/to/playwright/index.mjs node scripts/qa-app-store-images.mjs
+```
+
+It writes to `.qa/app-store-images-20261007/`. Use that directory as `QA_OUTPUT_DIR` for the other browser runners when refreshing the same media cohort. The new standard-iPhone screenshots are explicitly upcoming-design previews with sample data, not evidence of a published app update. The original published planner, Lightning Lane, Watch, and seasonal images remain until suitable replacements are ready.
 
 Run `npm run check:production` after DNS, proxy, API, or website deployments. It
 verifies the canonical website and legal pages, the read-only support-form

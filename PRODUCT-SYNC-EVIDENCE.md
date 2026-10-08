@@ -48,9 +48,9 @@ Localhost is not an allowed production API browser origin. The fixture suite tes
 
 The website's charcoal canvas/surfaces and green/yellow/orange wait bands align with current native `MagicPulse/UI/UIComponents.swift`; red remains a closed/error signal. Snapshot rows retain identical surfaces, fixed right-aligned values and ranks 1-4.
 
-Existing published App Store artwork stays in place for the publicly available version. The live-waits image was visually compared with current listing media; the retained planner/Lightning Lane artwork is not labelled a 3.0 capture. Watch and seasonal images entered the website's 2.2 update in commit `72f02f2`. Original raw capture build numbers are not available in these website assets. Do not manufacture them.
+On October 7 the user authorized using both the new storybook artwork and the redesigned screenshots. The homepage now uses the October 6 Storybook v3 promotional illustration, an authentic park-overview capture, and the two finished standard-iPhone designed exports. The new app captures come from simulator build 3.0 (35), not the publicly downloadable 2.2 release; each placement is labelled as an upcoming design using sample data. The complete captures and their sample-data/estimated-forecast labels remain visible. No operator, consent, or fabricated app screen is included.
 
-The next-release draft specifies authentic replacement captures after release/build approval. No private-preview, simulator consent, operator, or synthetic QA image is promoted into marketing assets.
+Published planner/Lightning Lane, Watch, and seasonal images remain where finished standard-iPhone replacements are unavailable. The planner/Lightning Lane artwork is not labelled a 3.0 capture. Watch and seasonal images entered the website's 2.2 update in commit `72f02f2`; their original raw build numbers remain unknown. Release metadata and the public API audience remain 2.2. See `MEDIA-REFRESH-QA.md` for the current media scope and verification; the next-release draft remains separate from released feature claims.
 
 ## Release decisions outside this goal
 

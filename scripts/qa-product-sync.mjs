@@ -282,7 +282,7 @@ try {
 
   const gallery = await pageFor(1440);
   await loaded(gallery.page);
-  assert.equal(await gallery.page.locator('[data-gallery-slide]').count(), 3);
+  assert.equal(await gallery.page.locator('[data-gallery-slide]').count(), 4);
   await gallery.page.locator('.product-shot a[href="day-planner.html"]').click();
   await gallery.page.waitForURL('**/day-planner.html');
   assert.equal(await gallery.page.locator('h1').innerText(), 'My Day planner');
