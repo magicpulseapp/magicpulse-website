@@ -8,7 +8,7 @@ const { chromium } = await import(process.env.PLAYWRIGHT_MODULE || 'playwright')
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const output = path.resolve(process.env.QA_OUTPUT_DIR || path.join(root, '.qa/app-store-images-20261007'));
 const base = process.env.QA_BASE_URL || 'http://127.0.0.1:8091';
-const files = ['index.html', 'styles.css', 'scripts/qa-app-store-images.mjs', ...[
+const files = ['index.html', 'styles.css', 'holiday.js', 'holiday.css', 'scripts/qa-app-store-images.mjs', ...[
   'assets/brand/storybook-header-20261007.webp',
   'assets/brand/storybook-header-mobile-20261007.webp',
   'assets/app-screens/park-overview-ui-20261007.webp',
@@ -29,9 +29,10 @@ try {
   for (const [width, height, enlarged] of [[1440, 900, false], [1280, 720, false], [768, 1024, false],
     [390, 844, false], [320, 844, false], [320, 844, true]]) {
     const context = await browser.newContext({ viewport: { width, height }, reducedMotion: 'reduce' });
+    await context.addInitScript(() => localStorage.setItem('magicpulse-holiday-look', 'off'));
     await context.route('https://api.magicpulse.app/**', route => route.fulfill({ status: 503, json: {} }));
     await context.route('https://api.themeparks.wiki/**', route => route.fulfill({ status: 503, json: {} }));
-    for (const asset of ['styles.css', 'script.js', 'live-policy.js']) await context.route(`**/${asset}?*`, route =>
+    for (const asset of ['styles.css', 'script.js', 'live-policy.js', 'holiday.js', 'holiday.css']) await context.route(`**/${asset}?*`, route =>
       route.fulfill({ path: path.join(root, 'dist/client', asset), contentType: asset.endsWith('.css') ? 'text/css' : 'text/javascript' }));
     const page = await context.newPage();
     const imageRequests = [];
@@ -68,6 +69,10 @@ try {
     const label = `images-${width}${enlarged ? '-text200' : ''}`;
     await page.screenshot({ path: path.join(output, label + '-hero.png') });
     await page.locator('#product').scrollIntoViewIfNeeded();
+    for (const img of await page.locator('.product-shot img').all()) {
+      await img.scrollIntoViewIfNeeded();
+      await img.evaluate(el => el.decode());
+    }
     const images = await page.locator('.product-shot img').evaluateAll(async items => {
       await Promise.all(items.map(img => img.decode()));
       return items.map(img => ({ src: img.getAttribute('src'), width: img.naturalWidth, height: img.naturalHeight,

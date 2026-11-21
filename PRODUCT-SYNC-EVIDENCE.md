@@ -46,6 +46,8 @@ Localhost is not an allowed production API browser origin. The fixture suite tes
 
 ## Visual and asset identity
 
+November 9 seasonal update: `HOLIDAY-QA.md` records the website-only holiday-party planner and winter overlay. The existing winter illustration is reused, while the former Halloween-only homepage promotion is replaced with official party guides and validated public schedule data. Native screenshots stay authentic, labelled previews; no app version or native/API implementation is changed.
+
 The website's charcoal canvas/surfaces and green/yellow/orange wait bands align with current native `MagicPulse/UI/UIComponents.swift`; red remains a closed/error signal. Snapshot rows retain identical surfaces, fixed right-aligned values and ranks 1-4.
 
 On October 7 the user authorized using both the new storybook artwork and the redesigned screenshots. The homepage now uses the October 6 Storybook v3 promotional illustration, an authentic park-overview capture, and the two finished standard-iPhone designed exports. The new app captures come from simulator build 3.0 (35), not the publicly downloadable 2.2 release; each placement is labelled as an upcoming design using sample data. The complete captures and their sample-data/estimated-forecast labels remain visible. No operator, consent, or fabricated app screen is included.

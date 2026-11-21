@@ -3,6 +3,7 @@ import { mkdir, readFile, readdir, writeFile } from 'node:fs/promises';
 import { createHash } from 'node:crypto';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { holidaySchedule } from './fixtures/holiday-schedule.mjs';
 
 const { chromium } = await import(process.env.PLAYWRIGHT_MODULE || 'playwright');
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
@@ -25,8 +26,8 @@ async function fingerprint(directory, files) {
   return hash.digest('hex');
 }
 const htmlFiles = (await readdir(root)).filter(name => name.endsWith('.html'));
-const sourceFiles = [...htmlFiles, 'script.js', 'live-policy.js', 'styles.css', '_headers', 'worker/index.js',
-  'site-release.json', 'status-history.json', 'sitemap.xml', 'package.json', 'scripts/qa-product-sync.mjs'];
+const sourceFiles = [...htmlFiles, 'script.js', 'live-policy.js', 'styles.css', 'holiday.js', 'holiday.css', '_headers', 'worker/index.js',
+  'site-release.json', 'status-history.json', 'sitemap.xml', 'package.json', 'scripts/qa-product-sync.mjs', 'scripts/fixtures/holiday-schedule.mjs'];
 async function sourceIdentity() {
   for (const name of htmlFiles) assert.equal(await readFile(path.join(root, name), 'utf8'),
     await readFile(path.join(root, 'dist/client/_site-pages', name.replace('.html', '.page')), 'utf8'), `${name}: build is stale`);
@@ -54,6 +55,7 @@ async function fixture(route) {
   const url = new URL(route.request().url());
   const headers = { 'Access-Control-Allow-Origin': '*', 'Cache-Control': 'public, max-age=60' };
   const send = (json, status = 200) => route.fulfill({ status, headers, json });
+  if (url.pathname === '/api/app/seasonal-events') return send(holidaySchedule());
   if (route.request().method() === 'OPTIONS') return route.fulfill({ status: 204, headers: {
     ...headers, 'Access-Control-Allow-Headers': 'Content-Type', 'Access-Control-Allow-Methods': 'POST, GET, OPTIONS'
   } });
@@ -109,7 +111,7 @@ async function pageFor(width = 390, height = 844) {
   await context.route('https://api.magicpulse.app/**', fixture);
   await context.route('https://api.themeparks.wiki/**', fixture);
   await context.route('https://formspree.io/**', () => { throw new Error('Real form delivery forbidden'); });
-  for (const asset of ['script.js', 'live-policy.js', 'styles.css']) {
+  for (const asset of ['script.js', 'live-policy.js', 'styles.css', 'holiday.js', 'holiday.css']) {
     await context.route(`**/${asset}?*`, route => route.fulfill({ path: path.join(root, 'dist/client', asset),
       contentType: asset.endsWith('.css') ? 'text/css' : 'text/javascript' }));
   }
@@ -144,6 +146,10 @@ try {
       for (const section of await page.locator('main > section').all()) {
         await section.scrollIntoViewIfNeeded();
         await page.waitForTimeout(40);
+      }
+      for (const image of await page.locator('main img').all()) {
+        await image.scrollIntoViewIfNeeded();
+        await image.evaluate(el => el.decode());
       }
       await page.evaluate(() => window.scrollTo(0, 0));
       const geometry = await page.evaluate(() => ({ width: innerWidth, scroll: document.documentElement.scrollWidth,

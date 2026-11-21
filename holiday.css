@@ -1,0 +1,60 @@
+.holiday-bar { border-bottom: 1px solid var(--line); background: var(--bg-raised); }
+.holiday-bar-inner { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 0 0.75rem; min-height: 44px; }
+.holiday-bar a { display: inline-flex; align-items: center; min-height: 44px; color: var(--text); font-size: 0.875rem; font-weight: 700; }
+.holiday-switch { display: inline-flex; align-items: center; gap: 0.5rem; min-height: 44px; cursor: pointer; font-size: 0.875rem; color: var(--muted-strong); }
+.holiday-switch input { width: 20px; height: 20px; flex: 0 0 20px; accent-color: #83d9b0; }
+.holiday-switch:focus-within { outline: 2px solid var(--cyan); outline-offset: 2px; }
+.holiday-season .holiday-bar { background: #12251f; border-bottom-color: #42634e; }
+.holiday-season .holiday-bar a { color: #f3d4a0; }
+.holiday-season .site-header { box-shadow: inset 0 2px #c99554; }
+.holiday-season .hero { background-image: linear-gradient(90deg, rgba(9, 10, 12, 0.94), rgba(9, 10, 12, 0.35)), url("assets/brand/magic-pulse-atmosphere-christmas-v1.webp"); }
+.holiday-season .hero .eyebrow { color: #f3d4a0; }
+.holiday-season .hero .btn-appstore { box-shadow: 0 0 0 1px #e1c08a; }
+.holiday-season .holiday-planner { border-top-color: #42634e; }
+.holiday-season .holiday-planner .eyebrow { color: #83d9b0; }
+.holiday-snow { display: none; position: fixed; inset: 0; overflow: hidden; pointer-events: none; z-index: 12; }
+.holiday-season .holiday-snow { display: block; }
+.holiday-snow span { position: absolute; top: -24px; left: 5%; font-size: 13px; line-height: 1; color: #fff; opacity: 0.23; animation: holiday-snowfall 21s linear infinite; pointer-events: none; }
+.holiday-snow span:nth-child(2) { left: 18%; animation-delay: -7s; animation-duration: 26s; }
+.holiday-snow span:nth-child(3) { left: 31%; animation-delay: -15s; animation-duration: 23s; }
+.holiday-snow span:nth-child(4) { left: 44%; animation-delay: -3s; animation-duration: 28s; }
+.holiday-snow span:nth-child(5) { left: 57%; animation-delay: -19s; animation-duration: 25s; }
+.holiday-snow span:nth-child(6) { left: 70%; animation-delay: -11s; animation-duration: 24s; }
+.holiday-snow span:nth-child(7) { left: 83%; animation-delay: -5s; animation-duration: 29s; }
+.holiday-snow span:nth-child(8) { left: 95%; animation-delay: -17s; animation-duration: 22s; }
+@keyframes holiday-snowfall { to { transform: translate3d(16px, calc(100vh + 48px), 0) rotate(80deg); } }
+.holiday-planner { border-block: 1px solid var(--line); background: var(--bg-raised); }
+.holiday-heading { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 0.8fr); gap: 2rem; align-items: end; margin-bottom: 1.5rem; }
+.holiday-heading h2 { margin-bottom: 0; font-size: 2rem; }
+.holiday-heading .section-copy { margin: 0; }
+.holiday-controls { display: flex; flex-wrap: wrap; gap: 1rem; justify-content: space-between; align-items: end; padding-block: 1rem; border-block: 1px solid var(--line); }
+.holiday-date-label { display: grid; gap: 0.5rem; color: var(--muted-strong); font-size: 0.875rem; font-weight: 600; min-width: 0; }
+.holiday-date-label input { min-height: 44px; width: 200px; max-width: 100%; border: 1px solid var(--line-strong); border-radius: 6px; padding: 0.5rem 0.75rem; background: var(--surface); color: var(--text); font: inherit; color-scheme: dark; }
+.holiday-controls button { display: inline-flex; gap: 0.5rem; align-items: center; min-height: 44px; padding: 0.5rem 0.75rem; border: 1px solid var(--line-strong); border-radius: 6px; color: var(--text); background: var(--surface); font: inherit; cursor: pointer; }
+.holiday-controls button:disabled { opacity: 0.6; cursor: wait; }
+.holiday-controls input:focus-visible, .holiday-controls button:focus-visible { outline: 2px solid var(--cyan); outline-offset: 3px; }
+.holiday-status { margin: 1rem 0; color: var(--muted-strong); font-size: 0.875rem; }
+.holiday-parties { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.5rem; }
+.holiday-party { min-width: 0; padding: 1.5rem; border: 1px solid var(--line-strong); border-radius: 8px; background: var(--surface); }
+.holiday-party .eyebrow { margin-bottom: 0.5rem; font-size: 0.75rem; }
+.holiday-party h3 { font-size: 1.5rem; line-height: 1.25; margin-bottom: 0.75rem; }
+.holiday-party p { margin-bottom: 1rem; }
+.holiday-party-state { color: #f3d4a0; font-weight: 700; font-size: 0.9375rem; }
+.holiday-party[data-party-phase="active"] .holiday-party-state, .holiday-party[data-party-phase="entry"] .holiday-party-state { color: #83d9b0; }
+.holiday-party-date { color: var(--muted-strong); font-size: 0.875rem; }
+.holiday-times { display: flex; flex-wrap: wrap; gap: 1rem 2rem; padding-block: 0.75rem; margin-bottom: 1rem; border-block: 1px solid var(--line); }
+.holiday-times dt { color: var(--muted-strong); font-size: 0.75rem; margin-bottom: 0.25rem; }
+.holiday-times dd { margin: 0; font-size: 0.9375rem; font-weight: 600; }
+.holiday-party .text-link { display: inline-flex; align-items: center; gap: 0.35rem; min-height: 44px; max-width: 100%; }
+.holiday-admission { margin: 1rem 0 0; color: var(--muted-strong); font-size: 0.875rem; }
+.holiday-controls[hidden], .holiday-times[hidden] { display: none; }
+@media (max-width: 760px) {
+  .holiday-season .hero { background-image: linear-gradient(180deg, rgba(9, 10, 12, 0.5), rgba(9, 10, 12, 0.78) 14rem, var(--bg) 20rem), url("assets/brand/holiday-hero-mobile-20261109.webp"); }
+  .holiday-heading, .holiday-parties { grid-template-columns: minmax(0, 1fr); gap: 1rem; }
+  .holiday-heading h2 { font-size: 1.75rem; }
+  .holiday-party { padding: 1.25rem; }
+  .holiday-party h3 { font-size: 1.35rem; }
+  .holiday-bar a, .holiday-switch { font-size: 0.75rem; }
+}
+@media (prefers-reduced-motion: reduce) { .holiday-season .holiday-snow { display: none; } .holiday-snow span { animation: none; } }
+@media (forced-colors: active) { .holiday-snow { display: none !important; } }

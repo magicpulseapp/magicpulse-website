@@ -16,6 +16,8 @@ Static landing page for the **Magic Pulse** iOS app (`www.magicpulse.app`). The 
 | `styles.css` | Consolidated responsive design system and page styles |
 | `script.js` | Navigation, galleries, forms, status, aggregate insights, resilient live waits, and offline state |
 | `live-policy.js` | Audience-checked public incident policy and immutable live-advice projection |
+| `holiday.js` / `holiday.css` | Holiday appearance, local preference, and public party-schedule planner |
+| `HOLIDAY-QA.md` | Current seasonal integration, safety boundaries, and verification |
 | `PRODUCT-SYNC-EVIDENCE.md` / `NEXT-RELEASE-DRAFT.md` | Release/feature evidence and unreleased copy; excluded from the website build |
 | `MEDIA-REFRESH-QA.md` | Artwork/screenshot provenance and current local media validation |
 | `fonts/*.woff2` | Self-hosted webfonts (latin + latin-ext); no Google Fonts runtime |
@@ -107,7 +109,15 @@ The image refresh has a focused runner that checks viewport-specific artwork dow
 PLAYWRIGHT_MODULE=/absolute/path/to/playwright/index.mjs node scripts/qa-app-store-images.mjs
 ```
 
-It writes to `.qa/app-store-images-20261007/`. Use that directory as `QA_OUTPUT_DIR` for the other browser runners when refreshing the same media cohort. The new standard-iPhone screenshots are explicitly upcoming-design previews with sample data, not evidence of a published app update. The original published planner, Lightning Lane, Watch, and seasonal images remain until suitable replacements are ready.
+It writes to `.qa/app-store-images-20261007/`. Use that directory as `QA_OUTPUT_DIR` for the other browser runners when refreshing the same media cohort. The new standard-iPhone screenshots are explicitly upcoming-design previews with sample data, not evidence of a published app update. Published planner, Lightning Lane, and Watch imagery remains. The homepage's Halloween-only promotion has been replaced by the holiday-party planner.
+
+Holiday appearance defaults on November 1 through January 6 in Eastern time. The Holiday look checkbox stores a browser-only override; reduced-motion and forced-color preferences disable snowfall. The planner reads the public `/api/app/seasonal-events` feed without credentials, keeps visit dates local, and links to official admission details. It does not grant party access or imply ticket availability. See `HOLIDAY-QA.md` for freshness and failure behavior.
+
+```bash
+PLAYWRIGHT_MODULE=/absolute/path/to/playwright/index.mjs node scripts/qa-holiday.mjs
+```
+
+Holiday evidence defaults to `.qa/holiday-20261109/`. The localhost preview may show schedule fallback because production CORS does not allow localhost; do not loosen API origins to make a local demo work.
 
 Run `npm run check:production` after DNS, proxy, API, or website deployments. It
 verifies the canonical website and legal pages, the read-only support-form

@@ -26,6 +26,7 @@ try {
     await context.route('https://api.magicpulse.app/**', route => {
       const url = new URL(route.request().url());
       const headers = { 'Access-Control-Allow-Origin': '*', 'Cache-Control': 'public, max-age=60' };
+      if (url.pathname === '/api/app/seasonal-events') return route.fulfill({ status: 503, headers, json: {} });
       if (url.pathname === '/api/app/content') return route.fulfill({ headers, json: {
         schemaVersion: 1, parkId: 6, locale: 'en', entries: [{ kind: 'incident', parkId: 6, target: {}, paused: false,
           startsAt: null, endsAt: new Date(Date.now() + 60000).toISOString(), disabledFeatures: ['forecasts'],
@@ -40,7 +41,7 @@ try {
       throw new Error('Unexpected production request: ' + url);
     });
     await context.route('https://api.themeparks.wiki/**', route => route.fulfill({ status: 503, json: {} }));
-    for (const asset of ['script.js', 'live-policy.js', 'styles.css']) await context.route(`**/${asset}?*`, route =>
+    for (const asset of ['script.js', 'live-policy.js', 'styles.css', 'holiday.js', 'holiday.css']) await context.route(`**/${asset}?*`, route =>
       route.fulfill({ path: path.join(root, 'dist/client', asset), contentType: asset.endsWith('.css') ? 'text/css' : 'text/javascript' }));
     const page = await context.newPage();
     await page.goto(base + '/index.html');

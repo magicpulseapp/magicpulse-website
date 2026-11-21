@@ -2,6 +2,8 @@
 
 October 7, 2026. Local website changes only, not published. The user selected both the new artwork and redesigned screenshots. The homepage now uses the new storybook background and the two finished standard-iPhone screenshot designs; existing images remain where replacements are unfinished.
 
+Historical media cohort: the November 9 holiday overlay and planner supersede this runtime identity. See `HOLIDAY-QA.md` for current validation. The storybook background remains available when Holiday look is off.
+
 ## Asset Provenance
 
 Original assets are read-only references under `/Users/sam/Desktop/MagicPulse/Marketing/`:

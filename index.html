@@ -35,9 +35,9 @@
   <link rel="preconnect" href="https://api.themeparks.wiki" />
   <link rel="preload" href="fonts/inter-400-latin.woff2" as="font" type="font/woff2" crossorigin="anonymous" />
   <link rel="preload" href="fonts/outfit-700-latin.woff2" as="font" type="font/woff2" crossorigin="anonymous" />
-  <link rel="preload" href="assets/brand/storybook-header-20261007.webp" as="image" type="image/webp" media="(min-width: 761px)" fetchpriority="high" />
-  <link rel="preload" href="assets/brand/storybook-header-mobile-20261007.webp" as="image" type="image/webp" media="(max-width: 760px)" fetchpriority="high" />
-  <link rel="stylesheet" href="styles.css?v=20261007a" />
+  <script src="holiday.js?v=20261109a"></script>
+  <link rel="stylesheet" href="styles.css?v=20261109a" />
+  <link rel="stylesheet" href="holiday.css?v=20261109a" />
 
   <script type="application/ld+json">
   {
@@ -324,7 +324,7 @@
         </div>
 
         <div class="product-gallery" id="product-gallery" aria-label="Magic Pulse app screenshots" tabindex="0">
-          <figure class="product-shot product-shot--lead reveal reveal-1" id="product-slide-1" data-gallery-slide>
+          <figure class="product-shot product-shot--lead product-shot--preview reveal reveal-1" id="product-slide-1" data-gallery-slide>
             <img src="assets/app-screens/park-overview-20261007.webp" width="900" height="1957" alt="New Magic Pulse iPhone promotional screenshot with park status, weather, and a next-ride suggestion; upcoming design using sample data" loading="lazy" decoding="async" />
             <figcaption><strong>Your park at a glance</strong><span>Park status, weather, and a useful next move in one view.</span><span class="product-preview-note">Upcoming design. Sample data.</span><a href="live-waits.html" data-event="feature_open" data-event-context="live_waits">Explore live waits</a></figcaption>
           </figure>
@@ -336,7 +336,7 @@
             <img src="assets/app-screens/lightning-lane.webp" width="600" height="1299" alt="Magic Pulse ride detail showing Lightning Lane price, wait forecast, and wait history for TRON Lightcycle Run" loading="lazy" decoding="async" />
             <figcaption><strong>Judge the price with context</strong><span>Compare standby time, Lightning Lane price, forecasts, and today&apos;s history.</span><a href="lightning-lane.html" data-event="feature_open" data-event-context="lightning_lane">Explore Lightning Lane</a></figcaption>
           </figure>
-          <figure class="product-shot reveal" id="product-slide-4" data-gallery-slide>
+          <figure class="product-shot product-shot--preview reveal" id="product-slide-4" data-gallery-slide>
             <img src="assets/app-screens/ride-details-20261007.webp" width="900" height="1957" alt="New Magic Pulse iPhone promotional screenshot of Space Mountain ride details, watchlist actions, and estimated wait forecasts; upcoming design using sample data" loading="lazy" decoding="async" />
             <figcaption><strong>Keep your next ride in focus</strong><span>Check ride details, save a favorite, and compare available wait forecasts.</span><span class="product-preview-note">Upcoming design. Sample data.</span><a href="live-waits.html" data-event="feature_open" data-event-context="ride_details">Explore ride waits</a></figcaption>
           </figure>
@@ -361,23 +361,38 @@
       </div>
     </section>
 
-    <section id="special-nights" class="section special-nights-section" aria-labelledby="special-nights-heading">
-      <div class="container special-nights-layout">
-        <div class="special-nights-copy">
-          <p class="eyebrow">Special park nights</p>
-          <h2 id="special-nights-heading">Know when the park changes its rhythm</h2>
-          <p class="section-copy">Magic Pulse recognizes seasonal parties and special access windows so an early regular close does not look like the end of the night.</p>
-          <dl class="special-night-points">
-            <div><dt>Party guidance</dt><dd>See when Halloween or Christmas party time is active.</dd></div>
-            <div><dt>Event lineups</dt><dd>Keep party-specific entertainment and times together.</dd></div>
-            <div><dt>Special access</dt><dd>Recognize Extended Evening Hours and member-exclusive nights.</dd></div>
-          </dl>
-          <a class="text-link" href="features.html#special-nights">Explore special-night planning <span aria-hidden="true">↗</span></a>
+    <section id="special-nights" class="section holiday-planner" data-holiday-planner aria-labelledby="special-nights-heading">
+      <div class="container">
+        <div class="holiday-heading">
+          <div><p class="eyebrow">Holiday nights at Walt Disney World</p><h2 id="special-nights-heading">Make room for a little extra magic</h2></div>
+          <p class="section-copy">Plan around the party, not just regular park hours. Check your night, early entry, and the separate ticket you need before you go.</p>
         </div>
-        <figure class="special-nights-visual">
-          <img src="assets/app-screens/seasonal-night.webp" width="1066" height="1280" alt="Magic Pulse Events view showing an active Halloween party, event hours, and party entertainment" loading="lazy" decoding="async" />
-          <figcaption>Party status, entry hours, official details, and event timing in one view.</figcaption>
-        </figure>
+        <div class="holiday-controls" data-holiday-controls hidden>
+          <label class="holiday-date-label" for="holiday-visit-date"><span>Party date (Eastern time)</span><input type="date" id="holiday-visit-date" data-holiday-date /></label>
+          <button type="button" data-holiday-refresh><span aria-hidden="true">↻</span> Refresh dates</button>
+        </div>
+        <p class="holiday-status" data-holiday-status role="status">Check Disney's official pages for dates and admission.</p>
+        <div class="holiday-parties">
+          <article class="holiday-party" data-holiday-source="veryMerry" aria-labelledby="very-merry-heading">
+            <p class="eyebrow">Magic Kingdom</p>
+            <h3 id="very-merry-heading">Mickey's Very Merry Christmas Party</h3>
+            <p>Christmas entertainment, fireworks, and festive treats on select nights.</p>
+            <p class="holiday-party-state" data-party-state>Separate event ticket required</p>
+            <p class="holiday-party-date" data-party-date>Select nights. Confirm your date and ticket availability with Disney.</p>
+            <dl class="holiday-times" data-party-times hidden><div><dt>Early entry</dt><dd data-party-entry></dd></div><div><dt>Party hours</dt><dd data-party-hours></dd></div></dl>
+            <a class="text-link" href="https://disneyworld.disney.go.com/events-tours/magic-kingdom/mickeys-very-merry-christmas-party/" target="_blank" rel="noopener noreferrer">Official dates and tickets <span aria-hidden="true">↗</span></a>
+          </article>
+          <article class="holiday-party" data-holiday-source="jollywood" aria-labelledby="jollywood-heading">
+            <p class="eyebrow">Disney's Hollywood Studios</p>
+            <h3 id="jollywood-heading">Disney Jollywood Nights</h3>
+            <p>Holiday shows and a little Hollywood glamour after dark on select nights.</p>
+            <p class="holiday-party-state" data-party-state>Separate event ticket required</p>
+            <p class="holiday-party-date" data-party-date>Select nights. Confirm your date and ticket availability with Disney.</p>
+            <dl class="holiday-times" data-party-times hidden><div><dt>Early entry</dt><dd data-party-entry></dd></div><div><dt>Party hours</dt><dd data-party-hours></dd></div></dl>
+            <a class="text-link" href="https://disneyworld.disney.go.com/events-tours/hollywood-studios/jollywood-nights/" target="_blank" rel="noopener noreferrer">Official dates and tickets <span aria-hidden="true">↗</span></a>
+          </article>
+        </div>
+        <p class="holiday-admission">All times Eastern. Party admission is separate from regular park admission and Magic Pulse Pro. A listed date does not mean tickets are available. Check official schedules for changes and entertainment times.</p>
       </div>
     </section>
 
@@ -723,7 +738,7 @@
     </a>
   </div>
 
-  <script src="live-policy.js?v=20261007a" defer></script>
-  <script src="script.js?v=20261007a" defer></script>
+  <script src="live-policy.js?v=20261109a" defer></script>
+  <script src="script.js?v=20261109a" defer></script>
 </body>
 </html>

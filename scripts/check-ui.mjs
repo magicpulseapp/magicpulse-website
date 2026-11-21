@@ -58,7 +58,9 @@ for (const feature of ["Events", "Apple Watch", "Trip recap", "Siri Shortcuts"])
 }
 assert.match(home, /href="features\.html"/, "Home: missing all-features link");
 assert.match(home, /id="special-nights"/, "Home: special-night planning section is required");
-assert.match(home, /assets\/app-screens\/seasonal-night\.webp/, "Home: seasonal-night product screenshot is required");
+assert.match(home, /data-holiday-planner/, "Home: holiday party planner is required");
+assert.equal((home.match(/data-holiday-source=/g) || []).length, 2, "Home: both holiday parties need a guide");
+assert.match(home, /Party admission is separate from regular park admission/, "Home: party ticket requirements must be explicit");
 assert.match(features, /id="special-nights"/, "Features: special-night details are required");
 assert.match(features, /assets\/app-screens\/apple-watch\.webp/, "Features: Apple Watch product screenshot is required");
 
@@ -110,6 +112,7 @@ const css = await readFile(path.join(root, "styles.css"), "utf8");
 assert.match(css, /storybook-header-20261007\.webp/, "Hero: refreshed artwork is required");
 assert.match(css, /storybook-header-mobile-20261007\.webp/, "Hero: lightweight mobile artwork is required");
 assert.match(css, /\.hero-app-screen img \{[^}]*margin: 0;/, "Hero: refreshed capture must not retain the old poster crop");
+assert.match(css, /\.product-shot--preview img \{ aspect-ratio: 900 \/ 1957;/, "Gallery: preview images must reserve their intrinsic space before lazy loading");
 const cssLines = css.split(/\r?\n/).length;
 assert.ok(cssLines < 4400, `CSS: expected consolidated stylesheet, found ${cssLines} lines`);
 assert.equal((css.match(/{/g) || []).length, (css.match(/}/g) || []).length, "CSS: unbalanced braces");

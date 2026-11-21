@@ -1310,7 +1310,7 @@ body.nav-open .nav-overlay {
   max-width: 290px;
   margin-inline: auto;
   height: auto;
-  aspect-ratio: auto;
+  aspect-ratio: 600 / 1299;
   border-radius: 14px;
   object-fit: contain;
 }
@@ -1320,6 +1320,8 @@ body.nav-open .nav-overlay {
   gap: 0.5rem;
   padding: 1.25rem 0 0;
 }
+
+.product-shot--preview img { aspect-ratio: 900 / 1957; }
 
 .product-shot figcaption strong {
   color: var(--text);
